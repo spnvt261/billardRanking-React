@@ -1,0 +1,71 @@
+.custom-textfield {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: auto;
+}
+
+.input-container {
+    position: relative;
+    /* background-color: #fff;  */
+    border-bottom: 1px solid var(--input-color) ;
+    /* border-radius: 4px; */
+    padding: .5rem 0;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.input-container.active {
+    /* background-color: #d0d0ff; */
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.2); */
+    border-bottom: 1px solid var(--input-color-focus) ;
+}
+
+.input-container.focus{
+    border-bottom: 2px solid var(--input-color-focus) ;
+    label{
+        font-weight: bold;
+    }
+}
+
+.input-container input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    outline: none;
+}
+
+.input-container label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(0,-50%);
+    font-size: 1rem;
+    color: var(--main-text-color);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    opacity: 0.5;
+}
+
+.input-container label.active {
+    top: 0;
+    left: 0;
+    font-size: 0.9rem;
+    color: var(--input-color-focus);
+    opacity: 1;
+}
+
+.helper-text {
+    font-size: 0.75rem;
+    color: var(--main-text-color);
+    margin-top: 0.25rem;
+}
+
+.custom-textfield.error .input-container label,
+.custom-textfield.error .input-container input {
+    color: #d32f2f;
+}
+
+.custom-textfield.error .helper-text {
+    color: #d32f2f;
+}

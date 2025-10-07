@@ -1,0 +1,30 @@
+:root {
+  /* comon  */
+  --main-bg-color: #f9fafb;
+  --main-text-color: #000;
+  /* header */
+  --header-text-color: #fff;
+  --text-navlink-actived-color: rgba(0, 0, 0, 0.7);
+  --navlink-active-bg-color: rgba(0, 0, 0, 0.5);
+  --header-bg-color: #6b7280;
+  --header-hightlight-block-bg-color: rgba(255, 255, 255, 0.05);
+  --header-hightlight-block-border-color: rgba(255, 255, 255, 0.3);
+  /* other */
+  --table-head-bg-color: #d1d5db;
+  --tr-hover-color: #f3f4f6;
+  --hightlight-block-bg-color: #9ca3af;
+
+  /* button */
+  --button-a-bg-color: #6b7280;
+  --button-a-color: #fff;
+  --button-b-bg-color: #d1d5db;
+  --button-b-color: #1f2937;
+
+  /* input  */
+  --input-color:#6b7280;
+  --input-color-focus:#3b82f6;
+}
+
+#root {
+  background-color: var(--main-bg-color);
+}

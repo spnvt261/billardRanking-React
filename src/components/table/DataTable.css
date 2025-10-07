@@ -1,0 +1,10 @@
+table{
+    thead{
+        background-color: var(--table-head-bg-color);
+    }
+    tbody{
+        tr:hover{
+            background-color: var(--tr-hover-color);
+        }
+    }
+}

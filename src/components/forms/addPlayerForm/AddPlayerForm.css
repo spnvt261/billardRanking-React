@@ -1,0 +1,13 @@
+.add-player-form{
+    background-color: rgba(0,0,0,0.3);
+}
+.bg-glass {
+    background-color: var(--header-hightlight-block-bg-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid var(--header-hightlight-block-border-color);
+
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+}
