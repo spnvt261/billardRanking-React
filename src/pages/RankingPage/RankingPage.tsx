@@ -1,37 +1,46 @@
-import { useCallback, useMemo, useRef, useState } from "react";
-import { players } from "../../components/data/rankingData";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type JSX } from "react";
+import { players, type Player } from "../../components/data/rankingData";
 import DataTable from "../../components/table/DataTable";
 import { getSortedPlayers } from "../../ultils/sortPlayerRanking";
 import "./RankingPage.css"
 import CustomButton from "../../components/customButtons/CustomButton";
-import AddPlayerForm from "../../components/forms/addPlayerForm/AddPlayerForm";
+import AddPlayerForm, { type ChildHandle } from "../../components/forms/addPlayerForm/AddPlayerForm";
 import Pagination from "../../components/pagination/Pagination";
+import { connect } from "react-redux";
+import viewActions from "../../redux/ui/viewActions";
 
-const RankingPage = () => {
+const RankingPage = (props: any) => {
+    const { openAddPlayerForm } = props;
     console.log('RankingPage');
     const [mode, setMode] = useState<"elo" | "prize">("elo");
-    const [showForm, setShowForm] = useState(false);
-    const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const btnRef = useRef<HTMLButtonElement>(null);
+    const formRef = useRef<ChildHandle>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
 
     const btnAddPlayer = useCallback(() => {
         if (btnRef.current) {
             const rect = btnRef.current.getBoundingClientRect();
-            setOrigin({ x: rect.x, y: rect.y, width: rect.width, height: rect.height });
+            const coords = { x: rect.x, y: rect.y,width:rect.width,height:rect.height };
+            formRef.current?.updateCoords(coords);
+            
+            // console.log(coords);
         }
-        setShowForm(true);
+        openAddPlayerForm()
 
     }, []);
-    const _onCloseForm = useCallback(() => setShowForm(false), []);
+
     const sortedPlayers = useMemo(() => getSortedPlayers(players, mode), [mode]);
 
-    const paginatedPlayers = useMemo(() => {
+    const paginatedPlayers: Player[] = useMemo(() => {
         const start = (currentPage - 1) * pageSize;
         const end = start + pageSize;
         return sortedPlayers.slice(start, end);
     }, [sortedPlayers, currentPage]);
+
+    useEffect(() => {
+        
+    }, [])
     return (
         <div className="ranking-page">
             <h2 className="text-2xl font-bold">Friend Ranking</h2>
@@ -71,13 +80,13 @@ const RankingPage = () => {
                     </div>
 
                 </div>
-                <DataTable
+                <DataTable<Player>
                     key={`page-${currentPage}`}
                     columns={[
                         { header: "Rank", accessor: "rank", width: "10%" },
                         {
                             header: "Player",
-                            accessor: (item) => (
+                            accessor: (item: Player) => (
                                 <div className="flex items-center gap-2">
                                     <img
                                         src={item.image}
@@ -91,7 +100,7 @@ const RankingPage = () => {
                         },
                         {
                             header: mode === "elo" ? "Elo" : "Prize",
-                            accessor: (item) => (mode === "elo" ? item.elo : `$${item.prize}`),
+                            accessor: (item: Player) => (mode === "elo" ? item.elo : `$${item.prize}`),
                             width: "30%",
                         },
                     ]}
@@ -104,13 +113,22 @@ const RankingPage = () => {
                     onPageChange={setCurrentPage}
                 />
             </div>
-            <AddPlayerForm
-                isOpen={showForm}
-                onClose={_onCloseForm}
-                origin={origin} // Truyền vị trí button
-            />
+            <AddPlayerForm ref={formRef}/>
+            
         </div >
     );
 }
 
-export default RankingPage
+const mapStateToProps = (state: any) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProp = (dispatch: any) => {
+    return {
+        openAddPlayerForm: () => dispatch(viewActions.openAddPlayerForm())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProp)(RankingPage)

@@ -75,7 +75,7 @@
     transform-origin: top right;
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 
-    li {
+    a {
         padding: .25rem .75rem;
         flex: 0 0 calc(20%);
         box-sizing: border-box;

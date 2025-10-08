@@ -1,12 +1,15 @@
-import { NavLink } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import NAV_LINKS from '../../../constants/navigation';
 import './Header.css'
 import { PiNumberCircleNine } from 'react-icons/pi';
 import { useEffect, useRef, useState } from 'react';
 const Header = () => {
+    const location = useLocation();
+    const currentPath = location.pathname;
     console.log('Header');
+    const navigate = useNavigate();
     const ulRef = useRef<HTMLUListElement | null>(null);
-    const liRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+    const liRefs = useRef<Array<HTMLLIElement | null>>([]);
     const blockRef = useRef<HTMLDivElement | null>(null);
     const [showOthers, setShowOthers] = useState(false);
 
@@ -53,15 +56,22 @@ const Header = () => {
         });
     };
 
-    const setLiRef = (index: number) => (el: HTMLAnchorElement | null) => {
+    const setLiRef = (index: number) => (el: HTMLLIElement | null) => {
         liRefs.current[index] = el;
     };
+    const _navLinkOnClick = (path: string) => {
+        navigate(path);
+
+    }
     const visibleLinks = NAV_LINKS.filter(item => item.show);
     const hiddenLinks = NAV_LINKS.filter(item => !item.show);
     const _showOthers = () => {
         setShowOthers(!showOthers)
 
     }
+    useEffect(() => {
+        updateActiveBlock()
+    }, [location])
     return (
         <nav className="nav fixed top-0 left-0 w-full z-50">
             <div className='container mx-auto flex justify-between items-center'>
@@ -80,34 +90,24 @@ const Header = () => {
                         visibleLinks.map((item, index) => {
                             const Icon = item.icon || (() => <div />);
                             return (
-                                <NavLink
-                                    to={item.path}
-                                    key={item.label}
-                                    className={({ isActive }) =>
-                                        `nav-link flex flex-col justify-center cursor-pointer ${isActive && item.label != 'Others' ? 'active' : ''} ${showOthers ? 'opacity-0' : 'opacity-1'}`
-                                    }
+                                <li key={item.label}
+                                    className={`nav-link flex flex-col justify-center cursor-pointer ${currentPath === item.path ? "active" : ""} ${showOthers ? 'opacity-0' : 'opacity-1'}`}
                                     ref={setLiRef(index)}
-                                    onClick={item.label === "Others" ? () => _showOthers() : () => { }}
+                                    onClick={item.label !== "Others" ? () => _navLinkOnClick(item.path) : () => _showOthers()}
                                 >
-                                    {({ isActive }) => {
-                                        useEffect(() => {
-                                            if (isActive) {
-                                                updateActiveBlock();
-                                            }
-                                        }, [isActive]);
-
-                                        return (
-                                            <>
-                                                {item.icon && (
-                                                    <div className="flex justify-center">
-                                                        <Icon size="1.5rem" />
-                                                    </div>
-                                                )}
-                                                <div className="label">{item.label}</div>
-                                            </>
-                                        );
-                                    }}
-                                </NavLink>
+                                    {
+                                        item.icon &&
+                                        <div className='flex justify-center'>
+                                            <Icon size='1.5rem' />
+                                        </div>
+                                    }
+                                    {/* <Link
+                                        to={item.path}
+                                    >
+                                        {item.label}
+                                    </Link> */}
+                                    <div className='label'>{item.label}</div>
+                                </li>
                             )
                         })
 
@@ -122,13 +122,10 @@ const Header = () => {
                                 hiddenLinks.map((item) => {
                                     const Icon = item.icon || (() => <div />);
                                     return (
-                                        <NavLink
-                                            to={item.path}
-                                            key={item.label}
-                                            className={({ isActive }) =>
-                                                `nav-link flex flex-col justify-center cursor-pointer ${isActive && item.label != 'Others' ? 'active' : ''}`
-                                            }
+                                        <li key={item.label}
+                                            className={`nav-link flex flex-col justify-center cursor-pointer ${currentPath === item.path ? "active" : ""}`}
                                             onClick={() => {
+                                                _navLinkOnClick(item.path);
                                                 setShowOthers(false);
                                             }}
                                         >
@@ -139,7 +136,7 @@ const Header = () => {
                                                 </div>
                                             }
                                             <div className='label'>{item.label}</div>
-                                        </NavLink>
+                                        </li>
                                     )
                                 })
                             }

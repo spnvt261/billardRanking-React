@@ -48,13 +48,13 @@ const NAV_LINKS :NavLink[] = [
     },
     {
         label: 'Others1',
-        path:'#1',
+        path:'/abc',
         icon:RxDashboard,
         show:false,
     },
     {
         label: 'Others2',
-        path:'#2',
+        path:'/abc2',
         icon:RxDashboard,
         show:false,
     },

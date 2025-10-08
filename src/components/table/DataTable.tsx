@@ -4,7 +4,7 @@ import './DataTable.css'
 
 interface Column<T> {
     header: string;
-    accessor: keyof T | ((row: T) => React.ReactNode);
+    accessor: keyof T | ((row: T) => React.ReactNode) | string;
     width?: string;
 }
 
@@ -13,7 +13,7 @@ interface DataTableProps<T> {
     data: T[];
 }
 
-function DataTable<T extends object>({ columns, data }: DataTableProps<T>) {
+const DataTable =<T extends object>({ columns, data }: DataTableProps<T>) => {
     console.log('DataTable');
 
     return (

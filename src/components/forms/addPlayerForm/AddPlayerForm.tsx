@@ -1,28 +1,37 @@
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useState, type ChangeEvent } from "react";
+import { forwardRef, useImperativeHandle, useState, type ChangeEvent } from "react";
 import './AddPlayerForm.css'
 import CustomTextField from "../../customTextField/CustomTextField";
 import CustomButton from "../../customButtons/CustomButton";
- "../../customInput/CustomTextField";
-interface AddPlayerFormProps {
-    isOpen: boolean;
-    onClose: () => void;
-    origin: { x: number; y: number; width: number; height: number };
-}
+import { connect } from "react-redux";
+import viewActions from "../../../redux/ui/viewActions";
 
-const AddPlayerForm: React.FC<AddPlayerFormProps> = ({ isOpen, onClose, origin }) => {
-    // console.log('AddplayerForm');
-    const [obj,setObj]=useState<object |null>(null);
-    const _onChangeInput=(e: ChangeEvent<HTMLInputElement>)=>{
-        setObj({
-            ...obj,
+export type ChildHandle = {
+    updateCoords: (coords: { x: number; y: number; width:number; height:number }) => void;
+};
+const AddPlayerForm = (props: any, ref:any) => {
+    
+    console.log('AddplayerForm');
+    const { isOpen, closeAddPlayerForm } = props;
+    // const origin = { x: 0, y: 0, width: 0, height: 0 }
+    const [origin, setOrigin] = useState({ x: 0, y: 0,width:0,height:0 });
+    useImperativeHandle(ref, () => ({
+        updateCoords(newOrigin: any) {
+            setOrigin(newOrigin);
+        },
+    }));
+    
+    const [newPlayer, setNewPlayer] = useState<object | null>(null);
+    const _onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+        setNewPlayer({
+            ...newPlayer,
             [e.target.name]: e.target.value,
         })
     }
-    const _onSubmit=()=>{
-        // console.log(obj);
-        
+    const _onSubmit = () => {
+
     }
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -63,7 +72,7 @@ const AddPlayerForm: React.FC<AddPlayerFormProps> = ({ isOpen, onClose, origin }
                                 <CustomButton
                                     label='Hủy'
                                     variant="type-4"
-                                    onClick={onClose}
+                                    onClick={closeAddPlayerForm}
                                     className="mr-2"
                                 />
                                 <CustomButton
@@ -79,5 +88,15 @@ const AddPlayerForm: React.FC<AddPlayerFormProps> = ({ isOpen, onClose, origin }
         </AnimatePresence>
     );
 };
+const mapStateToProps = (state: any) => {
+    return {
+        isOpen: state.view.addPlayerFormIsOpen
+    }
+}
 
-export default React.memo(AddPlayerForm);
+const mapDispatchToProp = (dispatch: any) => {
+    return {
+        closeAddPlayerForm: () => dispatch(viewActions.closeAddPlayerForm())
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProp,null,{forwardRef: true})(forwardRef(AddPlayerForm));
