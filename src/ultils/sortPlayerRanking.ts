@@ -1,4 +1,4 @@
-import type { Player } from "../components/data/rankingData";
+import type { Player } from "../data/rankingData";
 
 
 export const getSortedPlayers = (players: Player[], mode: "elo" | "prize") => {

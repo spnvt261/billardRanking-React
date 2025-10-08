@@ -1,0 +1,42 @@
+.tournament-card {
+    width: 300px;
+    background-color: #fff;
+
+    border-radius: .5rem;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+    transition: box-shadow 0.3s ease, transform 0.1s ease-in-out;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+
+    p {
+        cursor: pointer;
+    }
+    
+    
+    &:active{
+        transform: scale(1.02);
+    }
+}
+
+a {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.tournament-card:hover {
+    outline-style: solid;
+    outline-width: 2px;
+    outline-offset: 1px;
+    outline-color: var(--input-color);
+}
+
+/* .tournament-card:active{
+    pointer-events: none;
+} */

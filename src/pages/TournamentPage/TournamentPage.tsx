@@ -1,7 +1,13 @@
-const TournamentPage = () =>{
-    return(
+
+import TournamentList from "../../components/layout/tournaments/tournamentList/TournamentList";
+import { tournaments } from "../../data/tournamentData";
+
+const TournamentPage: React.FC = () => {
+    console.log('TournamentPages');
+    
+    return (
         <div className="tournament-page">
-            <h1>Tournaments</h1>
+            <TournamentList label="Tournaments" list={tournaments}/>
         </div>
     )
 }

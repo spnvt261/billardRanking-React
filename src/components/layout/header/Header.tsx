@@ -84,10 +84,10 @@ const Header = () => {
                                     to={item.path}
                                     key={item.label}
                                     className={({ isActive }) =>
-                                        `nav-link flex flex-col justify-center cursor-pointer ${isActive && item.label != 'Others' ? 'active' : ''} ${showOthers ? 'opacity-0' : 'opacity-1'}`
+                                        `nav-link flex flex-col justify-center cursor-pointer ${isActive && !item.isHiddenGroup ? 'active' : ''} ${showOthers ? 'opacity-0' : 'opacity-1'}`
                                     }
                                     ref={setLiRef(index)}
-                                    onClick={item.label === "Others" ? () => _showOthers() : () => { }}
+                                    onClick={item.isHiddenGroup ? () => _showOthers() : () => { }}
                                 >
                                     {({ isActive }) => {
                                         useEffect(() => {
@@ -126,7 +126,7 @@ const Header = () => {
                                             to={item.path}
                                             key={item.label}
                                             className={({ isActive }) =>
-                                                `nav-link flex flex-col justify-center cursor-pointer ${isActive && item.label != 'Others' ? 'active' : ''}`
+                                                `nav-link flex flex-col justify-center cursor-pointer ${isActive && !item.isHiddenGroup ? 'active' : ''}`
                                             }
                                             onClick={() => {
                                                 setShowOthers(false);

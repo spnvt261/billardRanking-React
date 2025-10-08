@@ -1,5 +1,5 @@
 const Footer = ()=>{
-    console.log('footer');
+    // console.log('footer');
     
     return(
         <div className="footer bg-gray-500 text-white p-4 mt-8">

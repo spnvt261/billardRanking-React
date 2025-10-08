@@ -9,13 +9,14 @@ const PATHS = {
     TOURNAMENTS:'/tournaments',
     MATCHS:'/matchs'
 } 
-interface NavLink{
+interface iNavLink{
     label: string,
     path:string,
     icon?: React.ComponentType<any>,
     show:boolean,
+    isHiddenGroup?:boolean
 }
-const NAV_LINKS :NavLink[] = [
+const NAV_LINKS :iNavLink[] = [
     {
         label: 'Overall',
         path: PATHS.OVERALL,
@@ -45,6 +46,7 @@ const NAV_LINKS :NavLink[] = [
         path:'#',
         icon:RxDashboard,
         show:true,
+        isHiddenGroup:true,
     },
     {
         label: 'Others1',
