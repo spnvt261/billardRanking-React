@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState} from "react";
+import { useCallback, useEffect, useRef} from "react";
 // import { players, type Player } from "../../components/data/rankingData";
 // import DataTable from "../../components/table/DataTable";
 // import { getSortedPlayers } from "../../ultils/sortPlayerRanking";
@@ -50,7 +50,7 @@ const RankingPage = (props: any) => {
     );
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = () => {
     return {
 
     }

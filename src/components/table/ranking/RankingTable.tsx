@@ -5,8 +5,7 @@ import Pagination from "../../pagination/Pagination";
 import { getSortedPlayers } from "../../../ultils/sortPlayerRanking";
 import { connect } from "react-redux";
 
-const RankingTable = (props: any) => {
-    // const { mode } = props
+const RankingTable = () => {
     console.log('RankingTable');
     const [currentPage, setCurrentPage] = useState(1);
     const [mode, setMode] = useState<"elo" | "prize">("elo");
@@ -81,13 +80,13 @@ const RankingTable = (props: any) => {
         </>
     )
 }
-const mapStateToProps = (state: any) => {
+const mapStateToProps = () => {
     return {
 
     }
 }
 
-const mapDispatchToProp = (dispatch: any) => {
+const mapDispatchToProp = () => {
     return {
 
     }

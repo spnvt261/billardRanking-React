@@ -1,4 +1,4 @@
-import { useState, useEffect, type ChangeEvent, type FocusEvent } from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import './CustomTextField.css';
 
 interface CustomTextFieldProps {
@@ -28,8 +28,8 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
         onChange(e);
     };
 
-    const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocus(true);
-    const handleBlur = (e: FocusEvent<HTMLInputElement>) => setFocus(false);
+    const handleFocus = () => setFocus(true);
+    const handleBlur = () => setFocus(false);
 
     useEffect(() => {
         setValue(`${propValue?propValue:''}`);
