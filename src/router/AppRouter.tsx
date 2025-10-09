@@ -5,6 +5,7 @@ import RankingPage from "../pages/RankingPage/RankingPage";
 import MatchsPage from "../pages/MatchsPage/MatchsPage";
 import TournamentPage from "../pages/TournamentPage/TournamentPage";
 import OverallPage from "../pages/OverallPage/OverallPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 const AppRouters =()=>{
     return(
@@ -15,6 +16,7 @@ const AppRouters =()=>{
                 <Route path={PATHS.MATCHS} element={<MatchsPage/>}/>
                 <Route path={PATHS.TOURNAMENT} element={<TournamentPage/>}/>
                 <Route path={PATHS.OVERALL} element={<OverallPage/>}/>
+                <Route path={PATHS.NOTFOUND} element={<NotFoundPage/>}/>
             </Route>
         </Routes>
     )

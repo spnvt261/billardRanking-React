@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { forwardRef, useEffect, useImperativeHandle, useState, type ChangeEvent } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type ChangeEvent } from "react";
 import './AddPlayerForm.css'
 import CustomTextField from "../../customTextField/CustomTextField";
 import CustomButton from "../../customButtons/CustomButton";
 import { connect } from "react-redux";
 import viewActions from "../../../redux/ui/viewActions";
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 export type ChildHandle = {
     updateCoords: (coords: { x: number; y: number; width: number; height: number }) => void;
@@ -13,7 +14,7 @@ const AddPlayerForm = (props: any, ref: any) => {
 
     console.log('AddplayerForm');
     const { isOpen, closeAddPlayerForm } = props;
-    // const origin = { x: 0, y: 0, width: 0, height: 0 }
+    const formRef = useRef<HTMLDivElement>(null);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
     useImperativeHandle(ref, () => ({
         updateCoords(newOrigin: any) {
@@ -33,13 +34,14 @@ const AddPlayerForm = (props: any, ref: any) => {
 
     }
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden'; 
-        } else {
-            document.body.style.overflow = '';
+        if (isOpen && formRef.current) {
+            disableBodyScroll(formRef.current); // khóa background, vẫn cho scroll trong form
+        } else if (formRef.current) {
+            enableBodyScroll(formRef.current);
         }
+
         return () => {
-            document.body.style.overflow = '';
+            clearAllBodyScrollLocks(); // dọn dẹp khi component unmount
         };
     }, [isOpen]);
 
@@ -47,13 +49,14 @@ const AddPlayerForm = (props: any, ref: any) => {
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    className="add-player-form fixed inset-0 flex items-center justify-center z-50 p-2"
+                    className="add-player-form fixed inset-0 flex items-center justify-center z-50 p-3"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0, pointerEvents: 'none' }}
                 >
                     <motion.div
-                        className=" bg-white p-6 rounded-2xl shadow-2xl w-[700px]"
+                        ref={formRef}
+                        className=" bg-white p-6 rounded-2xl shadow-2xl w-full max-w-[700px]"
                         initial={{
                             scale: 0,
                             x: origin.x - window.innerWidth / 2 + origin.width / 2,
@@ -91,6 +94,7 @@ const AddPlayerForm = (props: any, ref: any) => {
                                     label='Lưu'
                                     variant="type-2"
                                     onClick={_onSubmit}
+                                    needPermission
                                 />
                             </div>
                         </form>

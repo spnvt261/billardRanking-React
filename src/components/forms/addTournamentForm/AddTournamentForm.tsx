@@ -5,6 +5,7 @@ import './AddTournamentForm.css'
 import { AnimatePresence, motion } from 'framer-motion'
 import CustomSelect from '../../customSelect/CustomSelect'
 import { listplayerSelect, listTypeTournament } from '../../../data/tournamentData'
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 const AddTournamentForm = () => {
     console.log('Add Tournament Form');
@@ -14,6 +15,7 @@ const AddTournamentForm = () => {
     const [listPlayerSelected, setListPlayerSelected] = useState<string[]>([]);
     const [listTypeTournamentSelected, setListTypeTournamentSelected] = useState<string[]>([]);
     const originRef = useRef<HTMLDivElement>(null);;
+    const formRef = useRef<HTMLDivElement>(null);
     const btnAddTournament = () => {
         if (originRef.current) {
             const rect = originRef.current.getBoundingClientRect();
@@ -35,14 +37,14 @@ const AddTournamentForm = () => {
         console.log(newTourNament);
     }
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
+        if (isOpen && formRef.current) {
+            disableBodyScroll(formRef.current); // khóa background, vẫn cho scroll trong form
+        } else if (formRef.current) {
+            enableBodyScroll(formRef.current);
         }
 
         return () => {
-            document.body.style.overflow = '';
+            clearAllBodyScrollLocks(); // dọn dẹp khi component unmount
         };
     }, [isOpen]);
 
@@ -55,6 +57,7 @@ const AddTournamentForm = () => {
                     label='Thêm giải đấu mới'
                     variant='type-7'
                     onClick={btnAddTournament}
+                    needPermission
                 />
             </div>
             <div
@@ -65,12 +68,14 @@ const AddTournamentForm = () => {
                 {
                     isOpen &&
                     <motion.div
-                        className='add-tournament-form fixed inset-0 flex items-center justify-center z-50'
+                        className='add-tournament-form fixed inset-0 flex items-center justify-center z-50 p-3 overflow-y-auto'
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, pointerEvents: 'none' }}
                     >
-                        <motion.div className=' p-2 w-[600px]'
+                        <motion.div 
+                            ref={formRef}
+                            className='w-full max-w-[600px]'
                             initial={{
                                 scale: 0,
                                 x: origin.x - window.innerWidth / 2 + origin.width / 2,
@@ -128,7 +133,7 @@ const AddTournamentForm = () => {
                                                     onChange={setListPlayerSelected}
                                                     multiple
                                                     placeholder='Thêm người chơi tham dự giải'
-                                                    className='mb-[0] flex-1'
+                                                    className='mb-[0] flex-1 w-[70%]'
                                                 />
                                             </div>
                                             <div className='flex mb-4'>
@@ -141,7 +146,7 @@ const AddTournamentForm = () => {
                                                     onChange={setListTypeTournamentSelected}
                                                     multiple
                                                     placeholder='Chọn thể thức'
-                                                    className='mb-[0] flex-1'
+                                                    className='mb-[0] flex-1 w-[70%]'
                                                 />
                                             </div>
 
@@ -153,9 +158,10 @@ const AddTournamentForm = () => {
                                                     onClick={btnCancelForm}
                                                 />
                                                 <CustomButton
-                                                    label='Lưu'
+                                                    label='Tạo'
                                                     variant='type-2'
                                                     onClick={btnConfirmAddTournament}
+                                                    needPermission
                                                 />
                                             </div>
 

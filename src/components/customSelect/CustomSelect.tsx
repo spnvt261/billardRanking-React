@@ -59,7 +59,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             <button
                 type="button"
                 onClick={() => setIsOpenListSelect(!isOpenListSelect)}
-                className="w-full flex justify-between items-center bg-white border border-gray-300 rounded-[0.5rem] px-4 py-2 text-left hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full min-w-0 flex justify-between items-center bg-white border border-gray-300 rounded-[0.5rem] px-4 py-2 text-left hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
                 <span className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis max-w-[290px]">
                     {selectedLabels.length > 0

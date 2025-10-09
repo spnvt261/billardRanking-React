@@ -40,6 +40,7 @@ const RankingPage = (props: any) => {
                 label="Thêm cơ thủ"
                 variant="type-7"
                 onClick={btnAddPlayer}
+                needPermission
             />
             <div className="w-full border mt-4 bg-white shadow-md rounded-lg overflow-hidden">
                 <RankingTable/>

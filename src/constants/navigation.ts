@@ -2,13 +2,8 @@ import { GiTrophyCup } from "react-icons/gi"
 import { PiRanking } from "react-icons/pi"
 import { RiDashboard3Line, RiHistoryFill } from "react-icons/ri"
 import { RxDashboard } from "react-icons/rx"
+import PATHS from "../router/path"
 
-const PATHS = {
-    OVERALL: '/overall',
-    RANKING: '/rankings',
-    TOURNAMENTS:'/tournaments',
-    MATCHS:'/matchs'
-} 
 interface iNavLink{
     label: string,
     path:string,
@@ -25,13 +20,13 @@ const NAV_LINKS :iNavLink[] = [
     },
     {
         label: 'Rankings',
-        path: PATHS.RANKING,
+        path: PATHS.RANKINGS,
         icon: PiRanking,
         show:true,
     },
     {
         label: 'Tournaments',
-        path:PATHS.TOURNAMENTS,
+        path:PATHS.TOURNAMENT,
         icon:GiTrophyCup,
         show:true,
     },
@@ -62,8 +57,20 @@ const NAV_LINKS :iNavLink[] = [
     },
     {
         label: 'Tournaments',
-        path:PATHS.TOURNAMENTS,
+        path:'/111',
         icon:GiTrophyCup,
+        show:false,
+    },
+    {
+        label: 'NotFound',
+        path:PATHS.NOTFOUND,
+        icon:RxDashboard,
+        show:false,
+    },
+    {
+        label: 'Testt',
+        path:'/kk',
+        icon:RxDashboard,
         show:false,
     },
 ]
