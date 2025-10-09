@@ -1,77 +1,113 @@
 /* Type 1 - Indigo */
 .type-1 {
-  color: #4f46e5; /* text-indigo-600 */
-  background: linear-gradient(to bottom right, #6366f1, #4f46e5); /* from-indigo-600 to-indigo-500 */
+    color: #4f46e5;
+    /* text-indigo-600 */
+    background: linear-gradient(to bottom right, #6366f1, #4f46e5);
+    /* from-indigo-600 to-indigo-500 */
 }
+
 .type-1:hover {
-  color: white;
-  background: linear-gradient(to bottom right, #6366f1, #4f46e5);
+    color: white;
+    background: linear-gradient(to bottom right, #6366f1, #4f46e5);
 }
 
 /* Type 2 - Blue */
 .type-2 {
-  color: #3b82f6; /* text-blue-600 */
-  background: linear-gradient(to bottom right, #3b82f6, #60a5fa); /* from-blue-500 to-blue-300 */
+    color: #3b82f6;
+    /* text-blue-600 */
+    background: linear-gradient(to bottom right, #3b82f6, #60a5fa);
+    /* from-blue-500 to-blue-300 */
 }
+
 .type-2:hover {
-  color: white;
-  background: linear-gradient(to bottom right, #3b82f6, #60a5fa);
+    color: white;
+    background: linear-gradient(to bottom right, #3b82f6, #60a5fa);
 }
 
 /* Type 3 - Green */
 .type-3 {
-  color: #16a34a; /* text-green-600 */
-  background: linear-gradient(to bottom right, #22c55e, #4ade80); /* from-green-500 to-green-300 */
+    color: #16a34a;
+    /* text-green-600 */
+    background: linear-gradient(to bottom right, #22c55e, #4ade80);
+    /* from-green-500 to-green-300 */
 }
+
 .type-3:hover {
-  color: white;
-  background: linear-gradient(to bottom right, #22c55e, #4ade80);
+    color: white;
+    background: linear-gradient(to bottom right, #22c55e, #4ade80);
 }
 
 /* Type 4 - Pink */
 .type-4 {
-  color: #db2777; /* text-pink-600 */
-  background: linear-gradient(to bottom right, #ec4899, #f472b6); /* from-pink-500 to-pink-400 */
+    color: #db2777;
+    /* text-pink-600 */
+    background: linear-gradient(to bottom right, #ec4899, #f472b6);
+    /* from-pink-500 to-pink-400 */
 }
+
 .type-4:hover {
-  color: white;
-  background: linear-gradient(to bottom right, #ec4899, #f472b6);
+    color: white;
+    background: linear-gradient(to bottom right, #ec4899, #f472b6);
 }
 
 /* Type 5 - Orange */
 .type-5 {
-  color: #f97316; /* text-orange-600 */
-  background: linear-gradient(to bottom right, #fb923c, #fdba74); /* from-orange-500 to-orange-300 */
+    color: #f97316;
+    /* text-orange-600 */
+    background: linear-gradient(to bottom right, #fb923c, #fdba74);
+    /* from-orange-500 to-orange-300 */
 }
+
 .type-5:hover {
-  color: white;
-  background: linear-gradient(to bottom right, #fb923c, #fdba74);
+    color: white;
+    background: linear-gradient(to bottom right, #fb923c, #fdba74);
 }
 
 /* Type 6 - Yellow */
 .type-6 {
-  color: #ca8a04; /* text-yellow-600 */
-  background: linear-gradient(to bottom right, #facc15, #fde68a); /* from-yellow-400 to-yellow-200 */
+    color: #ca8a04;
+    /* text-yellow-600 */
+    background: linear-gradient(to bottom right, #facc15, #fde68a);
+    /* from-yellow-400 to-yellow-200 */
 }
+
 .type-6:hover {
-  color: white;
-  background: linear-gradient(to bottom right, #facc15, #fde68a);
+    color: white;
+    background: linear-gradient(to bottom right, #facc15, #fde68a);
 }
 
 /* Type 7 - Gray */
 .type-7 {
-  color: #4b5563; /* text-gray-600 */
-  background: linear-gradient(to bottom right, #374151, #6b7280); /* from-gray-700 to-gray-500 */
+    color: #4b5563;
+    /* text-gray-600 */
+    background: linear-gradient(to bottom right, #374151, #6b7280);
+    /* from-gray-700 to-gray-500 */
 }
+
 .type-7:hover {
-  color: white;
-  background: linear-gradient(to bottom right, #374151, #6b7280);
+    color: white;
+    background: linear-gradient(to bottom right, #374151, #6b7280);
 }
 
 /* Inner span for hover opacity effect (all variants) */
 .custom-button-inner {
-  background-color: white;
+    background-color: white;
 }
+
 .custom-button:hover .custom-button-inner {
-  background-color: rgba(255, 255, 255, 0);
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.custom-button {
+    transition: transform 0.3s ease-in-out;
+    &:active{
+        transform: scale(1.05);
+    }
+}
+
+@media (max-width: 512px)  {
+    .custom-button-inner{
+        padding: 0.75rem 1rem;
+        
+    }
 }

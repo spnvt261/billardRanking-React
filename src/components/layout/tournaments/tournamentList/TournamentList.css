@@ -41,7 +41,7 @@
 
 @media (max-width:512px) {
     .button-scroll {
-        display: none;
+        display: none !important;
     }
 
 }

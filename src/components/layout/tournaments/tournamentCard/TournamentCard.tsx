@@ -41,7 +41,7 @@ const TournamentCard = (props: propsTournamentCard) => {
         }
     };
     return (
-        <div className="tournament-card flex flex-col mr-[1rem]">
+        <div className="tournament-card min-h-max flex flex-col mr-[1rem]">
             <NavLink to={`/tournaments/` + props.id} className=''
                 onDragStart={(e) => e.preventDefault()}
                 onMouseDown={handleMouseDown}

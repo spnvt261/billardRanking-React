@@ -1,0 +1,4 @@
+.ranking-table-wrapped .hightlight-block {
+   /* background-color: var(--hightlight-block-bg-color); */
+   background: linear-gradient(to top left, var(--hightlight-block-bg-color), #6b7280);
+}

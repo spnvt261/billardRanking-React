@@ -4,6 +4,7 @@ import DataTable from "../DataTable"
 import Pagination from "../../pagination/Pagination";
 import { getSortedPlayers } from "../../../ultils/sortPlayerRanking";
 import { connect } from "react-redux";
+import './RankingTable.css'
 
 const RankingTable = () => {
     console.log('RankingTable');
@@ -17,10 +18,10 @@ const RankingTable = () => {
         return sortedPlayers.slice(start, end);
     }, [sortedPlayers, currentPage]);
     return (
-        <>
+        <div className="ranking-table-wrapped">
             <div className="flex relative font-bold">
                 <div
-                    className={`hightlight-block absolute top-0 h-full w-full bg-gray-400 transition-all duration-500 shadow-md`}
+                    className={`hightlight-block absolute top-0 h-full w-full transition-all duration-500 shadow-md`}
                     style={{
                         left: mode === "elo" ? "-25%" : "25%",
                         borderBottomLeftRadius: mode === "elo" ? "1rem" : "0",
@@ -77,7 +78,7 @@ const RankingTable = () => {
                 pageSize={pageSize}
                 onPageChange={setCurrentPage}
             />
-        </>
+        </div>
     )
 }
 const mapStateToProps = () => {

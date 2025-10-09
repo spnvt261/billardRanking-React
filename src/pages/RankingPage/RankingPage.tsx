@@ -32,8 +32,8 @@ const RankingPage = (props: any) => {
         
     }, [])
     return (
-        <div className="ranking-page">
-            <h2 className="text-2xl font-bold">Friend Ranking</h2>
+        <div className="ranking-page pb-8">
+            <h2 className="text-2xl font-bold mb-4">Friend Ranking</h2>
 
             <CustomButton
                 ref={btnRef}
@@ -45,7 +45,6 @@ const RankingPage = (props: any) => {
                 <RankingTable/>
             </div>
             <AddPlayerForm ref={formRef}/>
-            
         </div >
     );
 }

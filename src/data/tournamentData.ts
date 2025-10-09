@@ -1,4 +1,4 @@
-// data/tournaments.ts
+
 
 export interface iTournament {
   id: number;
@@ -32,7 +32,7 @@ export const tournaments: iTournament[] = [
     id: 2,
     name: 'Saigon Pool Masters',
     banner: 'images/banner2.jpg',
-    prize: 7000000,
+    // prize: 7000000,
     start_date: '2025-10-15T09:00:00Z',
     end_date: '2025-10-17T20:00:00Z',
     location: 'Ho Chi Minh City',
@@ -129,3 +129,57 @@ export const tournaments: iTournament[] = [
     tournament_type: 'Other',
   }
 ];
+
+export const listplayerSelect = [
+  {
+    value:1,
+    label:'Sơn'
+  },
+  {
+    value:2,
+    label:'Tien'
+  },
+  {
+    value:3,
+    label:'Dat'
+  },
+  {
+    value:4,
+    label:'Duc'
+  },
+  {
+    value:5,
+    label:'ABC'
+  },
+  {
+    value:6,
+    label:'AQAQ'
+  },
+  {
+    value:7,
+    label:'WWWW'
+  },
+  {
+    value:8,
+    label:'XXXX'
+  },
+]
+
+export const listTypeTournament = [
+  {
+    value:'Vòng tròn',
+    label:'Robin'
+  },
+  {
+    value:'Loại trực tiếp',
+    label:'loại trực tiếp'
+  },
+  {
+    value:'Nhánh thắng/Thua',
+    label:'Thánh thắng/thua'
+  },
+  {
+    value:'Custom',
+    label:'custom'
+  },
+]

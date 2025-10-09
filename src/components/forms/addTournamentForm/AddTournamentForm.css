@@ -1,0 +1,17 @@
+.add-tournament-form {
+    background-color: rgba(0, 0, 0, 0.2);
+
+    .add-tournament-wrapper {
+        padding: 2px;
+        border-radius: calc(1rem + 2px);
+        overflow: hidden;
+        background: linear-gradient(to bottom right, #374151, #6b7280);
+        
+
+        >div {
+            border-radius: 1rem;
+            background-color: #fff;
+            color: #4b5563
+        }
+    }
+}

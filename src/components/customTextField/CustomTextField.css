@@ -8,21 +8,35 @@
 .input-container {
     position: relative;
     /* background-color: #fff;  */
-    border-bottom: 1px solid var(--input-color) ;
+    border-bottom: 1px solid var(--input-color);
     /* border-radius: 4px; */
     padding: .5rem 0;
+    padding-bottom: .25rem;
     transition: background-color 0.3s, box-shadow 0.3s;
 }
+.input-container .money { 
+    position: absolute;
+    top: 50%;
+    transform: translateY(-40%);
+    right: 1rem;
+    /* border: 1px solid red; */
+    background-color: rgba(0,0,0,0.2);
+    color: #fff;
+    border-radius: .5rem;
+    padding: 0 1rem;
+}
+
 
 .input-container.active {
     /* background-color: #d0d0ff; */
     /* box-shadow: 0 2px 4px rgba(0,0,0,0.2); */
-    border-bottom: 1px solid var(--input-color-focus) ;
+    /* border-bottom: 1px solid var(--input-color-focus); */
 }
 
-.input-container.focus{
-    border-bottom: 2px solid var(--input-color-focus) ;
-    label{
+.input-container.focus {
+    border-bottom: 2px solid var(--input-color-focus);
+
+    label {
         font-weight: bold;
     }
 }
@@ -39,7 +53,7 @@
     position: absolute;
     left: 0;
     top: 50%;
-    transform: translate(0,-50%);
+    transform: translate(0, -50%);
     font-size: 1rem;
     color: var(--main-text-color);
     pointer-events: none;
@@ -47,13 +61,14 @@
     opacity: 0.5;
 }
 
-.input-container label.active {
+.custom-textfield  label.active {
     top: 0;
     left: 0;
     font-size: 0.9rem;
     color: var(--input-color-focus);
     opacity: 1;
 }
+
 
 .helper-text {
     font-size: 0.75rem;
@@ -68,4 +83,119 @@
 
 .custom-textfield.error .helper-text {
     color: #d32f2f;
+}
+
+.file-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+
+.file-input .file-label {
+    font-weight: 500;
+    /* color: #212529; */
+    font-size: 0.95rem;
+}
+
+.file-input .file-upload-input {
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    appearance: none;
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.file-input .file-upload-input:hover {
+    border-color: var(--input-color-focus);
+}
+
+.file-input .file-upload-input:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.file-input .file-upload-input:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.file-upload-input::file-selector-button {
+    padding: 0.375rem 0.75rem;
+    margin: -0.375rem -0.75rem;
+    margin-inline-end: 0.75rem;
+    border: none;
+    border-inline-end: 1px solid #ced4da;
+    border-radius: 0;
+    background-color: #f2f4fb;
+    color: #000;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.file-input.error .file-label,
+.file-input.error .file-upload-input {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.file-input.error .helper-text {
+    color: #dc3545;
+}
+
+.react-datepicker-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  outline: none;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+
+.react-datepicker {
+  font-size: 0.9rem; 
+  transform: scale(1); 
+  transform-origin: top center;
+}
+
+.react-datepicker__month-container {
+  width: 220px; 
+}
+
+.react-datepicker__header {
+  /* padding: 4px 0; */
+}
+
+.react-datepicker__day,
+.react-datepicker__day-name {
+  width: 28px;
+  line-height: 28px;
+  margin: 1px;
+  font-size: 0.75rem;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__navigation {
+  font-size: 0.8rem;
 }

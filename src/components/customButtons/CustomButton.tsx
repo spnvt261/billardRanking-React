@@ -17,7 +17,7 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
                 ref={ref}
                 type={type}
                 onClick={onClick}
-                className={`custom-button ${variant} relative inline-flex items-center justify-center p-0.5 mt-4 overflow-hidden font-semibold rounded-[.875rem] group ${className}`}
+                className={`custom-button ${variant} relative inline-flex items-center justify-center p-0.5 overflow-hidden font-semibold rounded-[.875rem] group ${className}`}
                 style={{ width }}
             >
                 <span className="custom-button-inner relative py-3 px-6 transition-all ease-in duration-75 rounded-[.75rem]">
