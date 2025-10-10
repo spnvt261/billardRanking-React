@@ -12,7 +12,7 @@ interface CustomSelectProps {
     onChange?: (values: string[]) => void;
     multiple?: boolean;
     className?: string;
-    spanMaxWidth?:string;
+    spanMaxWidth?: string;
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -42,6 +42,18 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    useEffect(() => {
+        const dropdown = selectRef.current?.querySelector("ul");
+        if (!dropdown) return;
+
+        const handleTouchMove = (e: TouchEvent) => {
+            e.stopPropagation(); // ✅ chặn sự kiện cuộn lan lên body-scroll-lock
+        };
+
+        dropdown.addEventListener("touchmove", handleTouchMove, { passive: false });
+        return () => dropdown.removeEventListener("touchmove", handleTouchMove);
+    }, [isOpenListSelect]);
+
     const handleSelect = (option: Option) => {
         if (!multiple) {
             // single select
@@ -64,12 +76,12 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 className="w-full min-w-0 flex justify-between items-center bg-white border border-gray-300 rounded-[0.5rem] px-4 py-2 text-left hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
                 <span className={`flex-1 overflow-hidden whitespace-nowrap text-ellipsis `}
-                    style={spanMaxWidth?{maxWidth:`${spanMaxWidth}`}:{}}
+                    style={spanMaxWidth ? { maxWidth: `${spanMaxWidth}` } : {}}
                 >
                     {selectedLabels.length > 0
                         ? selectedLabels.join(", ")
                         : placeholder}
-                    
+
                 </span>
                 <svg
                     className={`w-4 h-4 flex-shrink-0 transform transition-transform ${isOpenListSelect ? "rotate-180" : "rotate-0"

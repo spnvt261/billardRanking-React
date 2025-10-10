@@ -1,14 +1,14 @@
 /* Type 1 - Indigo */
 .type-1 {
-    color: #4f46e5;
-    /* text-indigo-600 */
-    background: linear-gradient(to bottom right, #6366f1, #4f46e5);
-    /* from-indigo-600 to-indigo-500 */
+    color: #475569;
+    /* text-slate-600 */
+    background: linear-gradient(to bottom right, #64748b, #475569);
+    /* from-slate-500 to-slate-600 */
 }
 
 .type-1:hover {
     color: white;
-    background: linear-gradient(to bottom right, #6366f1, #4f46e5);
+    background: linear-gradient(to bottom right, #64748b, #475569);
 }
 
 /* Type 2 - Blue */
@@ -50,30 +50,30 @@
     background: linear-gradient(to bottom right, #ec4899, #f472b6);
 }
 
-/* Type 5 - Orange */
+/* Type 5 - Warm Gray (thay Orange bằng xám ấm, pha chút nâu nhạt) */
 .type-5 {
-    color: #f97316;
-    /* text-orange-600 */
-    background: linear-gradient(to bottom right, #fb923c, #fdba74);
-    /* from-orange-500 to-orange-300 */
+    color: #6b5b4b;
+    /* xám nâu nhẹ */
+    background: linear-gradient(to bottom right, #a8a29e, #78716c);
+    /* from-stone-400 to-stone-600 */
 }
 
 .type-5:hover {
     color: white;
-    background: linear-gradient(to bottom right, #fb923c, #fdba74);
+    background: linear-gradient(to bottom right, #a8a29e, #78716c);
 }
 
-/* Type 6 - Yellow */
+/* Type 6 - Soft Gray (thay Yellow bằng xám sáng, pha ánh kem) */
 .type-6 {
-    color: #ca8a04;
-    /* text-yellow-600 */
-    background: linear-gradient(to bottom right, #facc15, #fde68a);
-    /* from-yellow-400 to-yellow-200 */
+    color: #78716c;
+    /* text-stone-500 */
+    background: linear-gradient(to bottom right, #d6d3d1, #a8a29e);
+    /* from-stone-300 to-stone-400 */
 }
 
 .type-6:hover {
     color: white;
-    background: linear-gradient(to bottom right, #facc15, #fde68a);
+    background: linear-gradient(to bottom right, #d6d3d1, #a8a29e);
 }
 
 /* Type 7 - Gray */
@@ -100,14 +100,15 @@
 
 .custom-button {
     transition: transform 0.3s ease-in-out;
-    &:active{
+
+    &:active {
         transform: scale(1.05);
     }
 }
 
-@media (max-width: 512px)  {
-    .custom-button-inner{
+@media (max-width: 512px) {
+    .custom-button-inner {
         padding: 0.75rem 1rem;
-        
+
     }
 }

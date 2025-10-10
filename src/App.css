@@ -28,3 +28,9 @@
 #root {
   background-color: var(--main-bg-color);
 }
+
+body.scroll-lock-fixed {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}

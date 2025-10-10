@@ -12,6 +12,7 @@ const RankingPage = () => {
                 btnLabel="Thêm cơ thủ"
                 formTitle="Thêm cơ thủ mới"
                 element={addPlayerForm}
+                needPermission
             />
             <div className="w-full border mt-4 bg-white shadow-md rounded-lg overflow-hidden">
                 <RankingTable/>

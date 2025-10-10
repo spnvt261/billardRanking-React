@@ -1,14 +1,17 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import './FormToggle.css'
 import CustomButton from '../customButtons/CustomButton'
-import { useEffect, useRef, useState, type ComponentType} from 'react';
+import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-interface FormToggleProps{
-    btnLabel:string;
-    formTitle:string;
-    element:ComponentType<{ btnCancel: () => void }>;
+interface FormToggleProps {
+    btnLabel: string;
+    formTitle: string;
+    btnVariant?: "type-1" | "type-2" | "type-3" | "type-4" | "type-5" | "type-6" | "type-7";
+    needPermission?:boolean;
+    element: ComponentType<{ btnCancel: () => void }>;
+    className?:string
 }
-const FormToggle = ({btnLabel,formTitle,element:Element}:FormToggleProps) => {
+const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant,className,needPermission }: FormToggleProps) => {
     console.log('Add Tournament Form');
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -27,33 +30,32 @@ const FormToggle = ({btnLabel,formTitle,element:Element}:FormToggleProps) => {
     useEffect(() => {
         if (isOpen && formRef.current) {
             disableBodyScroll(formRef.current); // khóa background, vẫn cho scroll trong form
+            document.body.classList.add('scroll-lock-fixed');
         } else if (formRef.current) {
             enableBodyScroll(formRef.current);
+            document.body.classList.remove('scroll-lock-fixed');
         }
 
         return () => {
             clearAllBodyScrollLocks(); // dọn dẹp khi component unmount
+            document.body.classList.remove('scroll-lock-fixed');
         };
     }, [isOpen]);
     return (
-        <div className='form-toggle relative w-fit h-fit'>
+        <div className={`form-toggle relative w-fit h-fit ${className?className:''}`}>
             <div className='mb-4 w-fit h-fit'
                 ref={originRef}
             >
                 <CustomButton
                     label={btnLabel}
-                    variant='type-7'
+                    variant={btnVariant ? btnVariant : 'type-7'}
                     onClick={btnAddTournament}
-                    needPermission
+                    needPermission ={needPermission}
                 />
             </div>
-            <div
-                className={`add-tournament-wrapper bg-white rounded-2xl shadow-2xl`}
-            >
-            </div>
-            <AnimatePresence>
-                {
-                    isOpen &&
+
+            {
+                isOpen && <AnimatePresence>
                     <motion.div
                         className='form fixed inset-0 flex items-center justify-center z-50 p-3 overflow-y-auto'
                         initial={{ opacity: 0 }}
@@ -87,10 +89,10 @@ const FormToggle = ({btnLabel,formTitle,element:Element}:FormToggleProps) => {
                                 </div>
                             </div>
                         </motion.div>
-                    </motion.div>
+                    </motion.div></AnimatePresence>
 
-                }
-            </AnimatePresence>
+            }
+
         </div>
     )
 }

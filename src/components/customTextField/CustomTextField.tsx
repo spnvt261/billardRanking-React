@@ -90,6 +90,9 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                         className="react-datepicker-input"
                         onFocus={handleFocus}
                         onBlur={handleBlur}
+                        onKeyDown={(e) => e.preventDefault()} 
+                        // readOnly
+                        // showPopperArrow={false}
                     />
                     <label className={isActive ? 'active' : ''}>{label}</label>
                 </div>

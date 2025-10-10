@@ -172,7 +172,12 @@
 .react-datepicker__input-container {
   width: 100%;
 }
-
+.react-datepicker-input {
+  caret-color: transparent; /* ẩn con trỏ nháy */
+}
+.react-datepicker-input:focus {
+  outline: none;
+}
 
 .react-datepicker {
   font-size: 0.9rem; 

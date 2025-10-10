@@ -1,7 +1,8 @@
 .nav {
-    background-color: var(--header-bg-color);
     background: linear-gradient(to bottom right, #374151, #6b7280);
     color: var(--header-text-color);
+    padding-top: env(safe-area-inset-top);
+    /* Đảm bảo header chiếm toàn bộ vùng safe area */
 }
 
 .nav-link {
@@ -16,7 +17,7 @@
         /* border-color: blue; */
         /* font-weight: bold; */
         color: var(--text-navlink-actived-color);
-        
+
     }
 
     /* &:hover{
@@ -64,13 +65,13 @@
 
 .other-nav-links {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 120px); 
+    grid-template-columns: repeat(auto-fill, 120px);
     /* gap: 1rem; */
     padding: 0.25rem;
     position: absolute;
     top: 7%;
     right: 0;
-    max-width: 450px; 
+    max-width: 450px;
     background-color: var(--header-bg-color);
     border-radius: 2rem;
     opacity: 0;
@@ -84,7 +85,7 @@
         box-sizing: border-box;
 
         &.active {
-            background-color: rgba(0, 0, 0, 0.2) ;
+            background-color: rgba(0, 0, 0, 0.2);
         }
     }
 
