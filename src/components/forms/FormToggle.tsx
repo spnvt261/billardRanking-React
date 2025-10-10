@@ -58,7 +58,7 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
             {
                 isOpen && <AnimatePresence>
                     <motion.div
-                        className='form fixed inset-0 flex items-center justify-center z-50 overflow-y-auto'
+                        className='form fixed flex items-center justify-center z-50 overflow-y-auto p-3'
                         style={{
                             // top:'env(safe-area-inset-top)',
                             // bottom:'calc(-1 * env(safe-area-inset-bottom))',
