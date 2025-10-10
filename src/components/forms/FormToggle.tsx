@@ -61,6 +61,7 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
                         className='form fixed inset-0 flex items-center justify-center z-50 p-3 overflow-y-auto'
                         style={{
                             paddingTop: 'env(safe-area-inset-top)',
+                            paddingBottom: 'env(safe-area-inset-top)',
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
