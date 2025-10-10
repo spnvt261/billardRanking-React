@@ -3,6 +3,7 @@ import './FormToggle.css'
 import CustomButton from '../customButtons/CustomButton'
 import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import ReactDOM from 'react-dom';
 interface FormToggleProps {
     btnLabel: string;
     formTitle: string;
@@ -42,6 +43,8 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
         };
     }, [isOpen]);
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+
+    const modalRoot = document.getElementById('modal-root')
     return (
         <div className={`form-toggle relative w-fit h-fit ${className ? className : ''}`}>
             <div className='mb-4 w-fit h-fit'
@@ -56,46 +59,49 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
             </div>
 
             {
-                isOpen && <AnimatePresence>
-                    <motion.div
-                        className='form fixed flex items-center justify-center z-50 overflow-y-auto p-3'
-                        style={{
-                            // top:'env(safe-area-inset-top)',
-                            // bottom:'calc(-1 * env(safe-area-inset-bottom))',
-                            // color:'red'
-                        }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0, pointerEvents: 'none' }}
-                    >
+                isOpen && modalRoot && ReactDOM.createPortal(
+                    <AnimatePresence>
                         <motion.div
-                            ref={formRef}
-                            className='w-full max-w-[600px]'
-                            initial={{
-                                scale: 0,
-                                x: origin.x - window.innerWidth / 2 + origin.width / 2,
-                                y: origin.y - vh / 2 + origin.height / 2,
+                            className='form flex items-center justify-center z-50 overflow-y-auto p-3'
+                            style={{
+                                // top:'env(safe-area-inset-top)',
+                                // bottom:'calc(-1 * env(safe-area-inset-bottom))',
+                                // color:'red'
                             }}
-                            animate={{ scale: 1, x: 0, y: 0 }}
-                            exit={{
-                                scale: 0,
-                                x: origin.x - window.innerWidth / 2 + origin.width / 2,
-                                y: origin.y - vh / 2 + origin.height / 2,
-                            }}
-                            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0, pointerEvents: 'none' }}
                         >
-                            <div className='content-wrapper'>
-                                <div className=' p-6 rounded-2xl shadow-2xl'>
-                                    <h3 className='text-xl font-bold mb-2'>{formTitle}</h3>
-                                    <div className='p-2'>
-                                        <Element
-                                            btnCancel={btnCancelForm}
-                                        />
+                            <motion.div
+                                ref={formRef}
+                                className='w-full max-w-[600px]'
+                                initial={{
+                                    scale: 0,
+                                    x: origin.x - window.innerWidth / 2 + origin.width / 2,
+                                    y: origin.y - vh / 2 + origin.height / 2,
+                                }}
+                                animate={{ scale: 1, x: 0, y: 0 }}
+                                exit={{
+                                    scale: 0,
+                                    x: origin.x - window.innerWidth / 2 + origin.width / 2,
+                                    y: origin.y - vh / 2 + origin.height / 2,
+                                }}
+                                transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                            >
+                                <div className='content-wrapper'>
+                                    <div className=' p-6 rounded-2xl shadow-2xl'>
+                                        <h3 className='text-xl font-bold mb-2'>{formTitle}</h3>
+                                        <div className='p-2'>
+                                            <Element
+                                                btnCancel={btnCancelForm}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div></AnimatePresence>
+                    </AnimatePresence>,modalRoot
+                )
 
             }
 

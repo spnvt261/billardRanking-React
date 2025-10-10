@@ -71,9 +71,17 @@
     position: absolute;
     top: 7%;
     right: 0;
-    max-width: 450px;
-    background-color: var(--header-bg-color);
+    max-width: 400px;
+    /* background: linear-gradient(to bottom right, #404b5e, #464d58); */
+    background: linear-gradient(to bottom right,
+            rgba(64, 75, 94, 0.6),
+            rgba(70, 77, 88, 0.7));
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
     border-radius: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #f3f4f6;
     opacity: 0;
     transform: scale(0) translate(0, 100%);
     transform-origin: top right;
@@ -126,5 +134,8 @@
 
     .nav-links:hover .block {
         display: inline;
+    }
+    .other-nav-links {
+        grid-template-columns: repeat(auto-fill, 100px);
     }
 }
