@@ -1,7 +1,7 @@
-.add-tournament-form {
+.form {
     background-color: rgba(0, 0, 0, 0.2);
 
-    .add-tournament-wrapper {
+    .content-wrapper {
         padding: 2px;
         border-radius: calc(1rem + 2px);
         overflow: hidden;

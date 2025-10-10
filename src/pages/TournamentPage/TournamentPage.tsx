@@ -1,5 +1,6 @@
 
 import AddTournamentForm from "../../components/forms/addTournamentForm/AddTournamentForm";
+import FormToggle from "../../components/forms/FormToggle";
 import TournamentList from "../../components/layout/tournaments/tournamentList/TournamentList";
 import { tournaments } from "../../data/tournamentData";
 
@@ -9,7 +10,11 @@ const TournamentPage: React.FC = () => {
     const normalTournaments = tournaments.filter(t => t.tournament_type !== 'Đền');
     return (
         <div className="tournament-page">
-            <AddTournamentForm />
+            <FormToggle
+                btnLabel="Tạo giải đấu"
+                formTitle="Tạo giải đấu mới"
+                element={AddTournamentForm}
+            />
             <TournamentList
                 label="Tournaments"
                 list={normalTournaments}

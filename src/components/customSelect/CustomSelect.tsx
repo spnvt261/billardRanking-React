@@ -63,10 +63,13 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 onClick={() => setIsOpenListSelect(!isOpenListSelect)}
                 className="w-full min-w-0 flex justify-between items-center bg-white border border-gray-300 rounded-[0.5rem] px-4 py-2 text-left hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
-                <span className={`flex-1 overflow-hidden whitespace-nowrap text-ellipsis ${spanMaxWidth?'max-w-['+spanMaxWidth+']':''}`}>
+                <span className={`flex-1 overflow-hidden whitespace-nowrap text-ellipsis `}
+                    style={spanMaxWidth?{maxWidth:`${spanMaxWidth}`}:{}}
+                >
                     {selectedLabels.length > 0
                         ? selectedLabels.join(", ")
                         : placeholder}
+                    
                 </span>
                 <svg
                     className={`w-4 h-4 flex-shrink-0 transform transition-transform ${isOpenListSelect ? "rotate-180" : "rotate-0"

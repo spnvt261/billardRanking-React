@@ -1,120 +1,55 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import './AddPlayerForm.css'
-import CustomTextField from "../../customTextField/CustomTextField";
+import { useState, type ChangeEvent } from "react"
 import CustomButton from "../../customButtons/CustomButton";
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import CustomTextField from "../../customTextField/CustomTextField";
 
-const AddPlayerForm = () => {
-    console.log('AddplayerForm');
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const formRef = useRef<HTMLDivElement>(null);
-    const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
+interface Props {
+    btnCancel: () => void;
+}
+const addPlayerForm = ({ btnCancel }: Props) => {
+    console.log('ContentForm');
 
-    const [newPlayer, setNewPlayer] = useState<object | null>(null);
-    const originRef = useRef<HTMLDivElement>(null);;
-    const _onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const [newPlayer, setNewPlayer] = useState<object>({})
+    const textFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
         setNewPlayer({
             ...newPlayer,
             [e.target.name]: e.target.value,
         })
     }
-    const btnAddPlayer = () => {
-        if (originRef.current) {
-            const rect = originRef.current.getBoundingClientRect();
-            setOrigin({ x: rect.x, y: rect.y, width: rect.width, height: rect.height })
-        }
-        setIsOpen(true);
-    }
-    const btnCancel = () => {
-        setIsOpen(false)
-    }
-    const _onSubmit = () => {
-        console.log(newPlayer);
-
-    }
-    useEffect(() => {
-        if (isOpen && formRef.current) {
-            disableBodyScroll(formRef.current); // khóa background, vẫn cho scroll trong form
-        } else if (formRef.current) {
-            enableBodyScroll(formRef.current);
-        }
-
-        return () => {
-            clearAllBodyScrollLocks(); // dọn dẹp khi component unmount
+    const btnConfirmAddPlayer = () => {
+        const updated = {
+            ...newPlayer,
         };
-    }, [isOpen]);
-
+        setNewPlayer(updated);
+        console.log(updated);
+    }
     return (
-        <div>
-            <div className="className='mb-4 w-fit h-fit"
-                ref={originRef}
-            >
+        <form className="flex flex-col">
+            <CustomTextField
+                label="Tên"
+                name="name"
+                onChange={textFieldChange}
+            />
+            <CustomTextField
+                label="Image"
+                name="image"
+                type="file"
+                onChange={textFieldChange}
+            />
+            <div className="flex justify-end mt-4">
                 <CustomButton
-                    label="Thêm cơ thủ"
-                    variant="type-7"
-                    onClick={btnAddPlayer}
+                    label='Hủy'
+                    variant="type-4"
+                    onClick={btnCancel}
+                    className="mr-2"
+                />
+                <CustomButton
+                    label='Lưu'
+                    variant="type-2"
+                    onClick={btnConfirmAddPlayer}
                     needPermission
                 />
             </div>
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        className="add-player-form fixed inset-0 flex items-center justify-center z-50 p-3"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0, pointerEvents: 'none' }}
-                    >
-                        <motion.div
-                            ref={formRef}
-                            className=" bg-white p-6 rounded-2xl shadow-2xl w-full max-w-[700px]"
-                            initial={{
-                                scale: 0,
-                                x: origin.x - window.innerWidth / 2 + origin.width / 2,
-                                y: origin.y - window.innerHeight / 2 + origin.height / 2,
-                            }}
-                            animate={{ scale: 1, x: 0, y: 0 }}
-                            exit={{
-                                scale: 0,
-                                x: origin.x - window.innerWidth / 2 + origin.width / 2,
-                                y: origin.y - window.innerHeight / 2 + origin.height / 2,
-                            }}
-                            transition={{ type: "spring", stiffness: 200, damping: 25 }}
-                        >
-                            <h3 className="text-xl font-bold mb-4">Thêm cơ thủ mới</h3>
-                            <form className="flex flex-col">
-                                <CustomTextField
-                                    label="Tên"
-                                    name="name"
-                                    onChange={_onChangeInput}
-                                />
-                                <CustomTextField
-                                    label="Image"
-                                    name="image"
-                                    type="file"
-                                    onChange={_onChangeInput}
-                                />
-                                <div className="flex justify-end mt-4">
-                                    <CustomButton
-                                        label='Hủy'
-                                        variant="type-4"
-                                        onClick={btnCancel}
-                                        className="mr-2"
-                                    />
-                                    <CustomButton
-                                        label='Lưu'
-                                        variant="type-2"
-                                        onClick={_onSubmit}
-                                        needPermission
-                                    />
-                                </div>
-                            </form>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-
-    );
-};
-export default AddPlayerForm;
+        </form>
+    )
+}
+export default addPlayerForm

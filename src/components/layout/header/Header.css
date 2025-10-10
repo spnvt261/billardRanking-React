@@ -1,5 +1,5 @@
 .nav {
-    /* background-color: var(--header-bg-color); */
+    background-color: var(--header-bg-color);
     background: linear-gradient(to bottom right, #374151, #6b7280);
     color: var(--header-text-color);
 }
