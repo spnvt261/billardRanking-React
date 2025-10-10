@@ -33,4 +33,5 @@ body.scroll-lock-fixed {
   position: fixed;
   width: 100%;
   overflow: hidden;
+  /* padding-top: env(safe-area-inset-top); */
 }

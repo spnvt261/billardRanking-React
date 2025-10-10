@@ -7,7 +7,7 @@ const RankingPage = () => {
     console.log('RankingPage');
     return (
         <div className="ranking-page pb-8">
-            <h2 className="text-2xl font-bold mb-4">Friend Ranking</h2>
+            <h2 className="text-xl font-bold mb-4 text-slate-500">FRIEND RANKINGS</h2>
             <FormToggle
                 btnLabel="Thêm cơ thủ"
                 formTitle="Thêm cơ thủ mới"

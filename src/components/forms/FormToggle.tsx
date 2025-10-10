@@ -7,11 +7,11 @@ interface FormToggleProps {
     btnLabel: string;
     formTitle: string;
     btnVariant?: "type-1" | "type-2" | "type-3" | "type-4" | "type-5" | "type-6" | "type-7";
-    needPermission?:boolean;
+    needPermission?: boolean;
     element: ComponentType<{ btnCancel: () => void }>;
-    className?:string
+    className?: string
 }
-const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant,className,needPermission }: FormToggleProps) => {
+const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission }: FormToggleProps) => {
     console.log('Add Tournament Form');
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -41,8 +41,9 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant,classNam
             document.body.classList.remove('scroll-lock-fixed');
         };
     }, [isOpen]);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
     return (
-        <div className={`form-toggle relative w-fit h-fit ${className?className:''}`}>
+        <div className={`form-toggle relative w-fit h-fit ${className ? className : ''}`}>
             <div className='mb-4 w-fit h-fit'
                 ref={originRef}
             >
@@ -50,7 +51,7 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant,classNam
                     label={btnLabel}
                     variant={btnVariant ? btnVariant : 'type-7'}
                     onClick={btnAddTournament}
-                    needPermission ={needPermission}
+                    needPermission={needPermission}
                 />
             </div>
 
@@ -58,6 +59,9 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant,classNam
                 isOpen && <AnimatePresence>
                     <motion.div
                         className='form fixed inset-0 flex items-center justify-center z-50 p-3 overflow-y-auto'
+                        style={{
+                            paddingTop: 'env(safe-area-inset-top)',
+                        }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, pointerEvents: 'none' }}
@@ -68,13 +72,13 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant,classNam
                             initial={{
                                 scale: 0,
                                 x: origin.x - window.innerWidth / 2 + origin.width / 2,
-                                y: origin.y - window.innerHeight / 2 + origin.height / 2,
+                                y: origin.y - vh / 2 + origin.height / 2,
                             }}
                             animate={{ scale: 1, x: 0, y: 0 }}
                             exit={{
                                 scale: 0,
                                 x: origin.x - window.innerWidth / 2 + origin.width / 2,
-                                y: origin.y - window.innerHeight / 2 + origin.height / 2,
+                                y: origin.y - vh / 2 + origin.height / 2,
                             }}
                             transition={{ type: "spring", stiffness: 200, damping: 25 }}
                         >
