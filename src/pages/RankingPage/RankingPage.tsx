@@ -1,4 +1,4 @@
-import { useEffect, useRef} from "react";
+import { useEffect} from "react";
 // import { useCallback} from "react";
 import "./RankingPage.css"
 // import CustomButton from "../../components/customButtons/CustomButton";
