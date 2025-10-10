@@ -12,6 +12,7 @@ interface CustomSelectProps {
     onChange?: (values: string[]) => void;
     multiple?: boolean;
     className?: string;
+    spanMaxWidth?:string;
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -20,7 +21,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     value = [],
     onChange,
     multiple = false,
-    className
+    className,
+    spanMaxWidth
 }) => {
     const [isOpenListSelect, setIsOpenListSelect] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
@@ -61,7 +63,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 onClick={() => setIsOpenListSelect(!isOpenListSelect)}
                 className="w-full min-w-0 flex justify-between items-center bg-white border border-gray-300 rounded-[0.5rem] px-4 py-2 text-left hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
-                <span className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis max-w-[290px]">
+                <span className={`flex-1 overflow-hidden whitespace-nowrap text-ellipsis ${spanMaxWidth?'max-w-['+spanMaxWidth+']':''}`}>
                     {selectedLabels.length > 0
                         ? selectedLabels.join(", ")
                         : placeholder}

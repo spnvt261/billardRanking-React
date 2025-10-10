@@ -28,33 +28,16 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     const [focus, setFocus] = useState<boolean>(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        let newValue = e.target.value;
-
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (type === 'money') {
-            const numericValue = newValue.replace(/[^\d]/g, '');
-            if (numericValue === '') {
-                setValue('');
-                onChange({
-                    ...e,
-                    target: { ...e.target, value: '' },
-                } as ChangeEvent<HTMLInputElement>);
-                return;
-            }
-
-            const formatted = parseInt(numericValue, 10).toLocaleString('vi-VN');
-
-            setValue(formatted);
-            onChange({
-                ...e,
-                target: { ...e.target, value: numericValue },
-            } as ChangeEvent<HTMLInputElement>);
-
+            const numericValue = e.target.value.replace(/[^\d]/g, '');
+            setValue(numericValue ? parseInt(numericValue, 10).toLocaleString('vi-VN') : '');
+            e.target.value = numericValue;
+            onChange(e);
             return;
         }
         setValue(e.target.value);
         onChange(e);
-
     };
 
     const handleFocus = () => setFocus(true);
@@ -118,15 +101,15 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     return (
         <div className={`custom-textfield ${error ? 'error' : ''}`}>
             <div className={`input-container ${isActive ? 'active' : ''} ${focus ? 'focus' : ''}`}>
-                
+
                 {
-                    type === 'money'&&<span className='money'>vnđ</span>
+                    type === 'money' && <span className='money'>vnđ</span>
                 }
                 <input
                     type={type === 'money' ? 'tel' : type}
                     inputMode={type === 'money' ? 'numeric' : undefined}
                     name={name}
-                    value={value}
+                    value={value || ''}
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}

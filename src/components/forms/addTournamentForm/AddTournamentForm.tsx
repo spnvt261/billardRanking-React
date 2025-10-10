@@ -28,6 +28,8 @@ const AddTournamentForm = () => {
             ...newTourNament,
             [e.target.name]: e.target.value,
         })
+        console.log(e.target.name);
+
     }
     const btnCancelForm = () => {
         setListPlayerSelected([]);
@@ -73,7 +75,7 @@ const AddTournamentForm = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, pointerEvents: 'none' }}
                     >
-                        <motion.div 
+                        <motion.div
                             ref={formRef}
                             className='w-full max-w-[600px]'
                             initial={{
@@ -123,7 +125,7 @@ const AddTournamentForm = () => {
                                                 type='money'
                                                 onChange={textFieldChange}
                                             />
-                                            <div className='flex mb-4'>
+                                            <div className='flex mb-4 max-h-[40px]'>
                                                 <div className='flex items-center mr-[0.3rem]'>
                                                     <p>Players* </p>
                                                 </div>
@@ -132,11 +134,12 @@ const AddTournamentForm = () => {
                                                     value={listPlayerSelected}
                                                     onChange={setListPlayerSelected}
                                                     multiple
-                                                    placeholder='Thêm người chơi tham dự giải'
+                                                    placeholder='Thêm người chơi'
                                                     className='mb-[0] flex-1 w-[70%]'
+                                                    spanMaxWidth='150px'
                                                 />
                                             </div>
-                                            <div className='flex mb-4'>
+                                            <div className='flex mb-4 max-h-[40px]'>
                                                 <div className='flex items-center mr-[0.3rem]'>
                                                     <p>Thể thức* </p>
                                                 </div>
@@ -147,6 +150,7 @@ const AddTournamentForm = () => {
                                                     multiple
                                                     placeholder='Chọn thể thức'
                                                     className='mb-[0] flex-1 w-[70%]'
+                                                    spanMaxWidth='150px'
                                                 />
                                             </div>
 

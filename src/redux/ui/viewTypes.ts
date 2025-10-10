@@ -1,9 +1,6 @@
-const OPEN_ADD_PLAYER_FORM ='OPEN_ADD_PLAYER_FORM'
-const CLOSE_ADD_PLAYER_FORM ='CLOSE_ADD_PLAYER_FORM'
+
 
 const viewTypes= {
-    OPEN_ADD_PLAYER_FORM,
-    CLOSE_ADD_PLAYER_FORM,
 }
 
 export default viewTypes;
