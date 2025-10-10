@@ -5,11 +5,13 @@
     padding-left: 12px;
     padding-right: 12px; */
     /* inset: 0; */
-    top: 0;
+    top: env(safe-area-inset-top);
     left: 0;
     height: 100dvh;
     width: 100dvw;
     -webkit-overflow-scrolling: touch;
+    /* padding-bottom: calc(3rem);  */
+    margin-top: env(safe-area-inset-top);
     .content-wrapper {
         padding: 2px;
         border-radius: calc(1rem + 2px);
