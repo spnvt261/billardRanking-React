@@ -4,7 +4,7 @@
     padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
     padding-left: 12px;
     padding-right: 12px; */
-    position: absolute;
+    position: fixed;
     inset: 0;
     /* left: 0; */
     height: 100dvh;
@@ -17,8 +17,6 @@
         border-radius: calc(1rem + 2px);
         overflow: hidden;
         background: linear-gradient(to bottom right, #374151, #6b7280);
-
-
         >div {
             border-radius: 1rem;
             background-color: #fff;

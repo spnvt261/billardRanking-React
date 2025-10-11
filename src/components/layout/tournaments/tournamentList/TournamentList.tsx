@@ -8,7 +8,7 @@ interface propsTournamentList {
     list: iTournament[];
 }
 const TournamentList = (props: propsTournamentList) => {
-    console.log('Tournament List');
+    // console.log('Tournament List');
     const listTournaments = props.list;
     const scrollRef = useRef<HTMLDivElement>(null);
     let isDown = false;
@@ -72,7 +72,7 @@ const TournamentList = (props: propsTournamentList) => {
             <h3
                 className="mb-1 label-sm text-slate-500 font-bold"
             >{props.label.toUpperCase()}</h3>
-            <div className="no-scrollbar overflow-x-auto scroll-x pt-[0.5rem] pb-[0.5rem] pl-[0.25rem] pr-[0.25rem]"
+            <div className="hide-scrollbar overflow-x-auto scroll-x pt-[0.5rem] pb-[0.5rem] pl-[0.25rem] pr-[0.25rem]"
                 ref={scrollRef}
                 onScroll={handleScroll}
             >

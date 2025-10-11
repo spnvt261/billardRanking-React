@@ -6,7 +6,7 @@ interface Props {
     btnCancel: () => void;
 }
 const addPlayerForm = ({ btnCancel }: Props) => {
-    console.log('ContentForm');
+    // console.log('ContentForm');
 
     const [newPlayer, setNewPlayer] = useState<object>({})
     const textFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +20,6 @@ const addPlayerForm = ({ btnCancel }: Props) => {
             ...newPlayer,
         };
         setNewPlayer(updated);
-        console.log(updated);
     }
     return (
         <form className="flex flex-col">

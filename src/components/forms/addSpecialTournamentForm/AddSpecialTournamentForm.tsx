@@ -26,7 +26,7 @@ const AddSpecialTournamentForm = ({btnCancel}:Props) =>{
                 listType: 'Đền',
             };
             setNewTournament(updated);
-            console.log(updated);
+            // console.log(updated);
         }
     return(
         <form className='flex flex-col'>

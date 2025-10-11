@@ -6,7 +6,7 @@ import TournamentList from "../../components/layout/tournaments/tournamentList/T
 import { tournaments } from "../../data/tournamentData";
 
 const TournamentPage: React.FC = () => {
-    console.log('TournamentPages');
+    // console.log('TournamentPages');
     const specialTournaments = tournaments.filter(t => t.tournament_type === 'Đền');
     const normalTournaments = tournaments.filter(t => t.tournament_type !== 'Đền');
     return (

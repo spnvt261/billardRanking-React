@@ -4,7 +4,7 @@ import './Header.css'
 import { PiNumberCircleNine } from 'react-icons/pi';
 import { useEffect, useRef, useState } from 'react';
 const Header = () => {
-    console.log('Header');
+    // console.log('Header');
     const ulRef = useRef<HTMLUListElement | null>(null);
     const liRefs = useRef<Array<HTMLAnchorElement | null>>([]);
     const blockRef = useRef<HTMLDivElement | null>(null);

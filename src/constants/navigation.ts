@@ -31,8 +31,8 @@ const NAV_LINKS :iNavLink[] = [
         show:true,
     },
     {
-        label: 'Matchs',
-        path:PATHS.MATCHS,
+        label: 'Matches',
+        path:PATHS.MATCHES,
         icon:RiHistoryFill,
         show:true,
     },

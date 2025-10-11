@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import './RankingTable.css'
 
 const RankingTable = () => {
-    console.log('RankingTable');
+    // console.log('RankingTable');
     const [currentPage, setCurrentPage] = useState(1);
     const [mode, setMode] = useState<"elo" | "prize">("elo");
     const pageSize = 10;

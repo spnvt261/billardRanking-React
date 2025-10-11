@@ -1,7 +1,7 @@
 const PATHS ={
     RANKINGS: '/rankings',
     TOURNAMENT:'/tournaments',
-    MATCHS:'/matchs',
+    MATCHES:'/matches',
     OVERALL: '/overall',
     NOTFOUND:'/404'
 }

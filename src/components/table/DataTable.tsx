@@ -35,7 +35,7 @@ const DataTable =<T extends object>({ columns, data }: DataTableProps<T>) => {
                 <AnimatePresence>
                     {data.map((row) => (
                         <motion.tr
-                            key={(row as any).id}
+                             key={(row as any).match_id || (row as any).id}
                             layout                   
                             transition={{ type: "spring", stiffness: 300, damping: 25 }}
                             initial={{ opacity: 0 }}

@@ -12,6 +12,7 @@ interface CustomTextFieldProps {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     helperText?: string;
     error?: boolean;
+    className?:string;
 }
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -22,6 +23,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     onChange,
     helperText,
     error = false,
+    className=''
 }) => {
     const [value, setValue] = useState<string>(propValue || '');
 
@@ -53,7 +55,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     //type = file
     if (type === 'file') {
         return (
-            <div className={`custom-textfield file-input ${error ? 'error' : ''}`}>
+            <div className={`custom-textfield mb-4 file-input ${error ? 'error' : ''} ${className?className:''}`}>
                 <label htmlFor={name} className={`file-label active`}>{label}</label>
                 <input
                     id={name}
@@ -69,7 +71,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     //type=date
     if (type === 'date') {
         return (
-            <div className={`custom-textfield ${error ? 'error' : ''}`}>
+            <div className={`custom-textfield mb-4 ${error ? 'error' : ''} ${className?className:''}`}>
                 <div className={`input-container ${isActive ? 'active' : ''} ${focus ? 'focus' : ''}`}>
                     <DatePicker
                         selected={selectedDate}
@@ -102,7 +104,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     }
     //type default
     return (
-        <div className={`custom-textfield ${error ? 'error' : ''}`}>
+        <div className={`custom-textfield mb-4 ${error ? 'error' : ''} ${className?className:''}`}>
             <div className={`input-container ${isActive ? 'active' : ''} ${focus ? 'focus' : ''}`}>
 
                 {

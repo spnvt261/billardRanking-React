@@ -8,7 +8,7 @@ interface Props {
     btnCancel: () => void;
 }
 const AddTournamentForm = ({ btnCancel }: Props) => {
-    console.log('ContentForm');
+    // console.log('Add');
 
     const [newTournament, setNewTournament] = useState<object>({})
     const [listPlayerSelected, setListPlayerSelected] = useState<string[]>([]);
