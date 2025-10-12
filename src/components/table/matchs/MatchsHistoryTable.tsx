@@ -35,7 +35,7 @@ const MatchesHistoryTable = () => {
                     </div>
                 )
             },
-            width: "40%",
+            width: "300px",
         },
         {
             header: "Date",
@@ -43,7 +43,7 @@ const MatchesHistoryTable = () => {
                 const date = new Date(row.match_date)
                 return date.toLocaleDateString("vi-VN")
             },
-            width: "15%",
+            width: "100px",
         },
         {
             header: "Type",
@@ -51,19 +51,19 @@ const MatchesHistoryTable = () => {
                 if (row.tournament_name === "Bàn nước") return "Bàn nước"
                 return `${row.match_type} - ${row.tournament_name}`
             },
-            width: "30%",
+            width: "150px",
         },
         {
             header: "Match Rack",
             accessor: () => "",
-            width: "15%",
+            width: "150px",
         },
     ]
 
     return (
         <div className="w-full border mt-4 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
-                <div className="min-w-[700px]">
+                <div className="min-w-[800px]">
                     <DataTable<Match> key={`page-${currentPage}`} columns={columns} data={paginatedMatches} />
                 </div>
             </div>

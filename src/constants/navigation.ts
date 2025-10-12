@@ -3,79 +3,93 @@ import { PiRanking } from "react-icons/pi"
 import { RiDashboard3Line, RiHistoryFill } from "react-icons/ri"
 import { RxDashboard } from "react-icons/rx"
 import PATHS from "../router/path"
+import { GoHomeFill } from "react-icons/go"
+import { CiLogout } from "react-icons/ci"
 
-interface iNavLink{
+interface iNavLink {
     label: string,
-    path:string,
+    path: string,
     icon?: React.ComponentType<any>,
-    show:boolean,
-    isHiddenGroup?:boolean
+    show: boolean,
+    isLogout?: boolean,
+    isHiddenGroup?: boolean
 }
-const NAV_LINKS :iNavLink[] = [
+const NAV_LINKS: iNavLink[] = [
     {
         label: 'Overall',
         path: PATHS.OVERALL,
         icon: RiDashboard3Line,
-        show:true,
+        show: true,
     },
     {
         label: 'Rankings',
         path: PATHS.RANKINGS,
         icon: PiRanking,
-        show:true,
+        show: true,
     },
     {
         label: 'Tournaments',
-        path:PATHS.TOURNAMENT,
-        icon:GiTrophyCup,
-        show:true,
+        path: PATHS.TOURNAMENT,
+        icon: GiTrophyCup,
+        show: true,
     },
     {
         label: 'Matches',
-        path:PATHS.MATCHES,
-        icon:RiHistoryFill,
-        show:true,
+        path: PATHS.MATCHES,
+        icon: RiHistoryFill,
+        show: true,
     },
     {
         label: 'Others',
-        path:'#',
-        icon:RxDashboard,
-        show:true,
-        isHiddenGroup:true,
-    },
-    {
-        label: 'Others1',
-        path:'/abc',
-        icon:RxDashboard,
-        show:false,
-    },
-    {
-        label: 'Others2',
-        path:'/abc2',
-        icon:RxDashboard,
-        show:false,
+        path: '#',
+        icon: RxDashboard,
+        show: true,
+        isHiddenGroup: true,
     },
     {
         label: 'Tournaments',
-        path:'/111',
-        icon:GiTrophyCup,
-        show:false,
+        path: '/111',
+        icon: GiTrophyCup,
+        show: false,
     },
     {
         label: 'NotFound',
-        path:PATHS.NOTFOUND,
-        icon:RxDashboard,
-        show:false,
+        path: PATHS.NOTFOUND,
+        icon: RxDashboard,
+        show: false,
     },
     {
         label: 'Testt',
-        path:'/kk',
-        icon:RxDashboard,
-        show:false,
+        path: '/kk',
+        icon: RxDashboard,
+        show: false,
+    },
+    {
+        label: 'Logout',
+        path: '/',
+        icon: CiLogout ,
+        show: false,
+        isLogout:true,
+    },
+]
+
+const NAV_LINKS_WITHOUT_LOGIN: iNavLink[] = [
+    {
+        label: 'Home',
+        path: '/',
+        icon: GoHomeFill ,
+        show: true,
+    },
+    {
+        label: 'Create Tournament',
+        path: PATHS.CREATE_TOURNAENT,
+        icon: GiTrophyCup,
+        show: true,
     },
 ]
 
 export default NAV_LINKS
-export{
-    PATHS
+export {
+    PATHS,
+    NAV_LINKS_WITHOUT_LOGIN
 }

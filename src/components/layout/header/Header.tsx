@@ -1,16 +1,16 @@
 import { NavLink } from 'react-router-dom';
-import NAV_LINKS from '../../../constants/navigation';
+import NAV_LINKS, { NAV_LINKS_WITHOUT_LOGIN } from '../../../constants/navigation';
 import './Header.css'
 import { PiNumberCircleNine } from 'react-icons/pi';
 import { useEffect, useRef, useState } from 'react';
+import { LOCAL_STORAGE_WORKSPACE } from '../../../constants/localStorage';
 const Header = () => {
-    // console.log('Header');
+    console.log('Header');
     const ulRef = useRef<HTMLUListElement | null>(null);
     const liRefs = useRef<Array<HTMLAnchorElement | null>>([]);
     const blockRef = useRef<HTMLDivElement | null>(null);
     const [showOthers, setShowOthers] = useState(false);
     const othersRef = useRef<HTMLUListElement | null>(null);
-
     const updateActiveBlock = () => {
         if (!ulRef.current || !blockRef.current) return;
         const rect = ulRef.current.getBoundingClientRect();
@@ -64,8 +64,10 @@ const Header = () => {
     const setLiRef = (index: number) => (el: HTMLAnchorElement | null) => {
         liRefs.current[index] = el;
     };
-    const visibleLinks = NAV_LINKS.filter(item => item.show);
+
+    const visibleLinks = localStorage.getItem(LOCAL_STORAGE_WORKSPACE) ? NAV_LINKS.filter(item => item.show) : NAV_LINKS_WITHOUT_LOGIN;
     const hiddenLinks = NAV_LINKS.filter(item => !item.show);
+
     const _showOthers = () => {
         setShowOthers(!showOthers)
     }
@@ -154,8 +156,10 @@ const Header = () => {
                                             className={({ isActive }) =>
                                                 `nav-link flex flex-col justify-center cursor-pointer ${isActive && !item.isHiddenGroup ? 'active' : ''}`
                                             }
-                                            onClick={() => {
+                                            onClick={!item.isLogout ? () => { setShowOthers(false); } : () => {
                                                 setShowOthers(false);
+                                                localStorage.removeItem(LOCAL_STORAGE_WORKSPACE);
+                                                window.location.href = '/';
                                             }}
                                         >
                                             {({ isActive }) => {
