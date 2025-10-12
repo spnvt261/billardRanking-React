@@ -29,7 +29,16 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
     }
     useEffect(() => {
         if (isOpen && formRef.current) {
-            disableBodyScroll(formRef.current); // khóa background, vẫn cho scroll trong form
+            disableBodyScroll(formRef.current, {
+                allowTouchMove: (el) => {
+                    // Cho phép cuộn trong chính form hoặc con của nó
+                    while (el && el !== document.body) {
+                        if (el === formRef.current) return true;
+                        el = el.parentElement as HTMLElement;
+                    }
+                    return false;
+                },
+            });
             document.body.classList.add('scroll-lock-fixed');
         } else if (formRef.current) {
             enableBodyScroll(formRef.current);
@@ -37,10 +46,11 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
         }
 
         return () => {
-            clearAllBodyScrollLocks(); // dọn dẹp khi component unmount
+            clearAllBodyScrollLocks();
             document.body.classList.remove('scroll-lock-fixed');
         };
     }, [isOpen]);
+
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 
     return (

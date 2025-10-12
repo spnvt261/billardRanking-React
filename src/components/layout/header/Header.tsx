@@ -3,7 +3,7 @@ import NAV_LINKS, { NAV_LINKS_WITHOUT_LOGIN } from '../../../constants/navigatio
 import './Header.css'
 import { PiNumberCircleNine } from 'react-icons/pi';
 import { useEffect, useRef, useState } from 'react';
-import { LOCAL_STORAGE_WORKSPACE } from '../../../constants/localStorage';
+import { useLogoutWorkspace, useWorkspace } from '../../../context/WorkspaceContext';
 const Header = () => {
     console.log('Header');
     const ulRef = useRef<HTMLUListElement | null>(null);
@@ -11,6 +11,8 @@ const Header = () => {
     const blockRef = useRef<HTMLDivElement | null>(null);
     const [showOthers, setShowOthers] = useState(false);
     const othersRef = useRef<HTMLUListElement | null>(null);
+    const { workspaceKey } = useWorkspace();
+    const logout = useLogoutWorkspace();
     const updateActiveBlock = () => {
         if (!ulRef.current || !blockRef.current) return;
         const rect = ulRef.current.getBoundingClientRect();
@@ -65,7 +67,7 @@ const Header = () => {
         liRefs.current[index] = el;
     };
 
-    const visibleLinks = localStorage.getItem(LOCAL_STORAGE_WORKSPACE) ? NAV_LINKS.filter(item => item.show) : NAV_LINKS_WITHOUT_LOGIN;
+    const visibleLinks = workspaceKey ? NAV_LINKS.filter(item => item.show) : NAV_LINKS_WITHOUT_LOGIN;
     const hiddenLinks = NAV_LINKS.filter(item => !item.show);
 
     const _showOthers = () => {
@@ -113,7 +115,7 @@ const Header = () => {
                                     key={item.label}
                                     ref={setLiRef(index)}
                                     className={({ isActive }) =>
-                                        `nav-link flex flex-col justify-center cursor-pointer ${isActive && !item.isHiddenGroup ? 'active' : ''} ${showOthers ? 'opacity-0' : 'opacity-1'}`
+                                        `nav-link flex flex-col justify-center cursor-pointer min-w-[70px] ${isActive && !item.isHiddenGroup ? 'active' : ''} ${showOthers ? 'opacity-0' : 'opacity-1'}`
                                     }
                                     onClick={item.isHiddenGroup ? () => _showOthers() : () => { }}
                                 >
@@ -131,7 +133,7 @@ const Header = () => {
                                                         <Icon size="1.5rem" />
                                                     </div>
                                                 )}
-                                                <div className="label">{item.label}</div>
+                                                <div className="label text-center">{item.label}</div>
                                             </>
                                         );
                                     }}
@@ -158,8 +160,7 @@ const Header = () => {
                                             }
                                             onClick={!item.isLogout ? () => { setShowOthers(false); } : () => {
                                                 setShowOthers(false);
-                                                localStorage.removeItem(LOCAL_STORAGE_WORKSPACE);
-                                                window.location.href = '/';
+                                                logout();
                                             }}
                                         >
                                             {({ isActive }) => {

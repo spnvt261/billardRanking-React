@@ -81,7 +81,7 @@ const NAV_LINKS_WITHOUT_LOGIN: iNavLink[] = [
         show: true,
     },
     {
-        label: 'Create Tournament',
+        label: 'Tạo giải đấu',
         path: PATHS.CREATE_TOURNAENT,
         icon: GiTrophyCup,
         show: true,

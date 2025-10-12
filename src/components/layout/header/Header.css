@@ -1,8 +1,31 @@
 .nav {
-    background: linear-gradient(to bottom right, #374151, #6b7280);
+    /* background-color: var(--header-bg-color); */
+    /* background: linear-gradient(to bottom , #374151, #6b7280); */
+    background: linear-gradient(to bottom , var(--header-bg-color), #6b7280);
     color: var(--header-text-color);
     padding-top: env(safe-area-inset-top);
-    /* Đảm bảo header chiếm toàn bộ vùng safe area */
+}
+/* “Fake” gradient nối liền vào Dynamic Island */
+.nav::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top);
+  background: linear-gradient(to bottom right, #374151, #6b7280);
+  z-index: 49;
+}
+
+.nav::after {
+  content: "";
+  position: fixed;
+  top: calc(env(safe-area-inset-top) - 1px);
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #4b5563;
+  z-index: 51;
 }
 
 .nav-link {

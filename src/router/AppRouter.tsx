@@ -8,16 +8,17 @@ import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import MatchesPage from "../pages/MatchsPage/MatchsPage";
 import Home from "../pages/HomePage/HomePage";
 import CreateTournamentPage from "../pages/CreateTournamentPage/CreateTournamentPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRouters =()=>{
     return(
         <Routes>
             <Route element={<MainLayout/>}>
                 <Route path="/" element={<Home/>}/>
-                <Route path={PATHS.RANKINGS} element={<RankingPage/>}/>
-                <Route path={PATHS.MATCHES} element={<MatchesPage/>}/>
-                <Route path={PATHS.TOURNAMENT} element={<TournamentPage/>}/>
-                <Route path={PATHS.OVERALL} element={<OverallPage/>}/>
+                <Route path={PATHS.RANKINGS} element={<ProtectedRoute><RankingPage/></ProtectedRoute> }/>
+                <Route path={PATHS.MATCHES} element={<ProtectedRoute><MatchesPage/></ProtectedRoute> }/>
+                <Route path={PATHS.TOURNAMENT} element={<ProtectedRoute><TournamentPage/></ProtectedRoute> }/>
+                <Route path={PATHS.OVERALL} element={<ProtectedRoute><OverallPage/></ProtectedRoute> }/>
                 <Route path={PATHS.NOTFOUND} element={<NotFoundPage/>}/>
                 <Route path={PATHS.CREATE_TOURNAENT} element={<CreateTournamentPage/>}/>
             </Route>
