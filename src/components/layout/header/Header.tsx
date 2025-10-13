@@ -3,7 +3,7 @@ import NAV_LINKS, { NAV_LINKS_WITHOUT_LOGIN } from '../../../constants/navigatio
 import './Header.css'
 import { PiNumberCircleNine } from 'react-icons/pi';
 import { useEffect, useRef, useState } from 'react';
-import { useLogoutWorkspace, useWorkspace } from '../../../context/WorkspaceContext';
+import {  useWorkspace } from '../../../customhook/useWorkspace';
 const Header = () => {
     console.log('Header');
     const ulRef = useRef<HTMLUListElement | null>(null);
@@ -11,8 +11,7 @@ const Header = () => {
     const blockRef = useRef<HTMLDivElement | null>(null);
     const [showOthers, setShowOthers] = useState(false);
     const othersRef = useRef<HTMLUListElement | null>(null);
-    const { workspaceKey } = useWorkspace();
-    const logout = useLogoutWorkspace();
+    const { workspaceKey, setWorkspaceKey } = useWorkspace();
     const updateActiveBlock = () => {
         if (!ulRef.current || !blockRef.current) return;
         const rect = ulRef.current.getBoundingClientRect();
@@ -92,16 +91,16 @@ const Header = () => {
         };
     }, [showOthers]);
     return (
-        <nav className="nav fixed top-0 left-0 w-full z-50">
+        <nav className="nav w-full z-50">
             <div className='container mx-auto flex justify-between items-center'>
-                <div className='flex logo'>
+                <div className={`flex logo ${workspaceKey?'max-[512px]:hidden':''}`}>
                     <h1 className='text-2xl font-bold'>NineBall</h1>
                     <div className='fex items-center justify-center ml-1'>
                         <PiNumberCircleNine size='2rem' />
                     </div>
 
                 </div>
-                <ul className={`nav-links flex`}
+                <ul className={`nav-links flex ${workspaceKey?'max-[512px]:pr-[1rem] max-[512px]:m-auto':''}`}
                     // onMouseMove={handleMouseMove}
                     ref={ulRef}
                 >
@@ -160,7 +159,7 @@ const Header = () => {
                                             }
                                             onClick={!item.isLogout ? () => { setShowOthers(false); } : () => {
                                                 setShowOthers(false);
-                                                logout();
+                                                setWorkspaceKey(null);
                                             }}
                                         >
                                             {({ isActive }) => {

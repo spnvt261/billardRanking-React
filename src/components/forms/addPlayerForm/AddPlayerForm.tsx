@@ -1,12 +1,18 @@
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
 import CustomButton from "../../customButtons/CustomButton";
 import CustomTextField from "../../customTextField/CustomTextField";
 
 interface Props {
     btnCancel: () => void;
+    showLoading?: (show: boolean) => void;
+    isLoading?: boolean;
 }
-const addPlayerForm = ({ btnCancel }: Props) => {
-    // console.log('ContentForm');
+const addPlayerForm = ({ btnCancel,showLoading,isLoading }: Props) => {
+    useEffect(() => {
+        if (isLoading&& showLoading) {
+            showLoading(isLoading)
+        }
+    }, [isLoading])
 
     const [newPlayer, setNewPlayer] = useState<object>({})
     const textFieldChange = (e: ChangeEvent<HTMLInputElement>) => {

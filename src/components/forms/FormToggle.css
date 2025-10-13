@@ -6,7 +6,6 @@
     padding-right: 12px; */
     position: fixed;
     inset: 0;
-    /* left: 0; */
     height: 100dvh;
     width: 100dvw;
     -webkit-overflow-scrolling: touch;

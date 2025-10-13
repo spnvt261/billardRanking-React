@@ -14,7 +14,7 @@
     padding-bottom: .25rem;
     transition: background-color 0.3s, box-shadow 0.3s;
 }
-.input-container .money { 
+.input-container .money-type { 
     position: absolute;
     top: 50%;
     transform: translateY(-40%);
@@ -22,6 +22,17 @@
     /* border: 1px solid red; */
     background-color: rgba(0,0,0,0.2);
     color: #fff;
+    border-radius: .5rem;
+    padding: 0 1rem;
+}
+.input-container .show-hide { 
+    position: absolute;
+    top: 50%;
+    transform: translateY(-40%);
+    right: 0;
+    /* border: 1px solid red; */
+    /* background-color: rgba(0,0,0,0.2); */
+    /* color: #fff; */
     border-radius: .5rem;
     padding: 0 1rem;
 }
@@ -79,6 +90,12 @@
 .custom-textfield.error .input-container label,
 .custom-textfield.error .input-container input {
     color: #d32f2f;
+}
+.input-container.error {
+    border-bottom: 1px solid #d32f2f;
+    &.focus {
+        border-bottom: 2px solid #d32f2f;
+    }
 }
 
 .custom-textfield.error .helper-text {

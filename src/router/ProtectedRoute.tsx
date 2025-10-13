@@ -1,6 +1,6 @@
 import React, { type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
-import { useWorkspace } from "../context/WorkspaceContext";
+import { useWorkspace } from "../customhook/useWorkspace";
 
 interface ProtectedRouteProps {
   children: ReactNode;

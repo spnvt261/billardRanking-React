@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import CustomTextField from "../../customTextField/CustomTextField";
 import CustomSelect from "../../customSelect/CustomSelect";
 import CustomButton from "../../customButtons/CustomButton";
@@ -6,10 +6,16 @@ import { listplayerSelect } from "../../../data/tournamentData";
 
 interface Props {
     btnCancel:()=>void;
+    showLoading?: (show: boolean) => void;
+    isLoading?: boolean;
 }
 
-const AddSpecialTournamentForm = ({btnCancel}:Props) =>{
-    // console.log('Special Tournament Form');
+const AddSpecialTournamentForm = ({btnCancel,showLoading,isLoading}:Props) =>{
+    useEffect(() => {
+        if (isLoading&& showLoading) {
+            showLoading(isLoading)
+        }
+    }, [isLoading])
     
     const [newTournament, setNewTournament] = useState<object>({})
         const [listPlayerSelected, setListPlayerSelected] = useState<string[]>([]);

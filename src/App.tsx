@@ -1,6 +1,6 @@
 
 import './App.css'
-import { WorkspaceProvider } from './context/WorkspaceContext'
+import { WorkspaceProvider } from './customhook/useWorkspace'
 import AppRouters from './router/AppRouter'
 
 function App() {

@@ -15,7 +15,7 @@ const TournamentPage: React.FC = () => {
                 <FormToggle
                     btnLabel="Tạo giải đấu"
                     formTitle="Tạo giải đấu mới"
-                    className="mr-3"
+                    className="mr-3 mb-4"
                     element={AddTournamentForm}
                     needPermission
                 />
@@ -24,6 +24,7 @@ const TournamentPage: React.FC = () => {
                     formTitle="Tạo mâm đền"
                     btnVariant="type-1"
                     element={AddSpecialTournamentForm}
+                    className="mb-4"
                     needPermission
                 />
             </div>

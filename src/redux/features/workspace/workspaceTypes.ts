@@ -1,0 +1,24 @@
+export const CREATE_WORKSPACE_REQUEST = 'CREATE_WORKSPACE_REQUEST';
+export const CREATE_WORKSPACE_SUCCESS = 'CREATE_WORKSPACE_SUCCESS';
+export const CREATE_WORKSPACE_FAIL = 'CREATE_WORKSPACE_FAIL';
+
+export const GET_WORKSPACE_REQUEST = 'GET_WORKSPACE_REQUEST';
+export const GET_WORKSPACE_SUCCESS = 'GET_WORKSPACE_SUCCESS';
+export const GET_WORKSPACE_FAIL = 'GET_WORKSPACE_FAIL';
+
+export const LOGIN_WORKSPACE_REQUEST = 'LOGIN_WORKSPACE_REQUEST';
+export const LOGIN_WORKSPACE_SUCCESS = 'LOGIN_WORKSPACE_SUCCESS';
+export const LOGIN_WORKSPACE_FAIL = 'LOGIN_WORKSPACE_FAIL';
+
+export interface WorkspaceData {
+    id: number;
+    name: string;
+    shareKey: number;
+    isAdmin?:boolean
+}
+
+export interface WorkspaceDataToCreate {
+    name: string;
+    password: string;
+    shareKey: number;
+}

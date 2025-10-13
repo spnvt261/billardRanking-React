@@ -11,6 +11,7 @@ const RankingPage = () => {
                 btnLabel="Thêm cơ thủ"
                 formTitle="Thêm cơ thủ mới"
                 element={addPlayerForm}
+                className="mb-4"
                 needPermission
             />
             <h2 className="text-xl font-bold mb-4 text-slate-500">FRIEND RANKINGS</h2>

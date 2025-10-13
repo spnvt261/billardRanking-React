@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import CustomButton from "../../customButtons/CustomButton";
 import CustomSelect from "../../customSelect/CustomSelect";
 import { listplayerSelect } from "../../../data/matchData";
@@ -6,10 +6,16 @@ import CustomTextField from "../../customTextField/CustomTextField";
 
 interface Props {
     btnCancel: () => void;
+    showLoading?: (show: boolean) => void;
+    isLoading?: boolean;
 }
 
-const AddMatchForm = ({ btnCancel }: Props) => {
-    // console.log('matchform');
+const AddMatchForm = ({ btnCancel ,showLoading,isLoading }: Props) => {
+    useEffect(() => {
+        if (isLoading&& showLoading) {
+            showLoading(isLoading)
+        }
+    }, [isLoading])
     
     const [matchType, setMatchType] = useState<string[]>(["1v1"]); 
     const [newMatch, setNewMatch] = useState<any>({});

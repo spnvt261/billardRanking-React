@@ -3,16 +3,18 @@ import './FormToggle.css'
 import CustomButton from '../customButtons/CustomButton'
 import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import WithLoading from '../loading/WithLoading';
 interface FormToggleProps {
     btnLabel: string;
     formTitle: string;
     btnVariant?: "type-1" | "type-2" | "type-3" | "type-4" | "type-5" | "type-6" | "type-7";
     needPermission?: boolean;
-    element: ComponentType<{ btnCancel: () => void }>;
-    className?: string
+    // element: ComponentType<{ btnCancel: () => void }>;
+    element: ComponentType<any>;
+    className?: string;
+    onConfirm?:()=>void;
 }
-const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission }: FormToggleProps) => {
-    // console.log('Add Tournament Form');
+const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission,onConfirm }: FormToggleProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const originRef = useRef<HTMLDivElement>(null);;
@@ -50,12 +52,11 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
             document.body.classList.remove('scroll-lock-fixed');
         };
     }, [isOpen]);
-
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 
     return (
         <div className={`form-toggle relative w-fit h-fit ${className ? className : ''}`}>
-            <div className='mb-4 w-fit h-fit'
+            <div className='w-fit h-fit'
                 ref={originRef}
             >
                 <CustomButton
@@ -100,9 +101,15 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
                                 <div className=' p-6 rounded-2xl shadow-2xl max-h-[600px] overflow-y-auto hide-scrollbar'>
                                     <h3 className='text-xl font-bold mb-2'>{formTitle}</h3>
                                     <div className='p-2'>
-                                        <Element
-                                            btnCancel={btnCancelForm}
-                                        />
+                                        {WithLoading ? (
+                                            (() => {
+                                                const ElementWithLoading = WithLoading(Element);
+                                                return <ElementWithLoading btnCancel={btnCancelForm} onConfirm={onConfirm} />;
+                                            })()
+                                        ) : (
+                                            <Element btnCancel={btnCancelForm} onConfirm={onConfirm}  />
+                                        )}
+
                                     </div>
                                 </div>
                             </div>
@@ -113,4 +120,5 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
         </div>
     )
 }
-export default FormToggle
+
+export default FormToggle;
