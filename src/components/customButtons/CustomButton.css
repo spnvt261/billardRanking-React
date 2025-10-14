@@ -37,19 +37,18 @@
     background: linear-gradient(to bottom right, #22c55e, #4ade80);
 }
 
-/* Type 4 - Pink */
+/* Type 4 - Red */
 .type-4 {
-    color: #db2777;
-    /* text-pink-600 */
-    background: linear-gradient(to bottom right, #ec4899, #f472b6);
-    /* from-pink-500 to-pink-400 */
+    color: #ef4444; /* text-red-500 */
+    background: linear-gradient(to bottom right, #ef4444, #f87171); 
+    /* from-red-500 to-red-400 */
 }
 
 .type-4:hover {
-    color: white;
-    background: linear-gradient(to bottom right, #ec4899, #f472b6);
+    color: #fff;
+    background: linear-gradient(to bottom right, #dc2626, #ef4444);
+    /* from-red-600 to-red-500 */
 }
-
 /* Type 5 - Warm Gray (thay Orange bằng xám ấm, pha chút nâu nhạt) */
 .type-5 {
     color: #6b5b4b;

@@ -16,7 +16,7 @@ const createWorkspace = (workspaceData: types.WorkspaceDataToCreate) => async (d
         dispatch({ type: types.CREATE_WORKSPACE_SUCCESS, payload: response.data });
         return response.data;
     } catch (error: any) {
-        dispatch({ type: types.CREATE_WORKSPACE_FAIL, payload: error.message });
+        dispatch({ type: types.CREATE_WORKSPACE_FAIL, payload: error });
         throw error;
     }
 }
@@ -41,24 +41,26 @@ const joinWorkspace =(workspaceKey: { shareKey: Number }) => async (dispatch:any
     } catch (err:any){
         dispatch({
             type:types.GET_WORKSPACE_FAIL,
-            payload:err.message
+            payload:err
         })
         throw err;
     }
 }
 
 export interface LoginWorkspaceResponse{
-    success:string;
-    message:string;
+    accessToken:string;
+    refreshToken:string;
+    tokenType:string;
     workspace:types.WorkspaceData | null;
 }
-const loginWorkspace = (data:{shareKey:Number,password:string}) => async (dispatch:any): Promise<LoginWorkspaceResponse>  =>{
+const loginWorkspace = (data:{workspaceKey:Number,password:string}) => async (dispatch:any): Promise<LoginWorkspaceResponse>  =>{
      dispatch({
         type:types.LOGIN_WORKSPACE_REQUEST,
         payload:null
     });
     try{
-        const response = await axios.post('/api/test/login-workspace', data);
+        // const response = await axios.post('/api/test/login-workspace', data);
+        const response = await axios.post('/api/auth/login', data);
         dispatch({
             type: types.LOGIN_WORKSPACE_SUCCESS,
             payload:response.data,
@@ -67,7 +69,7 @@ const loginWorkspace = (data:{shareKey:Number,password:string}) => async (dispat
     } catch (err:any){
         dispatch({
             type:types.LOGIN_WORKSPACE_FAIL,
-            payload:err.message
+            payload:err
         })
         throw err;
     }

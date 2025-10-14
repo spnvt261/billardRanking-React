@@ -3,7 +3,10 @@ const Footer = ()=>{
     
     return(
         <div className="footer text-white p-4"
-            style={{background:'linear-gradient(to top left, #374151, #6b7280)'}}
+            style={{
+                // background:'linear-gradient(to top left, #374151, #6b7280)',
+                backgroundColor: '#374151'
+            }}
         >
             <div className="container mx-auto text-center">
                 <p>© 2025 NineBall. All rights reserved.</p>

@@ -5,11 +5,14 @@ import CustomTextField from "../../../customTextField/CustomTextField";
 import CustomKeyField from "../../../customKeyField/CustomKeyField";
 import { FaRandom } from "react-icons/fa";
 import CustomNote from "../../../customNote/CustomNote";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { WorkspaceDataToCreate } from "../../../../redux/features/workspace/workspaceTypes";
-import workspaceAction, { type CheckWorkspaceResponse, type CreateWorkspaceResponse } from "../../../../redux/features/workspace/workspaceAction";
+import workspaceAction, { type CheckWorkspaceResponse, type CreateWorkspaceResponse, type LoginWorkspaceResponse } from "../../../../redux/features/workspace/workspaceAction";
 import { connect } from "react-redux";
 import { useWorkspace } from "../../../../customhook/useWorkspace";
+import { useNotification } from "../../../../customhook/useNotifycation";
+import { useLocalStorage } from "../../../../customhook/useLocalStorage";
+import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../constants/localStorage";
 
 interface Props {
     btnCancel: () => void;
@@ -17,11 +20,28 @@ interface Props {
     isLoading: boolean;
     createWorkspace: (workspaceData: WorkspaceDataToCreate) => Promise<CreateWorkspaceResponse>;
     joinWorkspace: (data: { shareKey: Number }) => Promise<CheckWorkspaceResponse>;
+    loginWorkspace: (data: { workspaceKey: Number, password: string }) => Promise<LoginWorkspaceResponse>;
 }
-const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, joinWorkspace }: Props) => {
+const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, joinWorkspace, loginWorkspace }: Props) => {
     // console.log(isLoading);
-    const { addWorkspace } = useWorkspace();
+    const { addWorkspace, setWorkspaceKey } = useWorkspace();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const { notify } = useNotification();
+    const lastSubmitTime = useRef<number | null>(null);
+    const [, setAccessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const now = Date.now();
+        if (lastSubmitTime.current && now - lastSubmitTime.current < 3000) {
+            console.warn("Please wait before submitting again");
+            notify("Vui lòng chờ 3 giây trước khi gửi lại!", "error");
+            return;
+        }
+
+        lastSubmitTime.current = now;
+        formik.handleSubmit(e);
+    };
     useEffect(() => {
         if (showLoading) {
             showLoading(isLoading)
@@ -59,28 +79,35 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
                 ...rest,
                 shareKey: Number(values.shareKey),
             };
-            // console.log(parsedValues);
-            const result = await createWorkspace(parsedValues);
-            if (result.success) {
-                if (result.workspaceId) {
-                    const resultParsed = {
-                        id: result.workspaceId,
-                        name: parsedValues.name,
-                        shareKey: parsedValues.shareKey,
-                        isAdmin: true
+            try {
+                const result = await createWorkspace(parsedValues);
+                if (result.success) {
+                    notify('Tạo workspace thành công', 'success');
+                    if (result.workspaceId) {
+                        const resultParsed = {
+                            id: result.workspaceId,
+                            name: parsedValues.name,
+                            shareKey: parsedValues.shareKey,
+                            isAdmin: true
+                        }
+                        addWorkspace(resultParsed);
+                        btnCancel();
+                        notify('Đang đăng nhâp', 'loading');
+                        const resultLogin = await loginWorkspace({ workspaceKey: parsedValues.shareKey, password: parsedValues.password });
+                        if (resultLogin.workspace) {
+                            setAccessToken(resultLogin.accessToken);
+                            setWorkspaceKey(resultLogin.workspace.shareKey.toString());
+                            notify('Dăng nhập thành công', 'success');
+                        }
                     }
-                    console.log(resultParsed);
-                    
-                    addWorkspace(resultParsed);
-                    btnCancel();
+                } else {
+                    setErrorMessage(`Workspace ID đã tồn tại!`);
                 }
-            } else {
-                setErrorMessage(`Workspace ID đã tồn tại!`);
+            } catch (err: any) {
+                console.log(err.message);
+                notify('Lỗi kết nối server', 'error');
             }
-            console.log(values);
-            console.log(result);
-            
-            
+
         },
     });
 
@@ -98,11 +125,11 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
             try {
                 const result = await joinWorkspace({ shareKey: Number(randomKey) });
                 if (!result.exists) {
-                    isUnique = true; 
+                    isUnique = true;
                 }
             } catch (err) {
                 console.error("Error checking workspace key:", err);
-                break; 
+                break;
             }
         }
 
@@ -115,7 +142,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
 
 
     return (
-        <form onSubmit={formik.handleSubmit} className="flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col">
             <div className="flex items-center relative h-fit">
                 <div className="flex items-center">
                     <p>
@@ -206,6 +233,7 @@ const mapDispatchToProps = (dispatch: any) => {
     return {
         createWorkspace: (workspaceData: WorkspaceDataToCreate) => dispatch(workspaceAction.createWorkspace(workspaceData)),
         joinWorkspace: (data: { shareKey: Number }) => dispatch(workspaceAction.joinWorkspace(data)),
+        loginWorkspace: (data: { workspaceKey: Number, password: string }) => dispatch(workspaceAction.loginWorkspace(data))
     };
 }
 

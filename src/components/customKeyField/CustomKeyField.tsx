@@ -95,7 +95,7 @@ const CustomKeyField = ({ name = "key", error, onChange, onBlur,handleConfirm, v
                 }}
                 className={`absolute inset-0 w-full h-full opacity-0`}
             />
-            {errorText && <p className="text-sm text-red-500 ">{errorText}</p>}
+            {errorText && <p className="text-sm max-w-[200px] text-red-500 break-words whitespace-normal">{errorText}</p>}
         </div>
     )
 }

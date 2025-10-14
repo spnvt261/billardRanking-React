@@ -1,15 +1,15 @@
 
 import './App.css'
-import { WorkspaceProvider } from './customhook/useWorkspace'
+import { AppProviders } from './context/AppProviders'
 import AppRouters from './router/AppRouter'
 
 function App() {
 
 
   return (
-    <WorkspaceProvider>
+    <AppProviders>
       <AppRouters />
-    </WorkspaceProvider>
+    </AppProviders>
 
   )
 }

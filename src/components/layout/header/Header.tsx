@@ -4,6 +4,9 @@ import './Header.css'
 import { PiNumberCircleNine } from 'react-icons/pi';
 import { useEffect, useRef, useState } from 'react';
 import {  useWorkspace } from '../../../customhook/useWorkspace';
+import { useNotification } from '../../../customhook/useNotifycation';
+import { useLocalStorage } from '../../../customhook/useLocalStorage';
+import { LOCAL_STORAGE_ACCESS_TOKEN } from '../../../constants/localStorage';
 const Header = () => {
     console.log('Header');
     const ulRef = useRef<HTMLUListElement | null>(null);
@@ -12,6 +15,8 @@ const Header = () => {
     const [showOthers, setShowOthers] = useState(false);
     const othersRef = useRef<HTMLUListElement | null>(null);
     const { workspaceKey, setWorkspaceKey } = useWorkspace();
+    const [, setAccessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
+    const { notify } = useNotification();
     const updateActiveBlock = () => {
         if (!ulRef.current || !blockRef.current) return;
         const rect = ulRef.current.getBoundingClientRect();
@@ -160,6 +165,8 @@ const Header = () => {
                                             onClick={!item.isLogout ? () => { setShowOthers(false); } : () => {
                                                 setShowOthers(false);
                                                 setWorkspaceKey(null);
+                                                setAccessToken(null);
+                                                notify('Đã đăng xuất', 'success');
                                             }}
                                         >
                                             {({ isActive }) => {

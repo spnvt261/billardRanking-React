@@ -3,7 +3,7 @@ const initState={
     isLoading:false,
     workspaceInfo:{
     },
-    message:''
+    error:{}
 }
 
 const workspaceReducer=(state=initState,action:any)=>{
@@ -43,7 +43,7 @@ const workspaceReducer=(state=initState,action:any)=>{
             return{
                 ...state,
                 isLoading:false,
-                message:action.payload
+                error:action.payload
             }
         default:
             return state;
