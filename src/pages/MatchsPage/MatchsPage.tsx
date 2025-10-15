@@ -3,7 +3,7 @@ import FormToggle from "../../components/forms/FormToggle";
 import MatchesHistoryTable from "../../components/table/matchs/MatchsHistoryTable";
 
 const MatchesPage = () =>{
-    console.log('Matches Pages');
+    // console.log('Matches Pages');
     
     return(
         <div className="matches-page">

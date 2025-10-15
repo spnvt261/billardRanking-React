@@ -16,7 +16,7 @@ const RankingPage = () => {
             />
             <h2 className="text-xl font-bold mb-4 text-slate-500">FRIEND RANKINGS</h2>
             <div className="w-full border mt-4 bg-white shadow-md rounded-lg overflow-hidden">
-                <RankingTable/>
+                <RankingTable />
             </div>
         </div >
     );

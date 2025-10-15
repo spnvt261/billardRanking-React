@@ -127,7 +127,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                 <input
                     // type={type === 'money' ? 'tel' : type}
                     type={type === 'money' ? 'tel' : type === 'password' && showPassword ? 'text' : type}
-                    inputMode={type === 'money' ? 'numeric' : undefined}
+                    inputMode={type === 'money' || type ==='number' ? 'numeric' : undefined}
                     name={name}
                     value={value || ''}
                     onChange={handleChange}

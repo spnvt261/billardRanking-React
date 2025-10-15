@@ -5,11 +5,12 @@ import * as Yup from "yup";
 import CustomTextField from "../../../customTextField/CustomTextField";
 import { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
-import workspaceAction, { type CheckWorkspaceResponse, type LoginWorkspaceResponse } from "../../../../redux/features/workspace/workspaceAction";
+import workspaceAction from "../../../../redux/features/workspace/workspaceAction";
 import { useWorkspace } from "../../../../customhook/useWorkspace";
 import { useNotification } from "../../../../customhook/useNotifycation";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../constants/localStorage";
 import { useLocalStorage } from "../../../../customhook/useLocalStorage";
+import type { CheckWorkspaceResponse, LoginWorkspaceResponse } from "../../../../types/workspace";
 
 interface Props {
     btnCancel: () => void;
@@ -35,7 +36,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
         const now = Date.now();
         if (lastSubmitTime.current && now - lastSubmitTime.current < 3000) {
             console.warn("Please wait before submitting again");
-            notify("Vui lòng chờ 3 giây trước khi gửi lại!", "error");
+            // notify("Vui lòng chờ 3 giây trước khi gửi lại!", "error");
             return;
         }
 
@@ -70,6 +71,8 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                 setErrorMessage(`Workspace với KEY '${values.key}' đã được thêm rồi!`);
                 return;
             }
+            // console.log(values);
+            
             if (!values.isAdmin) {
                 const parsedValues = {
                     shareKey: Number(values.key),
@@ -109,7 +112,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                         notify('Đăng nhập thành công', 'success');
                     }
                 } catch (err: any) {
-                    console.log(err.status);
+                    // console.log(err.status);
                     if (err.status === 400) {
                         setErrorMessage("WorkspaceKey hoặc mật khẩu không đúng!");
                         return;
@@ -130,6 +133,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                     onChange={(e) => { formik.handleChange(e); setErrorMessage(null); }}
                     error={formik.touched.key ? formik.errors.key : undefined}
                     errorText={errorMessage}
+                    disabled={keyValue?true:false}
                 />
             </div>
 
@@ -140,6 +144,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                     checked={formik.values.isAdmin}
                     onChange={formik.handleChange}
                     className="w-4 h-4 cursor-pointer"
+                    disabled={keyValue?true:false}
                 />
                 <span>Admin?</span>
             </label>

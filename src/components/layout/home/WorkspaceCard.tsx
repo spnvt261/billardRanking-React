@@ -39,7 +39,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
         notify('Đã xóa workspace', 'success');
     }
     return (
-        <>
+        <div className="relative">
             <AnimatePresence>
                 {showJoinForm && (
                     <motion.div
@@ -50,7 +50,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
                         onClick={() => setShowJoinForm(false)}
                     >
                         <motion.div
-                            className="content-wrapper bg-white rounded-2xl shadow-lg p-[2px] max-w-lg w-full mx-4"
+                            className="content-wrapper bg-white rounded-2xl shadow-lg p-[2px] max-w-[400px] w-full mx-4"
                             initial={{
                                 scale: 0,
                                 x: origin.x - window.innerWidth / 2 + origin.width / 2,
@@ -66,7 +66,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
                             onClick={(e) => e.stopPropagation()} // tránh click ngoài đóng form
                         >
                             <div className="p-6 rounded-2xl shadow-2xl max-h-[600px] overflow-y-auto hide-scrollbar">
-                                <h3 className="text-xl font-bold mb-2">Đăng nhập</h3>
+                                <h3 className="text-xl font-bold mb-2">Đăng nhập vào workspace '{name}'</h3>
                                 <FormJoinWorkSpace
                                     btnCancel={() => setShowJoinForm(false)}
                                     keyValue={workspaceKey.toString()}
@@ -78,7 +78,9 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
             </AnimatePresence>
             <div
                 ref={cardRef}
-                className=" w-full max-w-[400px] relative p-4 bg-white border rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                className=" w-full max-w-[400px] relative p-4 bg-white border rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer
+                    active:scale-[0.95] transition-transform duration-200
+                "
                 onClick={btnWorkspaceChosen}
             >
 
@@ -108,7 +110,8 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
                         </button>
                     </div>
                 </div>
-                <div className="absolute top-3 right-1 rounded-[1rem] p-3"
+            </div>
+            <div className="absolute top-3 right-1 rounded-[1rem] p-3"
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
@@ -122,8 +125,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
                         onConfirm={handleDelete}
                     />
                 </div>
-            </div>
-        </>
+        </div>
 
     );
 };

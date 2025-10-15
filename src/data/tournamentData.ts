@@ -18,7 +18,7 @@ export const tournaments: iTournament[] = [
   {
     id: 1,
     name: 'Hanoi Open 2025',
-    banner: 'images/banner1.jpg',
+    banner: 'images/defaultBannerTournament2.jpg',
     prize: 5000000,
     start_date: '2025-10-10T08:00:00Z',
     end_date: '2025-10-12T18:00:00Z',
@@ -31,7 +31,7 @@ export const tournaments: iTournament[] = [
   {
     id: 2,
     name: 'Saigon Pool Masters',
-    banner: 'images/banner2.jpg',
+    banner: 'images/defaultBannerTournament3.jpg',
     // prize: 7000000,
     start_date: '2025-10-15T09:00:00Z',
     end_date: '2025-10-17T20:00:00Z',

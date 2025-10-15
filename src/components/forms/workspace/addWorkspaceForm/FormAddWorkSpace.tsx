@@ -6,13 +6,13 @@ import CustomKeyField from "../../../customKeyField/CustomKeyField";
 import { FaRandom } from "react-icons/fa";
 import CustomNote from "../../../customNote/CustomNote";
 import { useEffect, useRef, useState } from "react";
-import type { WorkspaceDataToCreate } from "../../../../redux/features/workspace/workspaceTypes";
-import workspaceAction, { type CheckWorkspaceResponse, type CreateWorkspaceResponse, type LoginWorkspaceResponse } from "../../../../redux/features/workspace/workspaceAction";
+import workspaceAction from "../../../../redux/features/workspace/workspaceAction";
 import { connect } from "react-redux";
 import { useWorkspace } from "../../../../customhook/useWorkspace";
 import { useNotification } from "../../../../customhook/useNotifycation";
 import { useLocalStorage } from "../../../../customhook/useLocalStorage";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../constants/localStorage";
+import type { CheckWorkspaceResponse, CreateWorkspaceResponse, LoginWorkspaceResponse, WorkspaceDataToCreate } from "../../../../types/workspace";
 
 interface Props {
     btnCancel: () => void;
@@ -35,7 +35,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
         const now = Date.now();
         if (lastSubmitTime.current && now - lastSubmitTime.current < 3000) {
             console.warn("Please wait before submitting again");
-            notify("Vui lòng chờ 3 giây trước khi gửi lại!", "error");
+            // notify("Vui lòng chờ 3 giây trước khi gửi lại!", "error");
             return;
         }
 

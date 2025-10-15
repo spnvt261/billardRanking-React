@@ -42,7 +42,7 @@ const AddMatchForm = ({ btnCancel ,showLoading,isLoading }: Props) => {
     const getNumPlayers = () => parseInt(matchType[0]?.split("v")[0] || "1", 10);
 
     return (
-        <form className="flex flex-col">
+        <form className="flex flex-col gap-2">
             {/* --- Match Type Select --- */}
             <div className="flex flex-col">
                 <label className="font-semibold mb-2 text-gray-700">Kiểu trận</label>
@@ -53,6 +53,7 @@ const AddMatchForm = ({ btnCancel ,showLoading,isLoading }: Props) => {
                         { label: "3v3", value: "3v3" },
                         { label: "4v4", value: "4v4" },
                     ]}
+                    className="mb-2"
                     value={matchType}
                     onChange={setMatchType}
                     placeholder="Chọn kiểu trận"
@@ -82,7 +83,7 @@ const AddMatchForm = ({ btnCancel ,showLoading,isLoading }: Props) => {
                         name="score_team1"
                         label="Điểm đội 1"
                         onChange={handleTextChange}
-                        className="mb-0"
+                        className="mb-2"
                     />
                 </div>
 
@@ -107,7 +108,7 @@ const AddMatchForm = ({ btnCancel ,showLoading,isLoading }: Props) => {
                         name="score_team2"
                         label="Điểm đội 2"
                         onChange={handleTextChange}
-                        className="mb-0"
+                        className="mb-2"
                     />
                 </div>
             </div>

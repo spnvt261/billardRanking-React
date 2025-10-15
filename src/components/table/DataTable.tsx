@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
 import './DataTable.css'
+import WithLoading from "../loading/WithLoading";
+// import { connect } from "react-redux";
 
 interface Column<T> {
     header: string;
@@ -11,11 +13,17 @@ interface Column<T> {
 interface DataTableProps<T> {
     columns: Column<T>[];
     data: T[];
+    showLoading?: (show: boolean) => void;
+    isLoading?: boolean;
 }
 
-const DataTable =<T extends object>({ columns, data }: DataTableProps<T>) => {
-    console.log('DataTable');
-
+const DataTable =<T extends object>({ columns, data,showLoading,isLoading }: DataTableProps<T>) => {
+    // console.log('DataTable');
+    useEffect(()=>{
+        if(showLoading){
+            showLoading(isLoading || false)
+        }
+    },[isLoading])
     return (
         <table className="w-full border-collapse text-left">
             <thead>
@@ -67,4 +75,13 @@ const DataTable =<T extends object>({ columns, data }: DataTableProps<T>) => {
     );
 }
 
-export default DataTable;
+// const mapStateToProps = (state: any) => {
+//     return {
+//         isLoading: state.workspace.isLoading
+//     };
+// }
+
+ 
+// export default connect(mapStateToProps,null)(WithLoading(DataTable))  as typeof DataTable  ;
+
+export default WithLoading(DataTable) as typeof DataTable ;

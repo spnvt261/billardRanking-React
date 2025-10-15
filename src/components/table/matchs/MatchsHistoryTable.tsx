@@ -5,7 +5,7 @@ import Pagination from "../../pagination/Pagination";
 
 
 const MatchesHistoryTable = () => {
-    console.log('Matches Table');
+    // console.log('Matches Table');
 
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 6;

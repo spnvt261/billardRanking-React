@@ -1,7 +1,7 @@
 import React, { createContext } from "react";
 import { useLocalStorage } from "../../customhook/useLocalStorage";
 import { LOCAL_STORAGE_WORKSPACE_CURRENT, LOCAL_STORAGE_WORKSPACE_LIST } from "../../constants/localStorage";
-import type { WorkspaceData } from "../../redux/features/workspace/workspaceTypes";
+import type { WorkspaceData } from "../../types/workspace";
 
 interface WorkspaceContextType {
     workspaceKey: string | null;

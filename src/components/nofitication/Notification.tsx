@@ -82,7 +82,7 @@ const Notification: React.FC<NotificationProps> = ({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -80, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="fixed top-5 inset-x-0 z-50 flex justify-center"
+          className="fixed top-5 inset-x-0 px-4 max-w-md mx-auto z-50 flex justify-center"
         >
           <div className="w-[300px] sm:w-[400px] relative flex items-center space-x-3 px-4 py-3 rounded-md shadow-md text-gray-100 overflow-hidden bg-gray-600">
             {getIcon()}

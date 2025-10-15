@@ -9,16 +9,3 @@ export const GET_WORKSPACE_FAIL = 'GET_WORKSPACE_FAIL';
 export const LOGIN_WORKSPACE_REQUEST = 'LOGIN_WORKSPACE_REQUEST';
 export const LOGIN_WORKSPACE_SUCCESS = 'LOGIN_WORKSPACE_SUCCESS';
 export const LOGIN_WORKSPACE_FAIL = 'LOGIN_WORKSPACE_FAIL';
-
-export interface WorkspaceData {
-    id: number;
-    name: string;
-    shareKey: number;
-    isAdmin?:boolean
-}
-
-export interface WorkspaceDataToCreate {
-    name: string;
-    password: string;
-    shareKey: number;
-}

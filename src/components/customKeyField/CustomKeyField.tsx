@@ -6,11 +6,12 @@ interface Props {
     value?: string;
     error?: string | null;
     errorText?: string | null;
+    disabled?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
     handleConfirm?: () => void;
 }
-const CustomKeyField = ({ name = "key", error, onChange, onBlur,handleConfirm, value:propsValue,errorText }: Props) => {
+const CustomKeyField = ({ name = "key", error, onChange, onBlur,handleConfirm, value:propsValue,errorText,disabled }: Props) => {
     const [value, setValue] = useState(""); // lưu số đã nhập (raw)
     const [isFocused, setIsFocused] = useState(false);
 
@@ -94,6 +95,7 @@ const CustomKeyField = ({ name = "key", error, onChange, onBlur,handleConfirm, v
                     if (onBlur) onBlur(e);
                 }}
                 className={`absolute inset-0 w-full h-full opacity-0`}
+                disabled={disabled}
             />
             {errorText && <p className="text-sm max-w-[200px] text-red-500 break-words whitespace-normal">{errorText}</p>}
         </div>

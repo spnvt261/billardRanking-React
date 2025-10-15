@@ -48,7 +48,7 @@ const TournamentCard = (props: propsTournamentCard) => {
                 onMouseMove={handleMouseMove}
                 onClick={handleClick}
             >
-                <div className='w-full max-h-[150px] h-[150px] overflow-hidden flex items-center justify-center relative'>
+                <div className='w-full max-h-[150px] h-[150px] overflow-hidden flex items-center justify-center relative border-b border-slate-200'>
                     {
                         props.banner ? <img src={props.banner} /> : <img src='images/defaultBannerTournament.jpg' />
                     }

@@ -19,7 +19,7 @@ const AppRouters =()=>{
                 <Route path={PATHS.MATCHES} element={<ProtectedRoute><MatchesPage/></ProtectedRoute> }/>
                 <Route path={PATHS.TOURNAMENT} element={<ProtectedRoute><TournamentPage/></ProtectedRoute> }/>
                 <Route path={PATHS.OVERALL} element={<ProtectedRoute><OverallPage/></ProtectedRoute> }/>
-                <Route path={PATHS.NOTFOUND} element={<NotFoundPage/>}/>
+                <Route path="*" element={<NotFoundPage/>}/>
                 <Route path={PATHS.CREATE_TOURNAENT} element={<CreateTournamentPage/>}/>
             </Route>
         </Routes>

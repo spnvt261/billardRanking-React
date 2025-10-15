@@ -1,12 +1,9 @@
+import type { CheckWorkspaceResponse, CreateWorkspaceResponse, LoginWorkspaceResponse, WorkspaceDataToCreate } from '../../../types/workspace';
 import * as types from './workspaceTypes';
 import axios from 'axios';
 
-export interface CreateWorkspaceResponse{
-    success:string;
-    message:string;
-    workspaceId:number;
-}
-const createWorkspace = (workspaceData: types.WorkspaceDataToCreate) => async (dispatch: any) : Promise<CreateWorkspaceResponse> => {
+
+const createWorkspace = (workspaceData: WorkspaceDataToCreate) => async (dispatch: any) : Promise<CreateWorkspaceResponse> => {
     dispatch({ 
         type: types.CREATE_WORKSPACE_REQUEST ,
         payload:null
@@ -21,10 +18,6 @@ const createWorkspace = (workspaceData: types.WorkspaceDataToCreate) => async (d
     }
 }
 
-export interface CheckWorkspaceResponse {
-  exists: boolean;
-  workspace: types.WorkspaceData | null;
-}
 
 const joinWorkspace =(workspaceKey: { shareKey: Number }) => async (dispatch:any) : Promise<CheckWorkspaceResponse> =>{
     dispatch({
@@ -47,12 +40,6 @@ const joinWorkspace =(workspaceKey: { shareKey: Number }) => async (dispatch:any
     }
 }
 
-export interface LoginWorkspaceResponse{
-    accessToken:string;
-    refreshToken:string;
-    tokenType:string;
-    workspace:types.WorkspaceData | null;
-}
 const loginWorkspace = (data:{workspaceKey:Number,password:string}) => async (dispatch:any): Promise<LoginWorkspaceResponse>  =>{
      dispatch({
         type:types.LOGIN_WORKSPACE_REQUEST,

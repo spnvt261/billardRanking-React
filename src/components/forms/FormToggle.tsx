@@ -11,10 +11,11 @@ interface FormToggleProps {
     needPermission?: boolean;
     // element: ComponentType<{ btnCancel: () => void }>;
     element: ComponentType<any>;
+    formWidth?: string;
     className?: string;
     onConfirm?:()=>void;
 }
-const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission,onConfirm }: FormToggleProps) => {
+const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission,onConfirm,formWidth }: FormToggleProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const originRef = useRef<HTMLDivElement>(null);;
@@ -55,7 +56,7 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 
     return (
-        <div className={`form-toggle relative w-fit h-fit ${className ? className : ''}`}>
+        <div className={`form-toggle relative flex justify-center items-center w-fit h-fit ${className ? className : ''}`}>
             <div className='w-fit h-fit'
                 ref={originRef}
             >
@@ -83,7 +84,7 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
                     >
                         <motion.div
                             ref={formRef}
-                            className='w-full max-w-[600px]'
+                            className={`w-full`}
                             initial={{
                                 scale: 0,
                                 x: origin.x - window.innerWidth / 2 + origin.width / 2,
@@ -96,9 +97,10 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
                                 y: origin.y - vh / 2 + origin.height / 2,
                             }}
                             transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                            style={{maxWidth:formWidth?formWidth:'600px'}}
                         >
                             <div className='content-wrapper'>
-                                <div className=' p-6 rounded-2xl shadow-2xl max-h-[600px] overflow-y-auto hide-scrollbar'>
+                                <div className={` p-6 rounded-2xl shadow-2xl max-h-[600px] overflow-y-auto hide-scrollbar`}>
                                     <h3 className='text-xl font-bold mb-2'>{formTitle}</h3>
                                     <div className='p-2'>
                                         {WithLoading ? (

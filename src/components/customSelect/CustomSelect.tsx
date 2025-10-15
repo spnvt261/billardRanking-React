@@ -69,7 +69,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     };
 
     return (
-        <div ref={selectRef} className={`relative w-full mb-[1rem] ${className ? className : ''}`}>
+        <div ref={selectRef} className={`relative w-full ${className ? className : ''}`}>
             <button
                 type="button"
                 onClick={() => setIsOpenListSelect(!isOpenListSelect)}
