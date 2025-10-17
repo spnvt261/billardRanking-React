@@ -76,6 +76,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     }
     //type=date
     if (type === 'date') {
+        
         return (
             <div className={`custom-textfield mb-4 ${error ? 'error' : ''} ${className ? className : ''}`}>
                 <div className={`input-container ${isActive ? 'active' : ''} ${focus ? 'focus' : ''}`}>
@@ -96,10 +97,10 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                         dateFormat="dd/MM/yyyy"
                         locale={viShort}
                         className="react-datepicker-input cursor-pointer"
-                        onFocus={()=>{handleFocus(); }}
+                        onFocus={() => { handleFocus(); }}
                         onBlur={handleBlur}
                         onKeyDown={(e) => e.preventDefault()}
-                        // readOnly
+                    // readOnly
                     />
                     <label className={isActive ? 'active' : ''}>{label}</label>
                 </div>
@@ -128,7 +129,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                 <input
                     // type={type === 'money' ? 'tel' : type}
                     type={type === 'money' ? 'tel' : type === 'password' && showPassword ? 'text' : type}
-                    inputMode={type === 'money' || type ==='number' ? 'numeric' : undefined}
+                    inputMode={type === 'money' || type === 'number' ? 'numeric' : undefined}
                     name={name}
                     value={value || ''}
                     onChange={handleChange}
@@ -137,8 +138,8 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                         handleBlur();
                         if (onBlur) onBlur(e);
                     }}
-                    className={`${isActive ? 'active' : ''}` }
-                    // disabled
+                    className={`${isActive ? 'active' : ''}`}
+                // disabled
                 />
                 <label className={isActive ? 'active' : ''}>{label}</label>
             </div>

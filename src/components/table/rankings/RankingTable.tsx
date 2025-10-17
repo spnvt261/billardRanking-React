@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import DataTable from "../DataTable";
 import Pagination from "../pagination/Pagination";
-import * as playerActions from "../../../redux/features/player/playerActions";
+import playerActions from "../../../redux/features/player/playerActions";
 import "./RankingTable.css";
 import type { Player } from "../../../types/player";
 import { useWorkspace } from "../../../customhook/useWorkspace";
@@ -25,16 +25,20 @@ const RankingTable: React.FC<RankingTableProps> = ({
     // totalPages,
     playersByPage,
 }) => {
+    // console.log(playersByPage);
+    
     // console.log("ranking table");
-    const {notify} = useNotification();
+    const { notify } = useNotification();
     const [mode, setMode] = useState<"elo" | "prize">("elo");
     const [currentPage, setCurrentPage] = useState(1);
-    const {workspaceId} = useWorkspace();
+    const { workspaceId } = useWorkspace();
     useEffect(() => {
         if (!playersByPage[currentPage]) {
-            if(workspaceId) getAllPlayer(workspaceId, currentPage);
+            if (workspaceId) getAllPlayer(workspaceId, currentPage).catch(err => {
+                notify(`Lỗi kết nối tới sever ${err}`, 'error');
+            });
         }
-    }, [currentPage,playersByPage]);
+    }, [currentPage, playersByPage]);
 
     // useEffect(()=>{
     //     if(workspaceId) getAllPlayer(workspaceId, currentPage);
@@ -57,18 +61,16 @@ const RankingTable: React.FC<RankingTableProps> = ({
                     }}
                 ></div>
                 <div
-                    className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${
-                        mode === "elo" ? "text-white w-3/4" : "text-black w-1/4"
-                    }`}
+                    className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${mode === "elo" ? "text-white w-3/4" : "text-black w-1/4"
+                        }`}
                     onClick={() => setMode("elo")}
                 >
                     Elo
                 </div>
                 <div
-                    className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${
-                        mode === "prize" ? "text-white w-3/4" : "text-black w-1/4"
-                    }`}
-                    onClick={() => {setMode("prize"); notify('Đang cập nhật','error')}}
+                    className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${mode === "prize" ? "text-white w-3/4" : "text-black w-1/4"
+                        }`}
+                    onClick={() => { setMode("prize"); notify('Đang cập nhật', 'error') }}
                 >
                     Tiền
                 </div>

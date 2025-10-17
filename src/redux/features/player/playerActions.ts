@@ -3,9 +3,9 @@ import type { PlayersRequest, PlayersResponse } from "../../../types/player";
 import * as types from './playerTypes';
 import axios from "axios";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../constants/localStorage";
-import { upLoadImages } from "../common";
+import { getListPlayerSelect, upLoadImages } from "../common";
 
-export const getPlayers =
+ const getPlayers =
     (workspaceId: string, page: number) =>
         async (dispatch: Dispatch): Promise<PlayersResponse> => {
             dispatch({
@@ -37,7 +37,7 @@ export const getPlayers =
             }
         };
 
-export const createPlayer =
+ const createPlayer =
     (data: PlayersRequest) =>
         async (dispatch: Dispatch): Promise<PlayersResponse> => {
             dispatch({
@@ -79,7 +79,8 @@ export const createPlayer =
 const playerActions = {
     getPlayers,
     createPlayer,
-    upLoadImages
+    upLoadImages,
+    getListPlayerSelect
 }
 
 export default playerActions;

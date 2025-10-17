@@ -1,3 +1,8 @@
+export interface PlayerSelect{
+    value:number; //playerId
+    label:string; // playerName
+}
+
 export interface Player{
     id:number;
     name:string;

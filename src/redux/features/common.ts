@@ -3,9 +3,14 @@ import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../constants/localStorage";
 import axios from "axios";
 
 export const CLEAR_CACHE = 'CLEAR_CACHE';
+
 export const UPLOAD_IMAGE_SUCCESS = 'UPLOAD_IMAGE_SUCCESS';
 export const UPLOAD_IMAGE_FAIL = 'UPLOAD_IMAGE_FAIL';
 export const UPLOAD_IMAGE_REQUEST = 'UPLOAD_IMAGE_REQUEST';
+
+export const GET_LIST_PLAYERS_SELECT_SUCCESS = 'GET_LIST_PLAYERS_SELECT_SUCCESS';
+export const GET_LIST_PLAYERS_SELECT_FAIL = 'GET_LIST_PLAYERS_SELECT_FAIL';
+export const GET_LIST_PLAYERS_SELECT_REQUEST = 'GET_LIST_PLAYERS_SELECT_REQUEST';
 
 
 export const clearCache = () => async (dispatch: Dispatch) => {
@@ -61,3 +66,21 @@ export const upLoadImages = (file: File) => async (dispatch: Dispatch) => {
         throw err; // ném ra để component xử lý nếu muốn
     }
 };
+
+export const getListPlayerSelect =(workspaceId:string) => async (dispatch: Dispatch)=>{
+    dispatch({ type: GET_LIST_PLAYERS_SELECT_REQUEST, payload: null });
+    try{
+          let token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
+        if (token && token.startsWith('"') && token.endsWith('"')) {
+            token = token.slice(1, -1);
+        }
+        if (!token) throw new Error("No access token found");
+
+        // Gửi request upload
+        const response = await axios.get("/api/players/get-list?workspaceId=" + workspaceId);
+        dispatch({ type: GET_LIST_PLAYERS_SELECT_SUCCESS, payload: response.data });
+    }
+    catch(err:any){
+        dispatch({ type: GET_LIST_PLAYERS_SELECT_FAIL, payload: err.message});
+    }
+}

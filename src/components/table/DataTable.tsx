@@ -26,8 +26,8 @@ const DataTable = <T extends object>({ columns, data, showLoading, isLoading, to
         }
     }, [isLoading])
     return (
-        <div className="relative" 
-            style={{ minHeight: `${totalElement ==0?'500px':data.length==0?'700px':''}` }}
+        <div className="relative"
+            style={{ minHeight: `${totalElement == 0 ? '500px' : data.length == 0 ? '700px' : ''}` }}
         >
             <table className=" w-full border-collapse text-left"
             >
@@ -45,17 +45,17 @@ const DataTable = <T extends object>({ columns, data, showLoading, isLoading, to
                     </tr>
                 </thead>
                 <AnimatePresence>
-                    <motion.tbody
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                    <tbody
                     >
 
                         {data && data.length > 0 && (data.map((row) => (
                             <motion.tr
                                 key={(row as any).match_id || (row as any).id}
                                 layout
+                                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
 
                             >
                                 {columns.map((col, j) => {
@@ -78,11 +78,11 @@ const DataTable = <T extends object>({ columns, data, showLoading, isLoading, to
                             </motion.tr>
                         )))}
 
-                    </motion.tbody>
+                    </tbody>
                 </AnimatePresence>
             </table>
             {
-                totalElement ==0 &&
+                totalElement == 0 &&
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <h2 className="text-xl font-bold mb-4 text-slate-500">CHƯA CÓ DỮ LIỆU</h2>
                 </div>

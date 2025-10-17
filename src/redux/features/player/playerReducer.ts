@@ -1,5 +1,5 @@
-import type { Player } from '../../../types/player';
-import { UPLOAD_IMAGE_REQUEST } from '../common';
+import type { Player, PlayerSelect } from '../../../types/player';
+import { GET_LIST_PLAYERS_SELECT_FAIL, GET_LIST_PLAYERS_SELECT_REQUEST, GET_LIST_PLAYERS_SELECT_SUCCESS, UPLOAD_IMAGE_REQUEST } from '../common';
 import * as types from './playerTypes';
 
 interface PlayerAction {
@@ -15,6 +15,7 @@ interface PlayerState {
     totalElements: number;
     totalPages: number;
     last: boolean;
+    listPlayerSelect: PlayerSelect[]
 }
 
 const initState: PlayerState = {
@@ -26,6 +27,7 @@ const initState: PlayerState = {
     totalElements: 0,
     totalPages: 0,
     last: false,
+    listPlayerSelect: [],
 };
 
 
@@ -33,6 +35,7 @@ const playerReducer = (state = initState, action: PlayerAction) => {
 
     switch (action.type) {
         //Request
+        case GET_LIST_PLAYERS_SELECT_REQUEST:
         case UPLOAD_IMAGE_REQUEST:
         case types.GET_PLAYERS_REQUEST:
         case types.CREATE_PLAYER_REQUEST:
@@ -43,7 +46,7 @@ const playerReducer = (state = initState, action: PlayerAction) => {
         //success
         case types.GET_PLAYERS_SUCCESS:
             // console.log('get');
-            
+
             return {
                 ...state,
                 isLoading: false,
@@ -63,9 +66,20 @@ const playerReducer = (state = initState, action: PlayerAction) => {
                 ...state,
                 isLoading: false,
                 playersByPage: {},
-                totalPages:0
+                listPlayerSelect: [],
+                totalPages: 0
             }
+
+        case GET_LIST_PLAYERS_SELECT_SUCCESS:
+            return {
+                ...initState,
+                isLoading: false,
+                listPlayerSelect: action.payload
+            }
+
+
         //fail
+        case GET_LIST_PLAYERS_SELECT_FAIL:
         case types.GET_PLAYERS_FAIL:
         case types.CREATE_PLAYER_FAIL:
             return {
@@ -74,7 +88,7 @@ const playerReducer = (state = initState, action: PlayerAction) => {
                 error: action.payload
             }
 
-    
+
         default:
             return state;
     }
