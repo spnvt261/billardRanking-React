@@ -1,51 +1,80 @@
-import { useMemo, useState } from "react";
-import { players, type Player } from "../../../data/rankingData"
-import DataTable from "../DataTable"
-import Pagination from "../../pagination/Pagination";
-import { getSortedPlayers } from "../../../ultils/sortPlayerRanking";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import './RankingTable.css'
+import DataTable from "../DataTable";
+import Pagination from "../pagination/Pagination";
+import * as playerActions from "../../../redux/features/player/playerActions";
+import "./RankingTable.css";
+import type { Player } from "../../../types/player";
+import { useWorkspace } from "../../../customhook/useWorkspace";
+import { useNotification } from "../../../customhook/useNotifycation";
 
-const RankingTable = () => {
-    // console.log('RankingTable');
-    const [currentPage, setCurrentPage] = useState(1);
+interface RankingTableProps {
+    isLoading: boolean;
+    totalElements: number;
+    totalPages: number;
+    page: number;
+    playersByPage: Record<number, Player[]>;
+    getAllPlayer: (workspaceId: string, page: number) => Promise<void>;
+}
+
+const RankingTable: React.FC<RankingTableProps> = ({
+    isLoading,
+    totalElements,
+    getAllPlayer,
+    // page,
+    // totalPages,
+    playersByPage,
+}) => {
+    // console.log("ranking table");
+    const {notify} = useNotification();
     const [mode, setMode] = useState<"elo" | "prize">("elo");
-    const pageSize = 10;
-    const sortedPlayers = useMemo(() => getSortedPlayers(players, mode), [mode]);
-    const paginatedPlayers: Player[] = useMemo(() => {
-        const start = (currentPage - 1) * pageSize;
-        const end = start + pageSize;
-        return sortedPlayers.slice(start, end);
-    }, [sortedPlayers, currentPage]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const {workspaceId} = useWorkspace();
+    useEffect(() => {
+        if (!playersByPage[currentPage]) {
+            if(workspaceId) getAllPlayer(workspaceId, currentPage);
+        }
+    }, [currentPage,playersByPage]);
+
+    // useEffect(()=>{
+    //     if(workspaceId) getAllPlayer(workspaceId, currentPage);
+    // },[])
+    const currentData = playersByPage[currentPage] || [];
+
     return (
         <div className="ranking-table-wrapped">
+            {/* ----- Toggle ELO / PRIZE ----- */}
             <div className="flex relative font-bold">
                 <div
-                    className={`hightlight-block absolute top-0 h-full w-full transition-all duration-500 shadow-md`}
+                    className="hightlight-block absolute top-0 h-full w-full transition-all duration-500 shadow-md"
                     style={{
                         left: mode === "elo" ? "-25%" : "25%",
                         borderBottomLeftRadius: mode === "elo" ? "1rem" : "0",
                         borderBottomRightRadius: mode === "prize" ? "1rem" : "0",
                         borderTopLeftRadius: "2rem",
                         borderTopRightRadius: "2rem",
-                        transform: "scaleX(1.05)", // làm khối rộng hơn 1 chút
+                        transform: "scaleX(1.05)",
                     }}
                 ></div>
                 <div
-                    className={` z-10 text-center py-2 cursor-pointer transition-all duration-500 ${mode === "elo" ? "text-white w-3/4" : "text-black w-1/4"
-                        }`}
+                    className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${
+                        mode === "elo" ? "text-white w-3/4" : "text-black w-1/4"
+                    }`}
                     onClick={() => setMode("elo")}
                 >
                     Elo
                 </div>
                 <div
-                    className={` z-10 text-center py-2 cursor-pointer transition-all duration-500 ${mode === "prize" ? "text-white w-3/4" : "text-black w-1/4"
-                        }`}
-                    onClick={() => setMode("prize")}
+                    className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${
+                        mode === "prize" ? "text-white w-3/4" : "text-black w-1/4"
+                    }`}
+                    onClick={() => {setMode("prize"); notify('Đang cập nhật','error')}}
                 >
                     Tiền
                 </div>
             </div>
+
+            {/* ----- Table ----- */}
             <DataTable<Player>
                 key={`page-${currentPage}`}
                 columns={[
@@ -55,9 +84,9 @@ const RankingTable = () => {
                         accessor: (item: Player) => (
                             <div className="flex items-center gap-2">
                                 <img
-                                    src={item.image}
+                                    src={item.avatarUrl || "images/avataDefault.png"}
                                     alt={item.name}
-                                    className="w-20 h-20 bg-red-400 overflow-hidden rounded-[1rem]"
+                                    className="w-20 h-20 bg-gray-200 overflow-hidden rounded-[1rem]"
                                 />
                                 <span>{item.name}</span>
                             </div>
@@ -66,30 +95,38 @@ const RankingTable = () => {
                     },
                     {
                         header: mode === "elo" ? "Elo" : "Prize",
-                        accessor: (item: Player) => (mode === "elo" ? item.elo : `$${item.prize}`),
+                        accessor: (item: Player) =>
+                            mode === "elo" ? item.elo : `$${(item as any).prize ?? 0}`,
                         width: "30%",
                     },
                 ]}
-                data={paginatedPlayers}
+                data={currentData}
+                isLoading={isLoading}
+                totalElement={totalElements}
             />
+
+            {/* ----- Pagination ----- */}
             <Pagination
                 currentPage={currentPage}
-                totalItems={sortedPlayers.length}
-                pageSize={pageSize}
+                totalItems={totalElements}
+                pageSize={10}
                 onPageChange={setCurrentPage}
             />
         </div>
-    )
-}
-const mapStateToProps = () => {
-    return {
+    );
+};
 
-    }
-}
+const mapStateToProps = (state: any) => ({
+    isLoading: state.players.isLoading,
+    playersByPage: state.players.playersByPage,
+    totalElements: state.players.totalElements,
+    totalPages: state.players.totalPages,
+    page: state.players.page,
+});
 
-const mapDispatchToProp = () => {
-    return {
+const mapDispatchToProps = (dispatch: any) => ({
+    getAllPlayer: (workspaceId: string, page: number) =>
+        dispatch(playerActions.getPlayers(workspaceId, page)),
+});
 
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProp)(RankingTable)
+export default connect(mapStateToProps, mapDispatchToProps)(RankingTable);

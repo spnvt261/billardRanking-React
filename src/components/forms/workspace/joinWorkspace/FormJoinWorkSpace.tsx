@@ -21,7 +21,7 @@ interface Props {
     loginWorkspace: (data: { workspaceKey: Number, password: string }) => Promise<LoginWorkspaceResponse>;
 }
 const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, loginWorkspace,keyValue }: Props) => {
-    const { addWorkspace, hasWorkspace, setWorkspaceKey } = useWorkspace();
+    const { addWorkspace, hasWorkspace, setWorkspaceKey,setWorkspaceId } = useWorkspace();
     
     const [, setAccessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
 
@@ -107,6 +107,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                         }
                         setAccessToken(result.accessToken);
                         if(!keyValue) addWorkspace(resultParsed);
+                        setWorkspaceId(result.workspace.id.toString());
                         setWorkspaceKey(values.key);
                         btnCancel();
                         notify('Đăng nhập thành công', 'success');

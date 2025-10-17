@@ -7,7 +7,7 @@ const MainLayout = () =>{
     return(
         <div className="main-layout flex flex-col min-h-screen">
             <Header/> 
-            <div className="main-content container mx-auto mt-6rem p-2 flex flex-col flex-1"
+            <div className="main-content container mx-auto mt-6rem mb-[2rem] p-2 flex flex-col flex-1"
                 style={{paddingTop:'env(safe-area-inset-top)'}}
             >
                 <Outlet/>

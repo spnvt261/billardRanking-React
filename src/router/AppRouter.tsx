@@ -9,6 +9,7 @@ import MatchesPage from "../pages/MatchsPage/MatchsPage";
 import Home from "../pages/HomePage/HomePage";
 import CreateTournamentPage from "../pages/CreateTournamentPage/CreateTournamentPage";
 import ProtectedRoute from "./ProtectedRoute";
+import TestComponent from "../assets/TestComponent";
 
 const AppRouters =()=>{
     return(
@@ -21,6 +22,7 @@ const AppRouters =()=>{
                 <Route path={PATHS.OVERALL} element={<ProtectedRoute><OverallPage/></ProtectedRoute> }/>
                 <Route path="*" element={<NotFoundPage/>}/>
                 <Route path={PATHS.CREATE_TOURNAENT} element={<CreateTournamentPage/>}/>
+                <Route path="/test" element={<TestComponent/>}/>
             </Route>
         </Routes>
     )

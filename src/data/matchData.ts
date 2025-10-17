@@ -1,5 +1,5 @@
 // 🧩 Interface mô tả cấu trúc 1 trận đấu (match)
-export interface Player {
+interface Player {
   id: number
   name: string
 }

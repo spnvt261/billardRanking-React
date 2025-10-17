@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { listMatches, type Match } from "../../../data/matchData"
 import DataTable from "../DataTable"
-import Pagination from "../../pagination/Pagination";
+import Pagination from "../pagination/Pagination";
 
 
 const MatchesHistoryTable = () => {

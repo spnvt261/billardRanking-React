@@ -31,6 +31,7 @@ const ListWorkSpaces = () => {
                                     name={item.name}
                                     workspaceKey={item.shareKey}
                                     isAdmin={item.isAdmin ? item.isAdmin : false}
+                                    workspaceId={item.id}
                                 />
                             </motion.div>
                         ))}

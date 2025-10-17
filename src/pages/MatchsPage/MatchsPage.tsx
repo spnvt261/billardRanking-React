@@ -12,6 +12,7 @@ const MatchesPage = () =>{
                 formTitle="Thêm trận đã ấn định tỉ số"
                 element={AddMatchForm}
                 className="mb-4"
+                needPermission
             />
             <h2 className="text-xl font-bold mb-4 text-slate-500">MATCHES HISTORY</h2>
             <MatchesHistoryTable/>

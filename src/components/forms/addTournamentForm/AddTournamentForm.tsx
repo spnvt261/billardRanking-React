@@ -4,6 +4,7 @@ import CustomTextField from "../../customTextField/CustomTextField";
 import CustomSelect from "../../customSelect/CustomSelect";
 import CustomButton from "../../customButtons/CustomButton";
 import { listplayerSelect, listTypeTournament } from "../../../data/tournamentData";
+import { FaChevronDown } from "react-icons/fa6";
 
 interface Props {
     btnCancel: () => void;
@@ -98,14 +99,15 @@ const AddTournamentForm = ({ btnCancel, showLoading, isLoading }: Props) => {
                 onClick={() => setShowOptional(!showOptional)}
             >
                 <span className="mr-2">
-                    {showOptional ? "Ẩn thông tin bổ sung" : "Hiển thị thông tin bổ sung"}
+                    {/* {showOptional ? "Ẩn thông tin bổ sung" : "Hiển thị thông tin bổ sung"} */}
+                    Thông tin bổ sung
                 </span>
                 <motion.span
                     animate={{ rotate: showOptional ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
                     className="inline-block"
                 >
-                    ▼
+                    <FaChevronDown size={18} />
                 </motion.span>
             </div>
 

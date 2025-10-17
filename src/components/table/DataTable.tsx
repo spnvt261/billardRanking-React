@@ -15,63 +15,79 @@ interface DataTableProps<T> {
     data: T[];
     showLoading?: (show: boolean) => void;
     isLoading?: boolean;
+    totalElement?: number
 }
 
-const DataTable =<T extends object>({ columns, data,showLoading,isLoading }: DataTableProps<T>) => {
+const DataTable = <T extends object>({ columns, data, showLoading, isLoading, totalElement }: DataTableProps<T>) => {
     // console.log('DataTable');
-    useEffect(()=>{
-        if(showLoading){
+    useEffect(() => {
+        if (showLoading) {
             showLoading(isLoading || false)
         }
-    },[isLoading])
+    }, [isLoading])
     return (
-        <table className="w-full border-collapse text-left">
-            <thead>
-                <tr>
-                    {columns.map((col, i) => (
-                        <th
-                            key={i}
-                            className="p-3 border-t-0"
-                            style={{ width: col.width || "auto" }}
-                        >
-                            {col.header}
-                        </th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
+        <div className="relative" 
+            style={{ minHeight: `${totalElement ==0?'500px':data.length==0?'700px':''}` }}
+        >
+            <table className=" w-full border-collapse text-left"
+            >
+                <thead>
+                    <tr>
+                        {columns.map((col, i) => (
+                            <th
+                                key={i}
+                                className="p-3 border-t-0"
+                                style={{ width: col.width || "auto" }}
+                            >
+                                {col.header}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
                 <AnimatePresence>
-                    {data.map((row) => (
-                        <motion.tr
-                             key={(row as any).match_id || (row as any).id}
-                            layout                   
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                        >
-                            {columns.map((col, j) => {
-                                let cellContent: React.ReactNode;
+                    <motion.tbody
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
 
-                                // nếu accessor là function → gọi function
-                                if (typeof col.accessor === "function") {
-                                    cellContent = col.accessor(row);
-                                } else {
-                                    // nếu accessor là key → lấy value
-                                    cellContent = (row as any)[col.accessor];
-                                }
+                        {data && data.length > 0 && (data.map((row) => (
+                            <motion.tr
+                                key={(row as any).match_id || (row as any).id}
+                                layout
 
-                                return (
-                                    <td key={j} className="p-3 border-b">
-                                        {cellContent}
-                                    </td>
-                                );
-                            })}
-                        </motion.tr>
-                    ))}
+                            >
+                                {columns.map((col, j) => {
+                                    let cellContent: React.ReactNode;
+
+                                    // nếu accessor là function → gọi function
+                                    if (typeof col.accessor === "function") {
+                                        cellContent = col.accessor(row);
+                                    } else {
+                                        // nếu accessor là key → lấy value
+                                        cellContent = (row as any)[col.accessor];
+                                    }
+
+                                    return (
+                                        <td key={j} className="p-3 border-b">
+                                            {cellContent}
+                                        </td>
+                                    );
+                                })}
+                            </motion.tr>
+                        )))}
+
+                    </motion.tbody>
                 </AnimatePresence>
-            </tbody>
-        </table>
+            </table>
+            {
+                totalElement ==0 &&
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <h2 className="text-xl font-bold mb-4 text-slate-500">CHƯA CÓ DỮ LIỆU</h2>
+                </div>
+            }
+        </div>
     );
 }
 
@@ -81,7 +97,7 @@ const DataTable =<T extends object>({ columns, data,showLoading,isLoading }: Dat
 //     };
 // }
 
- 
+
 // export default connect(mapStateToProps,null)(WithLoading(DataTable))  as typeof DataTable  ;
 
-export default WithLoading(DataTable) as typeof DataTable ;
+export default WithLoading(DataTable) as typeof DataTable;

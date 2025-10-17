@@ -7,7 +7,7 @@ import { BiHide, BiShow } from 'react-icons/bi';
 
 interface CustomTextFieldProps {
     label: string;
-    value?: string;
+    value?: any;
     type?: string;
     name: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -65,6 +65,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                 <input
                     id={name}
                     type="file"
+                    accept="image/*"
                     name={name}
                     onChange={handleChange}
                     className="file-upload-input"

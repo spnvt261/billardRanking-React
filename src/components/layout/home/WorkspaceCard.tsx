@@ -11,13 +11,14 @@ interface WorkspaceCardProps {
     name: string;
     workspaceKey: number;
     isAdmin?: boolean;
+    workspaceId:number
 }
 const formatKey = (key: number) => {
     const keyStr = key.toString().padStart(8, "0");
     return `${keyStr.slice(0, 4)}-${keyStr.slice(4)}`;
 };
-const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdmin }) => {
-    const { removeWorkspace, setWorkspaceKey } = useWorkspace();
+const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdmin,workspaceId }) => {
+    const { removeWorkspace, setWorkspaceKey,setWorkspaceId } = useWorkspace();
     const [showKey, setShowKey] = useState(false);
     const [showJoinForm, setShowJoinForm] = useState(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -31,6 +32,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
             setShowJoinForm(true);
             return;
         }
+        setWorkspaceId(workspaceId.toString());
         setWorkspaceKey(workspaceKey.toString());
         notify(`Đã vào workspace '${name}'`, 'success');
     }

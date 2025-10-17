@@ -24,7 +24,7 @@ interface Props {
 }
 const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, joinWorkspace, loginWorkspace }: Props) => {
     // console.log(isLoading);
-    const { addWorkspace, setWorkspaceKey } = useWorkspace();
+    const { addWorkspace, setWorkspaceKey,setWorkspaceId } = useWorkspace();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const { notify } = useNotification();
     const lastSubmitTime = useRef<number | null>(null);
@@ -97,6 +97,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
                         if (resultLogin.workspace) {
                             setAccessToken(resultLogin.accessToken);
                             setWorkspaceKey(resultLogin.workspace.shareKey.toString());
+                            setWorkspaceId(resultLogin.workspace.id.toString());
                             notify('Dăng nhập thành công', 'success');
                         }
                     }

@@ -1,5 +1,7 @@
 import { forwardRef } from "react";
 import "./CustomButton.css";
+import { useLocalStorage } from "../../customhook/useLocalStorage";
+import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../constants/localStorage";
 
 interface CustomButtonProps {
     label: string;
@@ -8,17 +10,20 @@ interface CustomButtonProps {
     onClick?: () => void;
     className?: string;
     variant: "type-1" | "type-2" | "type-3" | "type-4" | "type-5" | "type-6" | "type-7";
-    needPermission?:boolean;
+    needPermission?: boolean;
 }
 
 const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
-    ({ label, variant, width = "auto", type = "button", onClick, className = "", 
-        // needPermission = false 
+    ({ label, variant, width = "auto", type = "button", onClick, className = "",
+        needPermission
     }, ref) => {
+        const [accessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
+        const hasAccess = Boolean(accessToken);
+        const shouldShowButton = !needPermission || hasAccess;
         return (
             <>
                 {
-                    // !needPermission &&
+                    shouldShowButton &&
                     <button
                         ref={ref}
                         type={type}

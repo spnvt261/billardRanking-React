@@ -1,0 +1,30 @@
+export interface Player{
+    id:number;
+    name:string;
+    nickname?:string;
+    avatarUrl?:string;
+    elo:number;
+    description?:string;
+    workspaceId:number;
+    createdAt:string;
+    updatedAt:string;
+    rank:number
+}
+
+export interface PlayersRequest{
+    workspaceId:number | null;
+    name:string;
+    startElo:number;
+    nickname?:string;
+    avatarUrl?:string;
+    decription?:string;
+}
+
+export interface PlayersResponse{
+    content:Player[];
+    page:number;
+    size:number;
+    totalElements:number;
+    totalPages:number;
+    last:boolean;
+}

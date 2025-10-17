@@ -1,11 +1,13 @@
 import React, { createContext } from "react";
 import { useLocalStorage } from "../../customhook/useLocalStorage";
-import { LOCAL_STORAGE_WORKSPACE_CURRENT, LOCAL_STORAGE_WORKSPACE_LIST } from "../../constants/localStorage";
+import { LOCAL_STORAGE_WORKSPACE_CURRENT, LOCAL_STORAGE_WORKSPACE_ID_CURRENT, LOCAL_STORAGE_WORKSPACE_LIST } from "../../constants/localStorage";
 import type { WorkspaceData } from "../../types/workspace";
 
 interface WorkspaceContextType {
     workspaceKey: string | null;
     setWorkspaceKey: (key: string | null) => void;
+    workspaceId:string | null;
+    setWorkspaceId:(key:string | null) => void;
     workspaceList: WorkspaceData[];
     addWorkspace: (workspace: WorkspaceData) => void;
     removeWorkspace: (shareKey: string) => void;
@@ -17,6 +19,7 @@ export const WorkspaceContext = createContext<WorkspaceContextType | undefined>(
 export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [workspaceList, setWorkspaceList] = useLocalStorage<WorkspaceData[]>(LOCAL_STORAGE_WORKSPACE_LIST, []);
     const [workspaceKey, setWorkspaceKey] = useLocalStorage<string | null>(LOCAL_STORAGE_WORKSPACE_CURRENT, null);
+    const [workspaceId, setWorkspaceId] = useLocalStorage<string | null>(LOCAL_STORAGE_WORKSPACE_ID_CURRENT, null);
 
     // Thêm workspace mới, tránh duplicate theo shareKey
     const addWorkspace = (workspace: WorkspaceData) => {
@@ -45,6 +48,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         () => ({
             workspaceKey,
             workspaceList,
+            workspaceId,
+            setWorkspaceId,
             setWorkspaceKey,
             addWorkspace,
             removeWorkspace,
