@@ -3,21 +3,40 @@ import AddSpecialTournamentForm from "../../components/forms/addSpecialTournamen
 import AddTournamentForm from "../../components/forms/addTournamentForm/AddTournamentForm";
 import FormToggle from "../../components/forms/FormToggle";
 import TournamentList from "../../components/layout/tournaments/tournamentList/TournamentList";
-import { tournaments } from "../../data/tournamentData";
 import tournamentActions from "../../redux/features/tournament/tournamentActions";
-import type { Tournament } from "../../types/tournament";
+import type { TournamentsResponse } from "../../types/tournament";
+import { useEffect } from "react";
+import { useWorkspace } from "../../customhook/useWorkspace";
+import WithLoading from "../../components/loading/WithLoading";
 
-interface props {
-    getAllTournaments: (workspaceId: string, page: number) => Promise<void>;
+interface Props {
+    getAllTournaments: (workspaceId: string) => Promise<void>;
+    showLoading?: (isLoading: boolean) => void;
     isLoading: boolean;
-    totalElements: number;
-    totalPages: number;
-    page: number;
-    listTournaments: Tournament[]
+    isCreateLoading: boolean;
+    dataTournaments: TournamentsResponse
+    isFetched:boolean;
 }
-const TournamentPage: React.FC<props> = () => {
-    const specialTournaments = tournaments.filter(t => t.tournament_type === 'Đền');
-    const normalTournaments = tournaments.filter(t => t.tournament_type !== 'Đền');
+const TournamentPage: React.FC<Props> = ({
+    getAllTournaments,
+    dataTournaments,
+    isLoading,
+    isCreateLoading,
+    showLoading,
+    isFetched
+}) => {
+    const specialTournaments = dataTournaments.SpecialDen;
+    const { workspaceId } = useWorkspace();
+    useEffect(() => {
+        if (showLoading) {
+            showLoading(isLoading)
+        }
+    }, [isLoading])
+    useEffect(() => {
+        if (!isFetched && workspaceId) {
+            getAllTournaments(workspaceId);
+        }
+    }, [isFetched, workspaceId, isCreateLoading]);
     return (
         <div className="tournament-page">
             <div className="flex">
@@ -37,10 +56,14 @@ const TournamentPage: React.FC<props> = () => {
                     needPermission
                 />
             </div>
-            <TournamentList
-                label="Tournaments"
-                list={normalTournaments}
-            />
+            <h3 className="mb-1 text-xl text-slate-600 font-bold" >TOURNAMENTS</h3>
+            {Object.entries(dataTournaments.NormalTournament).map(([quarter, list]) => (
+                <TournamentList
+                    key={quarter}
+                    label={quarter}
+                    list={list}
+                />
+            ))}
             <TournamentList
                 label="đền"
                 list={specialTournaments}
@@ -50,15 +73,14 @@ const TournamentPage: React.FC<props> = () => {
 }
 
 const mapStateToProps = (state: any) => ({
-    isLoading: state.tournaments.isLoading,
-    listTournaments: state.tournaments.tournaments,
-    totalElements: state.tournaments.totalElements,
-    totalPages: state.tournaments.totalPages,
-    page: state.tournaments.page,
+    isLoading: state.tournaments.isGetDataLoading,
+    isCreateLoading: state.tournaments.isCreateLoading,
+    dataTournaments: state.tournaments.dataTournaments,
+    isFetched:state.tournaments.isFetched
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getAllTournaments: (workspaceId: string, page: number) => dispatch(tournamentActions.getAllTournaments(workspaceId, page)),
+    getAllTournaments: (workspaceId: string) => dispatch(tournamentActions.getAllTournaments(workspaceId)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TournamentPage) 
+export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(TournamentPage)) 

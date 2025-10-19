@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import TournamentCard from "../tournamentCard/TournamentCard";
 import './TournamentList.css';
-import type { iTournament } from "../../../../data/tournamentData";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import type { Tournament } from "../../../../types/tournament";
 interface propsTournamentList {
     label: string;
-    list: iTournament[];
+    list: Tournament[];
 }
 const TournamentList = (props: propsTournamentList) => {
     // console.log('Tournament List');
@@ -72,10 +72,14 @@ const TournamentList = (props: propsTournamentList) => {
             <h3
                 className="mb-1 label-sm text-slate-500 font-bold"
             >{props.label.toUpperCase()}</h3>
-            <div className="hide-scrollbar overflow-x-auto scroll-x pt-[0.5rem] pb-[0.5rem] pl-[0.25rem] pr-[0.25rem]"
+            <div className={`hide-scrollbar overflow-x-auto scroll-x pt-[0.5rem] pb-[0.5rem] pl-[0.25rem] pr-[0.25rem]`}
                 ref={scrollRef}
                 onScroll={handleScroll}
+                style={props.list.length===0?{minHeight:'100px',borderRadius:'1rem',backgroundColor:'#f3f4f6'}:{}}
             >
+                {
+                    props.list.length===0 && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full"><p className="text-slate-500 font-bold">NO DATA</p></div>
+                }
                 <button
                     className="button-scroll absolute left-0 top-1/2 transform hover:scale-110 -translate-y-1/2 -translate-x-1/2 z-10"
                     onClick={() => scrollByOffset(-300)} 
@@ -91,14 +95,14 @@ const TournamentList = (props: propsTournamentList) => {
                                 <TournamentCard
                                     key={item.id}
                                     id={item.id}
-                                    attened={item.attened}
-                                    date={item.start_date}
+                                    attened={item.listPlayer.length}
+                                    date={item.startDate}
                                     name={item.name}
                                     status={item.status}
                                     banner={item.banner}
                                     location={item.location}
                                     prize={item.prize}
-                                    winnerName={item.winnerName}
+                                    winnerName={item.winner?.name}
                                 />
                             )
                         })

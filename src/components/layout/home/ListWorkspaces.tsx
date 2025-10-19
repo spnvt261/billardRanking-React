@@ -8,7 +8,7 @@ const ListWorkSpaces = () => {
     return (
         <>
             {workspaceList.length !== 0 && (
-                <h2 className="text-xl font-bold mb-4 text-slate-500">WORKSPACES ĐÃ VÀO</h2>
+                <h2 className="text-xl font-bold mb-4 text-slate-500">CÁC NHÓM ĐÃ VÀO</h2>
             )}
             <AnimatePresence>
             <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">

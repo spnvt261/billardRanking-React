@@ -23,15 +23,15 @@ const Home: React.FC = () => {
             >
                 <div className={`flex ${workspaceList.length > 0 ? '' : 'flex-col '} md:flex-row justify-center items-center gap-4`}>
                     <FormToggle
-                        btnLabel="Vào Workspace"
-                        formTitle="Nhập workspace key để tham gia"
+                        btnLabel="Vào nhóm"
+                        formTitle="Nhập GroupKey để tham gia"
                         element={FormJoinWorkSpace}
                         formWidth="400px"
                         className="w-auto "
                     />
                     <FormToggle
-                        btnLabel="Tạo Workspace"
-                        formTitle="Tạo workspace mới"
+                        btnLabel="Tạo nhóm"
+                        formTitle="Tạo nhóm mới"
                         element={FormAddWorkSpace}
                         // formWidth="400px"
                         className="w-auto "

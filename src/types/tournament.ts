@@ -1,16 +1,16 @@
 import type { Player } from "./player";
 
-const TournamentType = {
+export const TournamentType = {
     ROUND_ROBIN: "ROUND_ROBIN",
     SINGLE_ELIMINATION: "SINGLE_ELIMINATION",
     DOUBLE_ELIMINATION: "DOUBLE_ELIMINATION",
     CUSTOM: "CUSTOM",
-    ROUND_ROBIN_AND_SINGLE_ELIMINATION: "ROUND_ROBIN_AND_SINGLE_ELIMINATION",
-    SWEDISH: "SWEDISH"
+    SWEDISH: "SWEDISH",
+    SPECIAL_DEN: "SPECIAL_DEN"
 } as const;
 export type TournamentType = typeof TournamentType[keyof typeof TournamentType];
 
-const TournamentStatus = {
+export const TournamentStatus = {
     ONGOING: "ONGOING",
     UPCOMING: "UPCOMING",
     FINISHED: "FINISHED",
@@ -23,6 +23,8 @@ export interface Tournament {
     workspaceId: number; //bắt buộc
     name: string; //bắt buộc
     tournamentType: TournamentType; //bắt buộc
+    tournamentType2?: TournamentType; //bắt buộc
+    tournamentType3?: TournamentType; //bắt buộc
     startDate: string; //bắt buộc
     endDate?: string; 
     location?: string;
@@ -46,6 +48,8 @@ export interface TournamentsRequest {
     workspaceId: number;
     name: string;
     tournamentType: TournamentType;
+    tournamentType2?: TournamentType;
+    tournamentType3?: TournamentType;
     startDate: string;
     endDate?: string;
     location?: string;
@@ -55,16 +59,12 @@ export interface TournamentsRequest {
     thirdPlaceId?: number;
     description?: string;
     rules?: string;
-    banner?: string;
+    banner?: File |string | null;
     status: TournamentStatus;
     playerIds:number[]
 }
 
 export interface TournamentsResponse {
-    content: Tournament[];
-    page: number;
-    size: number;
-    totalElements: number;
-    totalPages: number;
-    last: boolean;
+  NormalTournament: Record<string, Tournament[]>;
+  SpecialDen: Tournament[];
 }

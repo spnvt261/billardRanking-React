@@ -5,6 +5,7 @@ import { RxDashboard } from "react-icons/rx"
 import PATHS from "../router/path"
 import { GoHomeFill } from "react-icons/go"
 import { CiLogout } from "react-icons/ci"
+import { IoSettingsOutline } from "react-icons/io5"
 
 interface iNavLink {
     label: string,
@@ -47,21 +48,9 @@ const NAV_LINKS: iNavLink[] = [
         isHiddenGroup: true,
     },
     {
-        label: 'Tournaments',
-        path: '/111',
-        icon: GiTrophyCup,
-        show: false,
-    },
-    {
-        label: 'NotFound',
-        path: PATHS.NOTFOUND,
-        icon: RxDashboard,
-        show: false,
-    },
-    {
-        label: 'Testt',
-        path: '/kk',
-        icon: RxDashboard,
+        label: 'Settings',
+        path: PATHS.SETTINGS,
+        icon: IoSettingsOutline,
         show: false,
     },
     {
@@ -85,6 +74,29 @@ const NAV_LINKS_WITHOUT_LOGIN: iNavLink[] = [
         path: PATHS.CREATE_TOURNAENT,
         icon: GiTrophyCup,
         show: true,
+    },
+]
+
+export const TOURNAMENT_DETAIL_NAV_LINKS: iNavLink[]=[
+    {
+        label:'Tổng quan',
+        path:PATHS.TOURNAMENT_DETAIL_OVERVIEW,
+        show:true,
+    },
+    {
+        label:'Trận đấu',
+        path:PATHS.TOURNAMENT_DETAIL_MATCHES,
+        show:true,
+    },
+    {
+        label:'Người chơi',
+        path:PATHS.TOURNAMENT_DETAIL_PLAYERS,
+        show:true,
+    },
+    {
+        label:'Bảng xếp hạng',
+        path:PATHS.TOURNAMENT_DETAIL_RANKINGS,
+        show:true,
     },
 ]
 

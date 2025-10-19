@@ -29,9 +29,10 @@ const CustomNote = ({ noteContent, className }: Props) => {
             {showNote && (
                 <div
                     ref={noteRef}
-                    className="absolute left-full top-1/2 -translate-y-1/2 ml-3 bg-white border border-gray-300 rounded-xl shadow-lg p-3 text-sm text-gray-700 w-56 z-50"
+                    className="absolute left-0  top-full translate-y-[.5rem] -left-full ml-3 bg-white border border-gray-300 rounded-xl shadow-lg p-3 text-sm text-gray-700 w-fit z-50"
                 >
-                    {noteContent}
+                    <p className="min-w-[150px]">{noteContent}</p>
+                    
                 </div>
             )}
         </div>

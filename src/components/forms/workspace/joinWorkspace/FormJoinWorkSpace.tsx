@@ -68,7 +68,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
         }),
         onSubmit: async (values) => {
             if (hasWorkspace(values.key) && !keyValue) {
-                setErrorMessage(`Workspace với KEY '${values.key}' đã được thêm rồi!`);
+                setErrorMessage(`Nhóm có KEY '${values.key}' đã được thêm rồi!`);
                 return;
             }
             // console.log(values);
@@ -80,13 +80,13 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                 try {
                     const result = await joinWorkspace(parsedValues);
                     if (!result.exists) {
-                        setErrorMessage("Workspace không tồn tại!");
+                        setErrorMessage("Nhóm này không tồn tại!");
                         return;
                     } else {
                         if (result.workspace) {
                             addWorkspace(result.workspace);
                             btnCancel();
-                            notify('Đã thêm workspace', 'success');
+                            notify('Đã vào nhóm', 'success');
                         }
                     }
                 } catch (err: any) {
@@ -115,7 +115,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                 } catch (err: any) {
                     // console.log(err.status);
                     if (err.status === 400) {
-                        setErrorMessage("WorkspaceKey hoặc mật khẩu không đúng!");
+                        setErrorMessage("Key hoặc mật khẩu không đúng!");
                         return;
                     }
                     notify('Lỗi kết nối server', 'error');

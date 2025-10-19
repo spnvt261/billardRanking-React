@@ -176,6 +176,7 @@ const AddMatchForm = ({ btnCancel, showLoading, isLoading,createMatch, listPlaye
                     <CustomTextField
                         name="score_team1"
                         label="Score"
+                        type="number"
                         onChange={formik.handleChange}
                         value={formik.values.score_team1}
                         className="mb-2"
@@ -216,6 +217,7 @@ const AddMatchForm = ({ btnCancel, showLoading, isLoading,createMatch, listPlaye
                     <CustomTextField
                         name="score_team2"
                         label="Score"
+                        type="number"
                         onChange={formik.handleChange}
                         value={formik.values.score_team2}
                         className="mb-2"

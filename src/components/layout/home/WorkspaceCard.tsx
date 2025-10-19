@@ -34,11 +34,11 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
         }
         setWorkspaceId(workspaceId.toString());
         setWorkspaceKey(workspaceKey.toString());
-        notify(`Đã vào workspace '${name}'`, 'success');
+        notify(`Đã vào nhóm '${name}'`, 'success');
     }
     const handleDelete = () => {
         removeWorkspace(workspaceKey.toString())
-        notify('Đã xóa workspace', 'success');
+        notify('Đã xóa nhóm', 'success');
     }
     return (
         <div className="relative">
@@ -68,7 +68,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
                             onClick={(e) => e.stopPropagation()} // tránh click ngoài đóng form
                         >
                             <div className="p-6 rounded-2xl shadow-2xl max-h-[600px] overflow-y-auto hide-scrollbar">
-                                <h3 className="text-xl font-bold mb-2">Đăng nhập vào workspace '{name}'</h3>
+                                <h3 className="text-xl font-bold mb-2">Đăng nhập vào nhóm '{name}'</h3>
                                 <FormJoinWorkSpace
                                     btnCancel={() => setShowJoinForm(false)}
                                     keyValue={workspaceKey.toString()}

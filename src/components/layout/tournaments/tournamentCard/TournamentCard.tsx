@@ -4,6 +4,8 @@ import { RxCalendar } from 'react-icons/rx';
 import { FaLocationDot, FaUser } from 'react-icons/fa6';
 import { LuTrophy } from 'react-icons/lu';
 import { useRef } from 'react';
+import { TournamentStatus } from '../../../../types/tournament';
+import PATHS from '../../../../router/path';
 
 interface propsTournamentCard {
     id: number;
@@ -13,7 +15,7 @@ interface propsTournamentCard {
     date: string;
     location?: string;
     attened: number;
-    status: 'paused' | 'finished' | 'ongoing';
+    status: TournamentStatus;
     winnerName?: string;
 }
 
@@ -40,9 +42,14 @@ const TournamentCard = (props: propsTournamentCard) => {
             e.preventDefault(); // ngăn click nếu là drag
         }
     };
+    const defaultBanners = [
+        "images/defaultBannerTournament2.jpg",
+        "images/defaultBanner3.jpg"
+    ];
+    const bannerSrc = props.banner || defaultBanners[Math.floor(Math.random() * defaultBanners.length)];
     return (
         <div className="tournament-card min-h-max flex flex-col mr-[1rem]">
-            <NavLink to={`/tournaments/` + props.id} className=''
+            <NavLink to={`${PATHS.TOURNAMENT}/` + props.id} className=''
                 onDragStart={(e) => e.preventDefault()}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -50,20 +57,20 @@ const TournamentCard = (props: propsTournamentCard) => {
             >
                 <div className='w-full max-h-[150px] h-[150px] overflow-hidden flex items-center justify-center relative border-b border-slate-200'>
                     {
-                        props.banner ? <img src={props.banner} /> : <img src='images/defaultBannerTournament.jpg' />
+                        props.banner ? <img src={props.banner} /> : <img src={bannerSrc} />
                     }
                     {
-                        props.status == 'ongoing' && <div className='absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-semibold text-white bg-green-700'>
+                        props.status == TournamentStatus.ONGOING && <div className='absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-semibold text-white bg-green-700'>
                             <p>Đang diễn ra</p>
                         </div>
                     }
                     {
-                        props.status == 'paused' && <div className='absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-semibold text-white bg-yellow-500'>
+                        props.status == TournamentStatus.PAUSED && <div className='absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-semibold text-white bg-yellow-500'>
                             <p>Tạm dừng</p>
                         </div>
                     }
                     {
-                        props.status == 'finished' && <div className='absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-semibold text-white bg-red-700'>
+                        props.status == TournamentStatus.FINISHED && <div className='absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-semibold text-white bg-red-700'>
                             <p>Đã kết thúc</p>
                         </div>
                     }

@@ -18,3 +18,10 @@ export function formatVND(amount: number): string {
     // Dạng thông thường (có dấu . ngăn cách hàng nghìn)
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 }
+
+export function formatFullVND(amount: number): string {
+    if (isNaN(amount)) return "0VND";
+
+    // Dạng thông thường (có dấu . ngăn cách hàng nghìn)
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "VND";
+}

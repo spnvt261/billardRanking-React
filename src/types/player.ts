@@ -11,6 +11,7 @@ export interface Player{
     elo:number;
     description?:string;
     workspaceId:number;
+    isFriend?:boolean
     createdAt:string;
     updatedAt:string;
     rank:number

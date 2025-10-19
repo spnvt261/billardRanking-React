@@ -59,7 +59,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
                 .required("Vui lòng nhập KEY")
                 .matches(/^\d{8}$/, "KEY phải gồm 8 chữ số"),
             name: Yup.string()
-                .required("Vui lòng nhập tên Workspace")
+                .required("Vui lòng nhập tên nhóm")
                 .min(3, "Tối thiểu 3 ký tự")
                 .max(35, "Tối đa 40 ký tự"),
 
@@ -82,7 +82,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
             try {
                 const result = await createWorkspace(parsedValues);
                 if (result.success) {
-                    notify('Tạo workspace thành công', 'success');
+                    notify('Tạo nhóm thành công', 'success');
                     if (result.workspaceId) {
                         const resultParsed = {
                             id: result.workspaceId,
@@ -102,7 +102,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
                         }
                     }
                 } else {
-                    setErrorMessage(`Workspace ID đã tồn tại!`);
+                    setErrorMessage(`KEY đã tồn tại!`);
                 }
             } catch (err: any) {
                 console.log(err.message);
@@ -129,7 +129,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
                     isUnique = true;
                 }
             } catch (err) {
-                console.error("Error checking workspace key:", err);
+                console.error("Error checking key:", err);
                 break;
             }
         }
@@ -149,7 +149,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
                     <p>
                         <span>KEY</span>
                     </p>
-                    <CustomNote noteContent="Dùng để đăng nhập hoặc chia sẻ cho người khác join workspace"
+                    <CustomNote noteContent="Dùng để đăng nhập hoặc chia sẻ cho người khác vào nhóm"
                         className="mr-2"
                     />
                 </div>
@@ -173,7 +173,7 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
             </div>
 
             <CustomTextField
-                label="Tên Workspace*"
+                label="Tên nhóm *"
                 name="name"
                 value={formik.values.name}
                 onChange={formik.handleChange}

@@ -1,4 +1,5 @@
-import type { Tournament } from "../../../types/tournament";
+import type { Tournament, TournamentsResponse } from "../../../types/tournament";
+import { UPLOAD_IMAGE_REQUEST } from "../common";
 import * as types from "./tournamentTypes";
 
 interface TournamentAction {
@@ -6,63 +7,71 @@ interface TournamentAction {
     payload?: any;
 }
 interface TournamentState {
-    isLoading: boolean;
-    listTournaments: Tournament[]
+    isCreateLoading: boolean;
+    isGetDataLoading: boolean;
+    dataTournaments: TournamentsResponse;
     error: Error | null;
-    page: number;
-    size: number;
-    totalElements: number;
-    totalPages: number;
-    last: boolean;
+    isFetched: boolean;
+    tournament:Tournament | null;
 }
 
 const initState: TournamentState = {
-    isLoading: false,
-    listTournaments:[],
+    isCreateLoading: false,
+    isGetDataLoading: false,
+    isFetched: false,
+    dataTournaments:{
+        NormalTournament:{},
+        SpecialDen:[]
+    },
+    tournament:null,
     error: null,
-    page: 0,
-    size: 0,
-    totalElements: 0,
-    totalPages: 0,
-    last: false,
 };
 
 const tournamentReducer = (state=initState, action:TournamentAction) =>{
     switch (action.type) {
             //Request
+            case types.GET_ONE_TOURNAMENT_REQUEST:
             case types.GET_TOURNAMENTS_REQUEST:
+                return{
+                     ...state,
+                    isGetDataLoading: true
+                }
+            case UPLOAD_IMAGE_REQUEST:
             case types.CREATE_TOURNAMENT_REQUEST:
                 return {
                     ...state,
-                    isLoading: true
+                    isCreateLoading: true
                 }
             //success
             case types.GET_TOURNAMENTS_SUCCESS:
                 return {
                     ...state,
-                    isLoading: false,
-                    tournaments:action.payload.content,
-                    page: action.payload.page,
-                    size: action.payload.size,
-                    totalElements: action.payload.totalElements,
-                    totalPages: action.payload.totalPages,
-                    last: action.payload.last,
+                    isFetched: true,
+                    isGetDataLoading: false,
+                    dataTournaments:action.payload,
                 };
     
             case types.CREATE_TOURNAMENT_SUCCESS:
                 return {
                     ...state,
-                    isLoading: false,
-                    tournaments: [],
-                    totalPages:0
+                    isCreateLoading: false,
+                    isFetched: false
+                }
+            case types.GET_ONE_TOURNAMENT_SUCCESS:
+                return{
+                    ...state,
+                    isGetDataLoading: false,
+                    tournament:action.payload
                 }
 
             //fail
+            case types.GET_ONE_TOURNAMENT_FAIL:
             case types.GET_TOURNAMENTS_FAIL:
             case types.CREATE_TOURNAMENT_FAIL:
                 return {
                     ...state,
-                    isLoading: false,
+                    isGetDataLoading: false,
+                    isCreateLoading:false,
                     error: action.payload
                 }
     
