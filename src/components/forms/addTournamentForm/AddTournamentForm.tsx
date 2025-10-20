@@ -6,7 +6,7 @@ import CustomTextField from "../../customTextField/CustomTextField";
 import CustomSelect from "../../customSelect/CustomSelect";
 import CustomButton from "../../customButtons/CustomButton";
 import { FaChevronDown } from "react-icons/fa6";
-import { TournamentStatus, TournamentType, type TournamentsRequest } from "../../../types/tournament";
+import { TournamentFormat, TournamentStatus, TournamentType, type TournamentsRequest } from "../../../types/tournament";
 import type { PlayerSelect } from "../../../types/player";
 import { tournamentTypeOptions } from "../../../constants/tournamentTypes";
 import { useNotification } from "../../../customhook/useNotifycation";
@@ -21,12 +21,12 @@ interface Props {
     btnCancel: () => void;
     getListPlayerSelect: (workspaceId: string) => Promise<void>;
     createTournament: (data: TournamentsRequest) => Promise<void>;
-    upLoadImages: (file:File)=> Promise<string>;
+    upLoadImages: (file: File) => Promise<string>;
     isLoading: boolean;
     showLoading?: (isLoading: boolean) => void;
     listPlayerSelect: PlayerSelect[];
 }
-const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament,upLoadImages, isLoading, showLoading, listPlayerSelect }: Props) => {
+const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, upLoadImages, isLoading, showLoading, listPlayerSelect }: Props) => {
     const [bannerPreview, setBannerPreview] = useState<string | null>(null);
     const [showOptional, setShowOptional] = useState(false);
     const { workspaceId } = useWorkspace();
@@ -50,8 +50,10 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament,up
         initialValues: {
             workspaceId: workspaceId ? Number(workspaceId) : 0,
             name: "",
-            tournamentType: TournamentType.CUSTOM,
+            tournamentType: undefined,
+            round1PlayersAfter: undefined,
             tournamentType2: undefined,
+            round2PlayersAfter: undefined,
             tournamentType3: undefined,
             startDate: "",
             endDate: undefined,
@@ -62,6 +64,7 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament,up
             banner: undefined,
             status: TournamentStatus.ONGOING,
             playerIds: [],
+            format: TournamentFormat.SINGLE
         },
         validationSchema: Yup.object({
             name: Yup.string().required("Vui lòng nhập tên giải đấu"),
@@ -70,13 +73,13 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament,up
             tournamentType: Yup.mixed<TournamentType>().oneOf(
                 Object.values(TournamentType),
                 "Vui lòng chọn thể thức hợp lệ"
-            ),
+            ).required("Vui lòng chọn thể thức"),
             tournamentType2: Yup.mixed<TournamentType>().oneOf(Object.values(TournamentType)).optional(),
             tournamentType3: Yup.mixed<TournamentType>().oneOf(Object.values(TournamentType)).optional(),
         }),
         onSubmit: async (values) => {
             let bannerUrl: string | undefined;
-            let x=0;
+            let x = 0;
             try {
                 if (values.banner instanceof File) {
                     bannerUrl = await upLoadImages(values.banner);
@@ -84,23 +87,23 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament,up
             } catch (err) {
                 console.error("Lỗi khi upload ảnh:", err);
                 notify(`Lỗi khi thêm ảnh: ${err}`, "error");
-                x+=1;
+                x += 1;
             }
             const requestValues = {
                 ...values,
                 banner: bannerUrl,
-                startDate: formik.values.startDate?formik.values.startDate: formatDateVN(new Date())
+                startDate: formik.values.startDate ? formik.values.startDate : formatDateVN(new Date())
             }
 
             try {
                 // console.log(requestValues);
                 createTournament(requestValues);
-                if (x==0) notify("Tạo giải đấu thành công", "success");
+                if (x == 0) notify("Tạo giải đấu thành công", "success");
                 btnCancel();
             } catch (err) {
                 notify(`Lỗi khi tạo giải đấu: ${err}`, "error");
                 console.log(err);
-                
+
             }
         },
     });
@@ -153,39 +156,42 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament,up
                         Đã chọn [{formik.values.playerIds.length}]
                     </span>
                 </p>
-                <CustomSelect
-                    options={playerOptions.map(p => ({ label: p.label, value: p.value.toString() }))}
-                    value={formik.values.playerIds.map(p => p.toString())}
-                    onChange={(v: string[]) => formik.setFieldValue(
-                        "playerIds",
-                        v.map(s => Number(s))
-                    )}
-                    multiple
-                    placeholder="Thêm cơ thủ"
-                    className="flex-1 w-[70%]"
-                    spanMaxWidth="150px"
-                    search
-                />
-                {/* <span className="ml-3 text-sm text-gray-600 whitespace-nowrap">
+                <div className="relative flex-1 w-[70%]">
+                    <CustomSelect
+                        options={playerOptions.map(p => ({ label: p.label, value: p.value.toString() }))}
+                        value={formik.values.playerIds.map(p => p.toString())}
+                        onChange={(v: string[]) => formik.setFieldValue(
+                            "playerIds",
+                            v.map(s => Number(s))
+                        )}
+                        multiple
+                        placeholder="Thêm cơ thủ"
+                        className="w-full"
+                        spanMaxWidth="150px"
+                        search
+                    />
+                    {/* <span className="ml-3 text-sm text-gray-600 whitespace-nowrap">
                     Đã chọn: {formik.values.playerIds.length}
                 </span> */}
-                {formik.touched.playerIds && formik.errors.playerIds && (
-                    <p className="text-red-500 text-sm ml-2">{formik.errors.playerIds}</p>
-                )}
+                    {formik.touched.playerIds && formik.errors.playerIds && (
+                        <p className="absolute -bottom-4 left-0 text-red-500 text-sm ml-2">{formik.errors.playerIds}</p>
+                    )}
+                </div>
+
             </div>
             <div className="flex flex-col mb-4">
-                <div className="flex items-center mb-2">
+                <div className="relative flex items-center mb-2">
                     <p className="mr-2 min-w-[80px]">ROUND 1</p>
                     <CustomSelect
                         options={tournamentTypeOptions}
-                        value={[formik.values.tournamentType]}
+                        value={[formik.values.tournamentType ? formik.values.tournamentType : '']}
                         onChange={(v: string[]) => formik.setFieldValue("tournamentType", v[0] as TournamentType)}
                         multiple={false}
                         placeholder="Chọn thể thức"
                         className="flex-1 w-[70%]"
                     />
                     {formik.touched.tournamentType && formik.errors.tournamentType && (
-                        <p className="text-red-500 text-sm ml-2">{formik.errors.tournamentType}</p>
+                        <p className="absolute -bottom-4 left-0 text-red-500 text-sm ml-2">{formik.errors.tournamentType}</p>
                     )}
                 </div>
 
@@ -218,39 +224,42 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament,up
                 )}
 
                 {/* Nhóm nút thêm/giảm */}
-                <div className="flex gap-3 mt-1">
-                    {/* Nút thêm */}
-                    {(!formik.values.tournamentType3 && formik.values.tournamentType3 !== null) && (
-                        <button
-                            type="button"
-                            className="text-blue-500 text-sm hover:underline"
-                            onClick={() => {
-                                if (!formik.values.tournamentType2 && formik.values.tournamentType2 !== null)
-                                    formik.setFieldValue("tournamentType2", null);
-                                else if (!formik.values.tournamentType3)
-                                    formik.setFieldValue("tournamentType3", null);
-                            }}
-                        >
-                            + Thêm Vòng đấu
-                        </button>
-                    )}
+                {
+                    <div className="flex gap-3 mt-1">
+                        {/* Nút thêm */}
+                        {(!formik.values.tournamentType3 && formik.values.tournamentType3 !== null) && (
+                            <button
+                                type="button"
+                                className="text-blue-500 text-sm hover:underline"
+                                onClick={() => {
+                                    if (!formik.values.tournamentType2 && formik.values.tournamentType2 !== null)
+                                        formik.setFieldValue("tournamentType2", null);
+                                    else if (!formik.values.tournamentType3)
+                                        formik.setFieldValue("tournamentType3", null);
+                                }}
+                            >
+                                + Thêm Vòng đấu
+                            </button>
+                        )}
 
-                    {/* Nút giảm */}
-                    {(formik.values.tournamentType3 || formik.values.tournamentType3 === null || formik.values.tournamentType2 || formik.values.tournamentType2 === null) && (
-                        <button
-                            type="button"
-                            className="text-red-500 text-sm hover:underline"
-                            onClick={() => {
-                                if (formik.values.tournamentType3 || formik.values.tournamentType3 === null)
-                                    formik.setFieldValue("tournamentType3", undefined);
-                                else if (formik.values.tournamentType2 || formik.values.tournamentType2 === null)
-                                    formik.setFieldValue("tournamentType2", undefined);
-                            }}
-                        >
-                            − Giảm vòng đấu
-                        </button>
-                    )}
-                </div>
+                        {/* Nút giảm */}
+                        {(formik.values.tournamentType3 || formik.values.tournamentType3 === null || formik.values.tournamentType2 || formik.values.tournamentType2 === null) && (
+                            <button
+                                type="button"
+                                className="text-red-500 text-sm hover:underline"
+                                onClick={() => {
+                                    if (formik.values.tournamentType3 || formik.values.tournamentType3 === null)
+                                        formik.setFieldValue("tournamentType3", undefined);
+                                    else if (formik.values.tournamentType2 || formik.values.tournamentType2 === null)
+                                        formik.setFieldValue("tournamentType2", undefined);
+                                }}
+                            >
+                                − Giảm vòng đấu
+                            </button>
+                        )}
+                    </div>
+                }
+
             </div>
 
 

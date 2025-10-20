@@ -1,15 +1,16 @@
 import { useOutletContext } from "react-router-dom";
-import type { Tournament } from "../../../types/tournament";
+import type { TournamentDetail } from "../../../types/tournament";
 import PlayerCard from "../../../components/layout/tournamentDetail/tournamentPlayers/playerCard";
 
 type ContextType = {
-    tournament: Tournament;
+    tournament: TournamentDetail;
 };
 
 const TournamentPlayers = () => {
     const { tournament } = useOutletContext<ContextType>();
-
-    if (!tournament || !tournament.listPlayer.length) {
+    // console.log(tournament);
+    
+    if (!tournament || !tournament.listTeam.length) {
         return (
             <div className="p-4">
                 <h1 className="text-2xl font-semibold mb-4">Cơ thủ tham dự</h1>
@@ -23,8 +24,8 @@ const TournamentPlayers = () => {
             <h1 className="text-2xl font-semibold mb-6 text-slate-600">Cơ thủ tham dự</h1>
 
             <div className="flex flex-wrap gap-6">
-                {tournament.listPlayer.map((player) => (
-                    <PlayerCard key={player.id} player={player} />
+                {tournament.listTeam.map((team) => (
+                    <PlayerCard key={team.players[0].id} player={team.players[0]} />
                 ))}
             </div>
         </div>

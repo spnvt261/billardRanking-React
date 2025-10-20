@@ -132,7 +132,12 @@ const Header = () => {
                                     className={({ isActive }) =>
                                         `nav-link flex flex-col justify-center cursor-pointer min-w-[70px] ${isActive && !item.isHiddenGroup ? 'active' : ''} ${showOthers ? 'opacity-0' : 'opacity-1'}`
                                     }
-                                    onClick={item.isHiddenGroup ? () => _showOthers() : () => { }}
+                                    onClick={(e) => {
+                                        if (item.isHiddenGroup) {
+                                            e.preventDefault();
+                                            _showOthers();
+                                        }
+                                    }}
                                 >
                                     {({ isActive }) => {
                                         useEffect(() => {

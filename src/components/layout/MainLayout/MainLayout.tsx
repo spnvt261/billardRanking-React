@@ -3,7 +3,6 @@ import Footer from "../footer/Footer"
 import Header from "../header/Header"
 
 const MainLayout = () =>{
-    // console.log('Main layout');
     return(
         <div className="main-layout flex flex-col min-h-screen">
             <Header/> 

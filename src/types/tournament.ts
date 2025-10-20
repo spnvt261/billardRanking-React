@@ -1,3 +1,4 @@
+import type { Team } from "./match";
 import type { Player } from "./player";
 
 export const TournamentType = {
@@ -18,13 +19,21 @@ export const TournamentStatus = {
 } as const;
 export type TournamentStatus = typeof TournamentStatus[keyof typeof TournamentStatus];
 
-export interface Tournament {
+export const TournamentFormat = {
+    SINGLE: "SINGLE",
+    DOUBLES: "DOUBLES",
+} as const;
+export type TournamentFormat = typeof TournamentFormat[keyof typeof TournamentFormat];
+
+export interface TournamentDetail {
     id: number; //bắt buộc
     workspaceId: number; //bắt buộc
     name: string; //bắt buộc
     tournamentType: TournamentType; //bắt buộc
-    tournamentType2?: TournamentType; //bắt buộc
-    tournamentType3?: TournamentType; //bắt buộc
+    round1PlayersAfter?:number
+    tournamentType2?: TournamentType; 
+    round2PlayersAfter?:number
+    tournamentType3?: TournamentType; 
     startDate: string; //bắt buộc
     endDate?: string; 
     location?: string;
@@ -41,14 +50,18 @@ export interface Tournament {
     status: TournamentStatus; //bắt buộc
     createdAt?:string;
     updatedAt?:string;
+    format:TournamentFormat
     listPlayer:Player[]; //bắt buộc
+    listTeam:Team[]
 }
 
 export interface TournamentsRequest {
     workspaceId: number;
     name: string;
-    tournamentType: TournamentType;
+    tournamentType?: TournamentType;
+    round1PlayersAfter?:number
     tournamentType2?: TournamentType;
+    round2PlayersAfter?:number
     tournamentType3?: TournamentType;
     startDate: string;
     endDate?: string;
@@ -61,7 +74,39 @@ export interface TournamentsRequest {
     rules?: string;
     banner?: File |string | null;
     status: TournamentStatus;
-    playerIds:number[]
+    playerIds:number[];
+    format:TournamentFormat
+}
+
+export interface Tournament {
+    id: number; //bắt buộc
+    workspaceId: number; //bắt buộc
+    name: string; //bắt buộc
+    tournamentType: TournamentType; //bắt buộc
+    round1PlayersAfter?:number
+    tournamentType2?: TournamentType; 
+    round2PlayersAfter?:number
+    tournamentType3?: TournamentType; 
+    startDate: string; //bắt buộc
+    endDate?: string; 
+    location?: string;
+    prize: number; //bắt buộc
+    winnerId?: number;
+    runnerUpId?: number;
+    thirdPlaceId?: number;
+    winner?: Player;
+    runnerUp?: Player;
+    thirdPlace?: Player;
+    description?: string;
+    rules?: string;
+    banner?: string;
+    status: TournamentStatus; //bắt buộc
+    createdAt?:string;
+    updatedAt?:string;
+    format:TournamentFormat
+    numberAttend:number;
+    numberTeams:number;
+    listPlayer:Player[]; //bắt buộc
 }
 
 export interface TournamentsResponse {

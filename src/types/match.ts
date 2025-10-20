@@ -18,7 +18,7 @@ export const MatchCategory = {
 } as const;
 export type MatchCategory = typeof MatchCategory[keyof typeof MatchCategory];
 
-interface Team {
+export interface Team {
     id: number
     workspaceId:number
     name: string

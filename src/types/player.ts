@@ -14,7 +14,9 @@ export interface Player{
     isFriend?:boolean
     createdAt:string;
     updatedAt:string;
-    rank:number
+    rank:number;
+    seedNumber?:number;
+    prize?:number
 }
 
 export interface PlayersRequest{

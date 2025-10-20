@@ -1,19 +1,22 @@
 import { useOutletContext } from "react-router-dom";
-import type { Tournament } from "../../../types/tournament";
+import type {TournamentDetail } from "../../../types/tournament";
 import { GoTrophy } from "react-icons/go";
 import { formatFullVND } from "../../../ultils/format";
 type ContextType = {
-    tournament: Tournament;
+    tournament: TournamentDetail;
 };
 const TournamentOverview = () => {
+    // console.log('Overview');
+    
     const { tournament } = useOutletContext<ContextType>();
-
+    // console.log(tournament);
+    
     if (!tournament) {
         return <div className="text-gray-500">Không tìm thấy giải đấu.</div>;
     }
     const defaultBanners = [
         "/images/defaultBannerTournament2.jpg",
-        "/images/defaultBanner3.jpg"
+        "/images/defaultBannerTournament3.jpg"
     ];
     const bannerSrc = tournament.banner || defaultBanners[Math.floor(Math.random() * defaultBanners.length)];
     return (

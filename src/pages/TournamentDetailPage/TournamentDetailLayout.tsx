@@ -1,6 +1,6 @@
 import { Outlet, useParams } from "react-router-dom";
 import Navbar from "../../components/layout/tournamentDetail/nav/Navbar";
-import type { Tournament } from "../../types/tournament";
+import type { TournamentDetail } from "../../types/tournament";
 import { useWorkspace } from "../../customhook/useWorkspace";
 import { useEffect } from "react";
 import tournamentActions from "../../redux/features/tournament/tournamentActions";
@@ -8,13 +8,15 @@ import { connect } from "react-redux";
 
 interface Props {
     getTournamentById: (id: string, workspaceId: string) => Promise<void>;
-    tournament: Tournament;
+    tournament: TournamentDetail | null;
     isLoading:boolean;
     showLoading?:(isLoading:boolean) =>void
 }
 const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLoading }: Props) => {
-    const { id } = useParams<{ id: string }>();
+    // console.log('TournamentsDetails');
     const { workspaceId } = useWorkspace()
+    const { id } = useParams<{ id: string }>();
+    
     useEffect(() => {
         if (id && workspaceId) {
             getTournamentById(id, workspaceId)
@@ -36,8 +38,7 @@ const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLo
 }
 const mapStateToProps = (state: any) => ({
     isLoading: state.tournaments.isGetDataLoading,
-    isFetched: state.tournaments.isFetched,
-    tournament: state.tournaments.tournament
+    tournament: state.tournaments.tournamentDetail
 });
 
 const mapDispatchToProps = (dispatch: any) => {

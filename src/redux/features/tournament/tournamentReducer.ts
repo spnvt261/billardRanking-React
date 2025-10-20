@@ -1,4 +1,4 @@
-import type { Tournament, TournamentsResponse } from "../../../types/tournament";
+import type {TournamentDetail, TournamentsResponse } from "../../../types/tournament";
 import { UPLOAD_IMAGE_REQUEST } from "../common";
 import * as types from "./tournamentTypes";
 
@@ -12,7 +12,7 @@ interface TournamentState {
     dataTournaments: TournamentsResponse;
     error: Error | null;
     isFetched: boolean;
-    tournament:Tournament | null;
+    tournamentDetail:TournamentDetail | null;
 }
 
 const initState: TournamentState = {
@@ -23,7 +23,7 @@ const initState: TournamentState = {
         NormalTournament:{},
         SpecialDen:[]
     },
-    tournament:null,
+    tournamentDetail:null,
     error: null,
 };
 
@@ -61,7 +61,7 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
                 return{
                     ...state,
                     isGetDataLoading: false,
-                    tournament:action.payload
+                    tournamentDetail:action.payload
                 }
 
             //fail

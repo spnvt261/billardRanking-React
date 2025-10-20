@@ -5,8 +5,8 @@ export const formatDateVN = (date: Date) => {
   return `${d}/${m}/${y}`;
 };
 
-export function formatVND(amount: number): string {
-    if (isNaN(amount)) return "0đ";
+export function formatVND(amount: number | null): string {
+    if (amount == null ||isNaN(amount)) return "0đ";
 
 
     if (amount >= 1_000_000_000) {
@@ -19,9 +19,8 @@ export function formatVND(amount: number): string {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 }
 
-export function formatFullVND(amount: number): string {
-    if (isNaN(amount)) return "0VND";
+export function formatFullVND(amount: number | null): string {
+    if (amount == null || isNaN(amount)) return "0 VND";
 
-    // Dạng thông thường (có dấu . ngăn cách hàng nghìn)
-    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "VND";
+    return new Intl.NumberFormat("vi-VN").format(amount) + " VND";
 }

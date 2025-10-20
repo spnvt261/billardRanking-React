@@ -95,7 +95,7 @@ const TournamentList = (props: propsTournamentList) => {
                                 <TournamentCard
                                     key={item.id}
                                     id={item.id}
-                                    attened={item.listPlayer.length}
+                                    attened={item.numberAttend}
                                     date={item.startDate}
                                     name={item.name}
                                     status={item.status}

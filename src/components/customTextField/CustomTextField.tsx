@@ -110,7 +110,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     }
     //type default
     return (
-        <div className={`custom-textfield mb-4 ${error ? 'error' : ''} ${className ? className : ''}`}>
+        <div className={`custom-textfield mb-4 w-auto ${error ? 'error' : ''} ${className ? className : ''}`}>
             <div className={`input-container ${isActive ? 'active' : ''} ${error ? 'error' : ''} ${focus ? 'focus' : ''}`}>
 
                 {

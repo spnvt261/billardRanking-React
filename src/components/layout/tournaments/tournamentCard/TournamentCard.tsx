@@ -44,8 +44,10 @@ const TournamentCard = (props: propsTournamentCard) => {
     };
     const defaultBanners = [
         "images/defaultBannerTournament2.jpg",
-        "images/defaultBanner3.jpg"
+        "images/defaultBannerTournament3.jpg"
     ];
+    console.log(props);
+    
     const bannerSrc = props.banner || defaultBanners[Math.floor(Math.random() * defaultBanners.length)];
     return (
         <div className="tournament-card min-h-max flex flex-col mr-[1rem]">
@@ -57,7 +59,7 @@ const TournamentCard = (props: propsTournamentCard) => {
             >
                 <div className='w-full max-h-[150px] h-[150px] overflow-hidden flex items-center justify-center relative border-b border-slate-200'>
                     {
-                        props.banner ? <img src={props.banner} /> : <img src={bannerSrc} />
+                        <img src={bannerSrc} />
                     }
                     {
                         props.status == TournamentStatus.ONGOING && <div className='absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-semibold text-white bg-green-700'>

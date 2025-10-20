@@ -22,8 +22,8 @@ const Navbar = () => {
                 {TOURNAMENT_DETAIL_NAV_LINKS.map((item) => (
                     <NavLink
                         key={item.path}
-                        to={`${PATHS.TOURNAMENT}/${id}/${item.path}`}
-                        end={item.path === ""}
+                        to={item.path!==PATHS.TOURNAMENT_DETAIL_OVERVIEW ? `${PATHS.TOURNAMENT}/${id}/${item.path}` : `${PATHS.TOURNAMENT}/${id}`}
+                        end={item.path === PATHS.TOURNAMENT_DETAIL_OVERVIEW}
                         className={({ isActive }) => (isActive ? "active" : "")}
                         onClick={() => setIsOpen(false)}
                     >
