@@ -13,11 +13,13 @@ interface TournamentState {
     error: Error | null;
     isFetched: boolean;
     tournamentDetail:TournamentDetail | null;
+    isUpdateDataLoading:boolean;
 }
 
 const initState: TournamentState = {
     isCreateLoading: false,
     isGetDataLoading: false,
+    isUpdateDataLoading:false,
     isFetched: false,
     dataTournaments:{
         NormalTournament:{},
@@ -30,7 +32,7 @@ const initState: TournamentState = {
 const tournamentReducer = (state=initState, action:TournamentAction) =>{
     switch (action.type) {
             //Request
-            case types.GET_ONE_TOURNAMENT_REQUEST:
+            // case types.GET_ONE_TOURNAMENT_REQUEST:
             case types.GET_TOURNAMENTS_REQUEST:
                 return{
                      ...state,
@@ -57,15 +59,15 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
                     isCreateLoading: false,
                     isFetched: false
                 }
-            case types.GET_ONE_TOURNAMENT_SUCCESS:
-                return{
-                    ...state,
-                    isGetDataLoading: false,
-                    tournamentDetail:action.payload
-                }
+            // case types.GET_ONE_TOURNAMENT_SUCCESS:
+            //     return{
+            //         ...state,
+            //         isGetDataLoading: false,
+            //         tournamentDetail:action.payload
+            //     }
 
             //fail
-            case types.GET_ONE_TOURNAMENT_FAIL:
+            // case types.GET_ONE_TOURNAMENT_FAIL:
             case types.GET_TOURNAMENTS_FAIL:
             case types.CREATE_TOURNAMENT_FAIL:
                 return {
@@ -76,11 +78,11 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
                 }
                 
             //clean
-            case types.CLEAN_TOURNAMENT_DETAIL:
-                return{
-                    ...state,
-                    tournamentDetail:null
-                }
+            // case types.CLEAN_TOURNAMENT_DETAIL:
+            //     return{
+            //         ...state,
+            //         tournamentDetail:null
+            //     }
         
             default:
                 return state;

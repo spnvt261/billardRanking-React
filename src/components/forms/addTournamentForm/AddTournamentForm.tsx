@@ -52,7 +52,7 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
             name: "",
             tournamentType: undefined,
             round1PlayersAfter: undefined,
-            round1Status:TournamentRoundStatus.ONGOING,
+            round1Status:TournamentRoundStatus.UPCOMING,
             tournamentType2: undefined,
             round2PlayersAfter: undefined,
             round2Status:TournamentRoundStatus.NOT_STARTED,

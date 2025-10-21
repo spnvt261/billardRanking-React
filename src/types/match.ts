@@ -1,4 +1,5 @@
 import type { Player } from "./player";
+import type { TournamentType } from "./tournament";
 
 const MatchType = {
     GROUP: 'Vòng bảng',
@@ -39,6 +40,7 @@ export interface Match {
     id: number; //bắt buộc
     workspaceId: number; //bắt buộc
     tournamentId?: number;
+    tournamentRoundType?: TournamentType;
     team1Id: number
     team2Id: number
     team1?: Team
@@ -50,6 +52,8 @@ export interface Match {
     betAmount?: number
     matchDate?: string
     note?: string
+    round?:number;
+    gameNumber?:number;
     winnerId?: number;
     status:MatchStatus
     createdAt: string

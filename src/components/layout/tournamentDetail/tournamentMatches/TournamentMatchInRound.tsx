@@ -1,33 +1,112 @@
+import { connect } from "react-redux";
 import { tournamentTypeOptions } from "../../../../constants/tournamentTypes";
 import {
     TournamentRoundStatus,
+    TournamentType,
     type TournamentDetail,
-    type TournamentType,
 } from "../../../../types/tournament";
 import { tournamentStatusMap } from "../../../../ultils/mapEnum";
 import RoundRobinForm from "../../../forms/tournamentDetails/roundRobinForm/RoundRobinForm";
+import MatchTable from "./matchTable/MacthTable";
+import tournamentDetailActions from "../../../../redux/features/tournamentDetails/tournamentDetailAction";
+import { useEffect, useState } from "react";
+import WithLoading from "../../../loading/WithLoading";
+import { useWorkspace } from "../../../../customhook/useWorkspace";
+import { MatchStatus, type Match } from "../../../../types/match";
+import { FaAngleDown } from "react-icons/fa6";
+import tournamentActions from "../../../../redux/features/tournament/tournamentActions";
+import { useNotification } from "../../../../customhook/useNotifycation";
 
 interface Props {
     title: string;
     tournament: TournamentDetail;
     roundNumber: 1 | 2 | 3;
+    isLoadingByRound: { [key: number]: boolean };
+    matchesByRound: { [key: number]: Match[] };
+    getMatchesInTournament: (tournamentId: string, roundNumber: 1 | 2 | 3, workspaceId: string) => Promise<void>
+    updateTouenamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string) => Promise<void>
+    showLoading?: (isLoading: boolean) => void
+    isUpdateMatchLoading: boolean
 }
 
-const TournamentMatchInRound = ({ title, roundNumber, tournament }: Props) => {
-    // console.log(tournament);
-    let roundType: TournamentType | "" = "";
-    let roundStatus: TournamentRoundStatus | "" = "";
+const TournamentMatchInRound = ({
+    title, roundNumber, tournament, matchesByRound,
+    getMatchesInTournament, showLoading, updateTouenamentRoundStatus,
+    isLoadingByRound, isUpdateMatchLoading
+}: Props) => {
+    const { workspaceId } = useWorkspace();
+    const { notify } = useNotification()
+    const roundType: TournamentType | "" =
+        roundNumber === 1 ? tournament.tournamentType :
+            roundNumber === 2 ? tournament.tournamentType2 || "" :
+                tournament.tournamentType3 || "";
 
-    if (roundNumber === 1) {
-        roundType = tournament.tournamentType;
-        roundStatus = tournament.round1Status;
-    } else if (roundNumber === 2) {
-        roundType = tournament.tournamentType2 || "";
-        roundStatus = tournament.round2Status;
-    } else if (roundNumber === 3) {
-        roundType = tournament.tournamentType3 || "";
-        roundStatus = tournament.round3Status;
-    }
+    const roundStatus: TournamentRoundStatus | "" =
+        roundNumber === 1 ? tournament.round1Status :
+            roundNumber === 2 ? tournament.round2Status :
+                tournament.round3Status;
+
+    const isLoading = isLoadingByRound[roundNumber] || false;
+    console.log(matchesByRound);
+    
+    const listMatches = matchesByRound[roundNumber] || [];
+    const [isCollapsed, setIsCollapsed] = useState(roundStatus !== TournamentRoundStatus.UPCOMING && roundStatus !== TournamentRoundStatus.ONGOING);
+    useEffect(() => {
+        if (showLoading) showLoading(isLoading);
+    }, [isLoading])
+
+    useEffect(() => {
+        if (workspaceId && (!listMatches || listMatches.length == 0)) {
+            getMatchesInTournament(tournament.id.toString(), roundNumber, workspaceId).catch((err) => {
+                notify(`Lỗi khi lấy dữ liệu ${err}`, 'error')
+            })
+        }
+    }, [isUpdateMatchLoading])
+
+    useEffect(() => {
+        if (
+            listMatches.length > 0 &&
+            listMatches.every((match) => match.status === MatchStatus.FINISHED) &&
+            roundStatus !== TournamentRoundStatus.FINISHED &&
+            workspaceId
+        ) {
+            console.log(2);
+
+            // ✅ 1. Cập nhật vòng hiện tại = FINISHED
+            updateTouenamentRoundStatus(
+                tournament.id.toString(),
+                roundNumber,
+                TournamentRoundStatus.FINISHED,
+                workspaceId
+            )
+                .then(() => {
+                    if (roundNumber === 1 && tournament.tournamentType2) {
+                        // Có vòng 2
+                        updateTouenamentRoundStatus(
+                            tournament.id.toString(),
+                            2,
+                            TournamentRoundStatus.UPCOMING,
+                            workspaceId
+                        ).catch((err) => {
+                            notify(`Lỗi khi cập nhật vòng 2: ${err}`, 'error');
+                        });
+                    } else if (roundNumber === 2 && tournament.tournamentType3) {
+                        // Có vòng 3
+                        updateTouenamentRoundStatus(
+                            tournament.id.toString(),
+                            3,
+                            TournamentRoundStatus.UPCOMING,
+                            workspaceId
+                        ).catch((err) => {
+                            notify(`Lỗi khi cập nhật vòng 3: ${err}`, 'error');
+                        });
+                    }
+                })
+                .catch((err) => {
+                    notify(`Lỗi khi cập nhật vòng ${roundNumber}: ${err}`, 'error');
+                });
+        }
+    }, [listMatches])
 
     const statusInfo =
         (roundStatus && tournamentStatusMap[roundStatus]) || {
@@ -40,10 +119,11 @@ const TournamentMatchInRound = ({ title, roundNumber, tournament }: Props) => {
         "Không xác định";
 
     return (
-        <div className="w-full bg-white rounded-[1rem] min-h-[1000px] overflow-hidden"
-        >
-            <div className="flex items-center w-full p-4"
+        <div className="w-full bg-white rounded-[1rem] border border-gray-400  overflow-hidden mb-4">
+            <div
+                className="tournament-matches-header relative flex items-center w-full p-4"
                 style={{ background: 'linear-gradient(to bottom , #374151, #6b7280)' }}
+                onClick={() => setIsCollapsed(prev => !prev)}
             >
                 <h1 className="text-white font-bold">
                     {title.toUpperCase()} - {roundTypeLabel.toUpperCase()}
@@ -53,55 +133,87 @@ const TournamentMatchInRound = ({ title, roundNumber, tournament }: Props) => {
                 >
                     {statusInfo.label.toUpperCase()}
                 </span>
+                <span
+                    className={`absolute top-0 right-[1rem] h-full flex items-center text-white ml-2 text-lg transition-transform duration-300 ${isCollapsed ? "rotate-0" : "rotate-180"
+                        }`}
+                >
+                    <FaAngleDown size={24} />
+                </span>
             </div>
-            <div className="p-4 flex flex-col gap-4">
-                <div className="w-full">
-                    <h2>Người chơi ({tournament.listTeam.length})</h2>
-                    <div className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2 w-full max-h-[220px] overflow-x-auto px-2 [@media(min-width:512px)]:grid-rows-1">
-                        {tournament.listTeam.map((team) => {
-                            const player = team.players[0];
-                            if (!player) return null;
+            <div
+                className={`transition-max-height duration-500 ease-in-out overflow-hidden`}
+                style={{ maxHeight: isCollapsed ? 0 : "800px" }}
+            >
+                {/* SETUP: chỉ hiện khi UPCOMING */}
+                {roundStatus === "UPCOMING" && (
+                    <div className="setup p-4 flex flex-col gap-4">
+                        <div className=" w-full">
+                            <h2>Người chơi ({tournament.listTeam.length})</h2>
+                            <div className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2 w-full max-h-[220px] overflow-x-auto px-2 [@media(min-width:512px)]:grid-rows-1">
+                                {tournament.listTeam.map((team) => {
+                                    const player = team.players[0];
+                                    if (!player) return null;
 
-                            return (
-                                <div
-                                    key={team.id}
-                                    className="flex items-center gap-3 bg-gray-100 p-2 rounded-lg shadow-sm min-w-[150px]"
-                                >
-                                    {player.avatarUrl ? (
-                                        <img
-                                            src={player.avatarUrl}
-                                            alt={player.name}
-                                            className="w-10 h-10 rounded-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                            <span className="text-sm text-gray-600">
-                                                {player.name[0].toUpperCase()}
-                                            </span>
+                                    return (
+                                        <div
+                                            key={team.id}
+                                            className="flex items-center gap-3 bg-gray-100 p-2 rounded-lg shadow-sm min-w-[150px]"
+                                        >
+                                            {player.avatarUrl ? (
+                                                <img
+                                                    src={player.avatarUrl}
+                                                    alt={player.name}
+                                                    className="w-10 h-10 rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <span className="text-sm text-gray-600">
+                                                        {player.name[0].toUpperCase()}
+                                                    </span>
+                                                </div>
+                                            )}
+
+                                            <div className="flex flex-col max-w-[75px]">
+                                                <span className="font-semibold text-slate-600 truncate">{player.name}</span>
+                                                {player.nickname && (
+                                                    <span className="text-sm text-gray-500 truncate">@{player.nickname}</span>
+                                                )}
+                                            </div>
                                         </div>
-                                    )}
-
-                                    <div className="flex flex-col max-w-[75px]">
-                                        <span className="font-semibold text-slate-600 truncate">{player.name}</span>
-                                        {player.nickname && (
-                                            <span className="text-sm text-gray-500 truncate">@{player.nickname}</span>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        <div className="flex-1">
+                            {
+                                roundType === TournamentType.ROUND_ROBIN && <RoundRobinForm tournament={tournament} roundNumber={roundNumber} />
+                            }
+                        </div>
                     </div>
+                )}
 
-                </div>
-                <div className="flex-1">
-                    <RoundRobinForm
-                        tournament={tournament}
-                        roundNumber={roundNumber}
-                    />
-                </div>
+                {/* MATCHES CONTENT: chỉ hiện khi ONGOING hoặc FINISHED */}
+                {(roundStatus === "ONGOING" || roundStatus === "FINISHED") && (
+                    <div className="matches-content">
+                        <MatchTable listMatch={listMatches} />
+                    </div>
+                )}
             </div>
+
         </div>
+
     );
 };
 
-export default TournamentMatchInRound;
+const mapStateToProps = (state: any) => ({
+    isLoadingByRound: state.tournamentDetail.isLoadingByRound,
+    isUpdateMatchLoading: state.tournamentDetail.isUpdateMatchLoading,
+    matchesByRound: state.tournamentDetail.matchesByRound,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+    getMatchesInTournament: (tournamentId: string, roundNumber: 1 | 2 | 3, workspaceId: string) => dispatch(tournamentDetailActions.getMatchesInTournament(tournamentId, roundNumber, workspaceId)),
+    updateTouenamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string) => dispatch(tournamentActions.updateTournamentRoundStatus(tournamentId, roundNumber, roundStatus, workspaceId))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(TournamentMatchInRound));

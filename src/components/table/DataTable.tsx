@@ -56,6 +56,7 @@ const DataTable = <T extends object>({ columns, data, showLoading, isLoading, to
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
+                                className="hover:bg-[var(--tr-hover-color)]"
 
                             >
                                 {columns.map((col, j) => {

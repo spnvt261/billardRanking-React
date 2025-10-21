@@ -14,7 +14,7 @@ export const tournamentStatusMap = {
         className: "border-yellow-400 text-yellow-400",
     },
     [TournamentRoundStatus.NOT_STARTED]: {
-        label: "Không có",
-        className: "",
+        label: "Đợi",
+        className: "border-blue-600 text-blue-600",
     },
 };

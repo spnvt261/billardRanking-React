@@ -11,17 +11,18 @@ import { connect } from "react-redux";
 import tournamentDetailActions from "../../../../redux/features/tournamentDetails/tournamentDetailAction";
 import { useWorkspace } from "../../../../customhook/useWorkspace";
 import { useNotification } from "../../../../customhook/useNotifycation";
-import MatchTable from "../../../layout/tournamentDetail/tournamentMatches/matchTable/MacthTable";
 
 interface Props {
     tournament: TournamentDetail;
     roundNumber: 1 | 2 | 3;
-    createRoundRobin: (data: RoundRobinValuesRequest, workspaceId: string) => Promise<void>
+    createRoundRobin: (data: RoundRobinValuesRequest, workspaceId: string,roundNumber:1|2|3) => Promise<void>
 }
 
 
 
 const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRoundRobin }: Props) => {
+    console.log(roundNumberProps);
+    
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification();
     const teamOptions: Option[] = useMemo(
@@ -37,6 +38,7 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
         initialValues: {
             tournamentId: tournament.id,
             numGroups: 1,
+            gameNumberPlayed:0,
             roundNumber: roundNumberProps,
             roundPlayersAfter: 1, // ✅ init mặc định là 1 người qua
             groupSelections: [teamOptions.map((t) => String(t.value))],
@@ -61,11 +63,11 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
                     }
                 ),
         }),
-        onSubmit: (values) => {
+        onSubmit:async (values) => {
             // console.log("✅ Form submit:", values);
             try {
-                if (workspaceId) createRoundRobin(values, workspaceId)
-                notify('Đã tạo xong lượt trận', 'success')
+                if (workspaceId) await createRoundRobin(values, workspaceId,roundNumberProps)
+                notify('Tạo lượt trận thành công', 'success')
             } catch (err) {
                 notify(`Xảy ra lỗi ${err}`, 'error')
             }
@@ -138,7 +140,7 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
 
                 {/* Số lượng qua */}
                 <div className="bg-gray-100 max-w-[250px] p-2 rounded-[1rem] flex flex-col items-center">
-                    <h2 className="font-semibold text-slate-600">SỐ LƯỢNG QUA</h2>
+                    <h2 className="font-semibold text-slate-600">LẤY PLAYER</h2>
                     <CustomCounter
                         minValue={1}
                         maxValue={tournament.listTeam.length}
@@ -201,26 +203,25 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
             )}
 
             {/* Nút bắt đầu */}
-            <div className="flex justify-end mt-4">
+            <div className="flex justify-start mt-4">
                 <CustomButton
-                    label={`Bắt đầu vòng ${values.roundNumber}`}
+                    label={`Bắt đầu ROUND${values.roundNumber}`}
                     variant="type-2"
                     className="text-gray-700"
                     type="submit"
                 />
             </div>
-            <MatchTable/>
+            
         </form>
     );
 };
 
 const mapStateToProps = (state: any) => ({
-    isLoading: state.matches.isLoading,
-    listPlayerSelect: state.players.listPlayerSelect,
+    isLoading: state.tournamentDetail.isCreateRoundMatchLoading,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    createRoundRobin: (data: RoundRobinValuesRequest, workspaceId: string) => dispatch(tournamentDetailActions.createRoundRobin(data, workspaceId)),
+    createRoundRobin: (data: RoundRobinValuesRequest, workspaceId: string,roundNumber:1|2|3) => dispatch(tournamentDetailActions.createRoundRobin(data, workspaceId,roundNumber)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoundRobinForm);

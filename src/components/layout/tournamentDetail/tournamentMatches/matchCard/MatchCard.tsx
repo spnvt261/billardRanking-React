@@ -1,67 +1,92 @@
-import type { FC } from "react";
-import { FiEdit3, FiPlus } from "react-icons/fi";
-
-export const MatchStatus = {
-    ONGOING: "ONGOING",
-    FINISHED: "FINISHED",
-    NOT_STARTED: "NOT_STARTED",
-    UPCOMING: "UPCOMING",
-} as const;
-
-export type MatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus];
+// MatchCard.tsx
+import { useState, type FC } from "react";
+import { FaEdit } from "react-icons/fa";
+import { MatchStatus, type Match } from "../../../../../types/match";
+import EditMatch from "../editMatch/EditMatch";
 
 interface MatchCardProps {
-    team1Name: string;
-    team2Name: string;
-    team1Score?: number;
-    team2Score?: number;
-    status?: MatchStatus;
-    onEdit?: () => void;
+    match: Match;
 }
 
-const MatchCard: FC<MatchCardProps> = ({
-    team1Name,
-    team2Name,
-    team1Score,
-    team2Score,
-    status = MatchStatus.NOT_STARTED,
-    onEdit,
-}) => {
-    const isCompleted = status === MatchStatus.FINISHED;
+const MatchCard: FC<MatchCardProps> = ({ match }) => {
+    const [showEdit, setShowEdit] = useState(false);
+
+    const getTeamNames = (players?: { name: string }[]) => {
+        if (!players || players.length === 0) return "TBA";
+        return players.map(p => p.name).join(" & ");
+    };
+
+    const toggleEdit = () => setShowEdit(!showEdit);
+
+    // ✅ Xác định đội thắng
+    const isFinished = match.status === MatchStatus.FINISHED;
+    const winnerTeam1 = isFinished && match.team1?.id === match.winnerId;
+    const winnerTeam2 = isFinished && match.team2?.id === match.winnerId;
 
     return (
-        <div className="p-2 bg-gray-100 rounded-2xl w-[150px] shadow-sm border border-gray-200 text-slate-500">
-            <div className="flex justify-between items-center mb-2">
-                <span className="font-medium truncate">{team1Name}</span>
-                <span className="text-lg font-semibold">
-                    {isCompleted ? team1Score : "-"}
-                </span>
-            </div>
-            <div className="flex justify-between items-center">
-                <span className="font-medium truncate">{team2Name}</span>
-                <span className="text-lg font-semibold">
-                    {isCompleted ? team2Score : "-"}
-                </span>
+        <>
+            <div className="w-[200px] border border-gray-300 rounded shadow-md overflow-hidden">
+                {/* Header */}
+                <div className="flex relative justify-start items-center bg-gray-300 p-1">
+                    <span className="font-semibold text-gray-800 ml-2">#{match.gameNumber || "-"}</span>
+                    {match.status === MatchStatus.FINISHED && (
+                        <span className="text-[0.6rem] ml-1 px-2 bg-white text-red-500 border border-red-400 rounded-full">
+                            {match.status}
+                        </span>
+                    )}
+                    {match.status === MatchStatus.ONGOING && (
+                        <span className="text-[0.6rem] ml-1 px-2 bg-white text-green-500 border border-green-400 rounded-full">
+                            {match.status}
+                        </span>
+                    )}
+                    {match.status === MatchStatus.UPCOMING && (
+                        <span className="text-[0.6rem] ml-1 px-2 bg-white text-yellow-500 border border-yellow-400 rounded-full">
+                            {match.status}
+                        </span>
+                    )}
+
+                    {/* Edit Button */}
+                    {match.status !== MatchStatus.FINISHED && match.status !== MatchStatus.ONGOING && (
+                        <button
+                            className="absolute h-full top-0 right-0 text-gray-600 hover:text-gray-800 w-[30px] h-[30px] flex items-center justify-center"
+                            onClick={toggleEdit}
+                        >
+                            <FaEdit size={18} />
+                        </button>
+                    )}
+                </div>
+
+                {/* Teams */}
+                <div className="flex justify-between items-center pl-5 pr-3 py-1 border-b border-gray-300 bg-gray-100">
+                    <span className="truncate text-gray-800">{getTeamNames(match.team1?.players)}</span>
+                    <span
+                        className={`px-2 py-0.5 border text-gray-700 rounded font-semibold ${
+                            winnerTeam1 ? " bg-green-500" : " border-gray-400"
+                        }`}
+                    >
+                        {match.status === MatchStatus.UPCOMING ? "-" : match.scoreTeam1}
+                    </span>
+                </div>
+
+                <div className="flex justify-between items-center pl-5 pr-3 py-1 bg-gray-100">
+                    <span className="truncate text-gray-800">{getTeamNames(match.team2?.players)}</span>
+                    <span
+                        className={`px-2 py-0.5 border rounded text-gray-700 font-semibold ${
+                            winnerTeam2 ? "bg-green-500" : "border-gray-400"
+                        }`}
+                    >
+                        {match.status === MatchStatus.UPCOMING ? "-" : match.scoreTeam2}
+                    </span>
+                </div>
             </div>
 
-            <div className="flex justify-end mt-3">
-                <button
-                    type="button"
-                    onClick={onEdit}
-                    className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-lg bg-gray-200 hover:bg-gray-300 transition"
-                >
-                    {isCompleted ? (
-                        <>
-                            <FiEdit3 className="text-slate-600" /> Edit
-                        </>
-                    ) : (
-                        <>
-                            <FiPlus className="text-slate-600" /> Add Result
-                        </>
-                    )}
-                </button>
-            </div>
-        </div>
+            {showEdit && (
+                <EditMatch
+                    match={match}
+                    onClose={toggleEdit}
+                />
+            )}
+        </>
     );
 };
 

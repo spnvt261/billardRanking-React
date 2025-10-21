@@ -6,13 +6,15 @@ import playerReducer from "./features/player/playerReducer";
 import { CLEAR_CACHE } from "./features/common";
 import matchReducer from "./features/match/matchReducer";
 import tournamentReducer from "./features/tournament/tournamentReducer";
+import tournamentDetailReducer from "./features/tournamentDetails/tournamentDetailReducer";
 
 const appReducer = combineReducers({
     view: viewReducer,
     workspace: workspaceReducer,
     players: playerReducer,
     matches:matchReducer,
-    tournaments:tournamentReducer
+    tournaments:tournamentReducer,
+    tournamentDetail:tournamentDetailReducer
 })
 
 const rootReducer = (state: any, action: any) => {
