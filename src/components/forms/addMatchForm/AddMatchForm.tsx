@@ -7,7 +7,7 @@ import CustomTextField from "../../customTextField/CustomTextField";
 import { matchCategoryOptions, matchTypeOptions } from "../../../constants/matchTypes";
 import { connect } from "react-redux";
 import matchActions from "../../../redux/features/match/matchActions";
-import { MatchCategory, type MatchesRequest } from "../../../types/match";
+import { MatchCategory, MatchStatus, type MatchesRequest } from "../../../types/match";
 import type { PlayerSelect } from "../../../types/player";
 import { useWorkspace } from "../../../customhook/useWorkspace";
 import playerActions from "../../../redux/features/player/playerActions";
@@ -71,6 +71,7 @@ const AddMatchForm = ({ btnCancel, showLoading, isLoading,createMatch, listPlaye
                     scoreTeam1: Number(values.score_team1),
                     scoreTeam2: Number(values.score_team2),
                     betAmount:values.betAmount,
+                    status:MatchStatus.FINISHED,
                     // note:"",
                     // matchType:,
                     // team1Id:,

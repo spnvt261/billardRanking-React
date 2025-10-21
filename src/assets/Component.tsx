@@ -74,7 +74,7 @@ const BracketSVG: React.FC<{ matches: Match[] }> = ({ matches }) => {
   );
 };
 
-export default function TestComponent() {
+export default function Test() {
   const matches = [
     { id: 1, round: 1, player1: "Đức", player2: "Tiến", winner: "Đức" },
     { id: 2, round: 1, player1: "Sơn", player2: "Đạt", winner: "Sơn" },

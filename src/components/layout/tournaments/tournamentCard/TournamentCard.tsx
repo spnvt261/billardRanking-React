@@ -46,7 +46,7 @@ const TournamentCard = (props: propsTournamentCard) => {
         "images/defaultBannerTournament2.jpg",
         "images/defaultBannerTournament3.jpg"
     ];
-    console.log(props);
+    // console.log(props);
     
     const bannerSrc = props.banner || defaultBanners[Math.floor(Math.random() * defaultBanners.length)];
     return (

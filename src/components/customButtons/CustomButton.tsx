@@ -11,10 +11,11 @@ interface CustomButtonProps {
     className?: string;
     variant: "type-1" | "type-2" | "type-3" | "type-4" | "type-5" | "type-6" | "type-7";
     needPermission?: boolean;
+    textPadding?:string
 }
 
 const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
-    ({ label, variant, width = "auto", type = "button", onClick, className = "",
+    ({ label, variant, width = "auto", type = "button", onClick, className = "",textPadding,
         needPermission
     }, ref) => {
         const [accessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
@@ -31,7 +32,9 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
                         className={`custom-button ${variant} relative inline-flex items-center justify-center p-0.5 overflow-hidden font-semibold rounded-[.875rem] group ${className}`}
                         style={{ width }}
                     >
-                        <span className="custom-button-inner relative py-3 px-6 transition-all ease-in duration-75 rounded-[.75rem]">
+                        <span className="custom-button-inner relative py-3 px-6 transition-all ease-in duration-75 rounded-[.75rem]"
+                            style={{padding:textPadding}}
+                        >
                             {label}
                         </span>
                     </button>

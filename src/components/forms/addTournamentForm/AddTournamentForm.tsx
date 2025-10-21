@@ -6,7 +6,7 @@ import CustomTextField from "../../customTextField/CustomTextField";
 import CustomSelect from "../../customSelect/CustomSelect";
 import CustomButton from "../../customButtons/CustomButton";
 import { FaChevronDown } from "react-icons/fa6";
-import { TournamentFormat, TournamentStatus, TournamentType, type TournamentsRequest } from "../../../types/tournament";
+import { TournamentFormat, TournamentRoundStatus, TournamentStatus, TournamentType, type TournamentsRequest } from "../../../types/tournament";
 import type { PlayerSelect } from "../../../types/player";
 import { tournamentTypeOptions } from "../../../constants/tournamentTypes";
 import { useNotification } from "../../../customhook/useNotifycation";
@@ -52,9 +52,12 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
             name: "",
             tournamentType: undefined,
             round1PlayersAfter: undefined,
+            round1Status:TournamentRoundStatus.ONGOING,
             tournamentType2: undefined,
             round2PlayersAfter: undefined,
+            round2Status:TournamentRoundStatus.NOT_STARTED,
             tournamentType3: undefined,
+            round3Status:TournamentRoundStatus.NOT_STARTED,
             startDate: "",
             endDate: undefined,
             location: undefined,

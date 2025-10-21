@@ -10,9 +10,10 @@ interface Props {
     getTournamentById: (id: string, workspaceId: string) => Promise<void>;
     tournament: TournamentDetail | null;
     isLoading:boolean;
-    showLoading?:(isLoading:boolean) =>void
+    showLoading?:(isLoading:boolean) =>void;
+    cleanTournamentDetail:()=>void
 }
-const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLoading }: Props) => {
+const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLoading,cleanTournamentDetail }: Props) => {
     // console.log('TournamentsDetails');
     const { workspaceId } = useWorkspace()
     const { id } = useParams<{ id: string }>();
@@ -21,6 +22,10 @@ const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLo
         if (id && workspaceId) {
             getTournamentById(id, workspaceId)
         }
+        
+        return () => {
+            cleanTournamentDetail();
+        };
     }, [])
 
     useEffect(()=>{
@@ -44,7 +49,8 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => {
     // console.log(dispatch);
     return {
-        getTournamentById: (id: string, workspaceId: string) => dispatch(tournamentActions.getTournamentById(id, workspaceId))
+        getTournamentById: (id: string, workspaceId: string) => dispatch(tournamentActions.getTournamentById(id, workspaceId)),
+        cleanTournamentDetail: ()=>dispatch(tournamentActions.cleanTournamentDetail())
     }
 }
 

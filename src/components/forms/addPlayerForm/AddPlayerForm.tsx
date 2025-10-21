@@ -20,12 +20,12 @@ interface Props {
 }
 
 interface FormValues {
-  name: string;
-  avatarUrl: File | null;
-  nickname: string | null;
-  startElo: number;
-  description: string | null;
-  workspaceId: number | null;
+    name: string;
+    avatarUrl: File | null;
+    nickname: string | null;
+    startElo: number;
+    description: string | null;
+    workspaceId: number | null;
 }
 
 const AddPlayerForm = ({ btnCancel, showLoading, isLoading, createPlayer, upLoadImages }: Props) => {
@@ -36,7 +36,7 @@ const AddPlayerForm = ({ btnCancel, showLoading, isLoading, createPlayer, upLoad
         if (showLoading) showLoading(isLoading)
     }, [isLoading])
     const formik = useFormik<FormValues>({
-        initialValues:{
+        initialValues: {
             name: "",
             avatarUrl: null,
             nickname: null,
@@ -56,22 +56,22 @@ const AddPlayerForm = ({ btnCancel, showLoading, isLoading, createPlayer, upLoad
         }),
         onSubmit: async (values) => {
             let imageUrl = undefined;
-            let x=0;
+            let x = 0;
             try {
                 if (values.avatarUrl) {
                     // upload ảnh trước khi tạo player
                     imageUrl = await upLoadImages(values.avatarUrl); // truyền file
                     // console.log(imageUrl);
-                    
+
                 }
             } catch (err) {
                 notify(`Lỗi khi upload ảnh ${err}`, 'error');
-                x=x+1;
+                x = x + 1;
             }
-            
+
             const dataRequest = {
                 name: values.name,
-                avatarUrl: imageUrl?imageUrl:undefined,
+                avatarUrl: imageUrl ? imageUrl : undefined,
                 nickname: values.nickname || undefined,
                 startElo: values.startElo,
                 description: values.description || undefined,
@@ -80,7 +80,7 @@ const AddPlayerForm = ({ btnCancel, showLoading, isLoading, createPlayer, upLoad
 
             try {
                 createPlayer(dataRequest)
-                if (x==0) notify('Thêm người chơi thành công', 'success')
+                if (x == 0) notify('Thêm người chơi thành công', 'success')
                 btnCancel()
             } catch (err) {
                 console.log(err);
@@ -110,6 +110,23 @@ const AddPlayerForm = ({ btnCancel, showLoading, isLoading, createPlayer, upLoad
                 onBlur={formik.handleBlur}
                 error={formik.touched.name && Boolean(formik.errors.name)}
                 helperText={formik.errors.name}
+            />
+
+            <CustomTextField
+                label="Elo khởi điểm"
+                name="startElo"
+                type="number"
+                value={formik.values.startElo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+
+                    Boolean(formik.errors.startElo)
+                }
+                helperText={
+
+                    formik.errors.startElo
+                }
             />
 
             {/* === Ảnh === */}
@@ -160,22 +177,7 @@ const AddPlayerForm = ({ btnCancel, showLoading, isLoading, createPlayer, upLoad
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         />
-                        <CustomTextField
-                            label="Elo khởi điểm"
-                            name="startElo"
-                            type="number"
-                            value={formik.values.startElo}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={
 
-                                Boolean(formik.errors.startElo)
-                            }
-                            helperText={
-
-                                formik.errors.startElo
-                            }
-                        />
                         <CustomTextField
                             label="Mô tả"
                             name="description"
@@ -207,7 +209,7 @@ const AddPlayerForm = ({ btnCancel, showLoading, isLoading, createPlayer, upLoad
 };
 
 const mapStateToProps = (state: any) => ({
-    isLoading:state.players.isLoading
+    isLoading: state.players.isLoading
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

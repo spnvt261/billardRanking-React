@@ -72,11 +72,11 @@ const playerReducer = (state = initState, action: PlayerAction) => {
 
         case GET_LIST_PLAYERS_SELECT_SUCCESS:
             return {
-                ...initState,
+                ...state,
                 isLoading: false,
                 listPlayerSelect: action.payload
             }
-
+        
 
         //fail
         case GET_LIST_PLAYERS_SELECT_FAIL:
@@ -88,6 +88,12 @@ const playerReducer = (state = initState, action: PlayerAction) => {
                 error: action.payload
             }
 
+        //clean
+        case types.CLEAN_PLAYERS:
+            return{
+                ...state,
+                playersByPage:{}
+            }
 
         default:
             return state;

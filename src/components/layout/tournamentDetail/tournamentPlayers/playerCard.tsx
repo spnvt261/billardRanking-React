@@ -19,9 +19,9 @@ const PlayerCard = ({ player }: Props) => {
                     active:scale-95 cursor-pointer">
 
 
-            <div className="absolute top-2 right-[5rem] bg-red-400 text-gray-800 font-bold px-2 py-1 rounded-full text-sm shadow-md">
+            {/* <div className="absolute top-2 right-[5rem] bg-red-400 text-gray-800 font-bold px-2 py-1 rounded-full text-sm shadow-md">
                 Rank: {player.rank}
-            </div>
+            </div> */}
             <div className="absolute top-2 right-2 bg-yellow-400 text-gray-800 font-bold px-2 py-1 rounded-full text-sm shadow-md">
                 Seed: {player.seedNumber}
             </div>
@@ -36,20 +36,20 @@ const PlayerCard = ({ player }: Props) => {
             </div>
 
             {/* Thông tin Player */}
-            <div className="ml-4 flex flex-col justify-center h-full">
+            <div className="ml-4 flex flex-col justify-end h-full mb-6 max-w-[180px]">
                 <div>
-                    <h2 className="text-lg font-semibold text-gray-800">
-                        {player.nickname ? `${player.nickname} (${player.name})` : player.name}
+                    <h2 className="text-lg font-semibold text-gray-800 text-slate-600 truncate">
+                        {player.nickname ? `${player.name} (aka. ${player.nickname})` : player.name}
                     </h2>
 
                     {/* Elo ở giữa */}
-                    <p className="text-gray-700 font-medium mt-2">
-                        Elo: {player.elo}
+                    <p className="text-gray-700 font-medium text-slate-600 truncate">
+                        Elo: {player.elo} <span className="font-semibold">#{player.rank}</span>
                     </p>
 
                     {player.description && (
-                        <p className="text-gray-600 mt-1 text-sm line-clamp-2">
-                            {player.description}
+                        <p className="text-gray-600 mt-1 text-sm line-clamp-2 text-slate-600 truncate">
+                            Giới thiệu: {player.description}
                         </p>
                     )}
                 </div>

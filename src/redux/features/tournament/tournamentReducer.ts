@@ -74,7 +74,13 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
                     isCreateLoading:false,
                     error: action.payload
                 }
-    
+                
+            //clean
+            case types.CLEAN_TOURNAMENT_DETAIL:
+                return{
+                    ...state,
+                    tournamentDetail:null
+                }
         
             default:
                 return state;

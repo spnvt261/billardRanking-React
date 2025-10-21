@@ -99,11 +99,19 @@ const createTournament = (data: TournamentsRequest) => async (dispatch: Dispatch
     }
 };
 
+const cleanTournamentDetail = ()=> (dispatch:Dispatch) =>{
+    dispatch({
+        type:types.CLEAN_TOURNAMENT_DETAIL,
+        payload:null
+    })
+}
+
 const tournamentActions = {
     getAllTournaments,
     createTournament,
     upLoadImages,
-    getTournamentById
+    getTournamentById,
+    cleanTournamentDetail
 }
 
 export default tournamentActions

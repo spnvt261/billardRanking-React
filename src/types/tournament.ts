@@ -25,15 +25,26 @@ export const TournamentFormat = {
 } as const;
 export type TournamentFormat = typeof TournamentFormat[keyof typeof TournamentFormat];
 
+export const TournamentRoundStatus = {
+    ONGOING: "ONGOING",
+    FINISHED: "FINISHED",
+    NOT_STARTED: "NOT_STARTED",
+    UPCOMING:"UPCOMING"
+} as const;
+export type TournamentRoundStatus = typeof TournamentRoundStatus[keyof typeof TournamentRoundStatus];
+
 export interface TournamentDetail {
     id: number; //bắt buộc
     workspaceId: number; //bắt buộc
     name: string; //bắt buộc
     tournamentType: TournamentType; //bắt buộc
-    round1PlayersAfter?:number
+    round1PlayersAfter?:number;
+    round1Status: TournamentRoundStatus;
     tournamentType2?: TournamentType; 
     round2PlayersAfter?:number
+    round2Status: TournamentRoundStatus;
     tournamentType3?: TournamentType; 
+    round3Status: TournamentRoundStatus;
     startDate: string; //bắt buộc
     endDate?: string; 
     location?: string;
@@ -59,10 +70,13 @@ export interface TournamentsRequest {
     workspaceId: number;
     name: string;
     tournamentType?: TournamentType;
-    round1PlayersAfter?:number
+    round1PlayersAfter?:number;
+    round1Status: TournamentRoundStatus;
     tournamentType2?: TournamentType;
     round2PlayersAfter?:number
+    round2Status: TournamentRoundStatus;
     tournamentType3?: TournamentType;
+    round3Status: TournamentRoundStatus;
     startDate: string;
     endDate?: string;
     location?: string;

@@ -7,6 +7,7 @@ import "./RankingTable.css";
 import type { Player } from "../../../types/player";
 import { useWorkspace } from "../../../customhook/useWorkspace";
 import { useNotification } from "../../../customhook/useNotifycation";
+import { formatFullVND } from "../../../ultils/format";
 
 interface RankingTableProps {
     isLoading: boolean;
@@ -15,14 +16,16 @@ interface RankingTableProps {
     page: number;
     playersByPage: Record<number, Player[]>;
     getAllPlayer: (workspaceId: string, page: number) => Promise<void>;
+    getAllPlayerSortedByPrize: (workspaceId: string, page: number) => Promise<void>;
+    cleanPlayers: ()=> void;
 }
 
 const RankingTable: React.FC<RankingTableProps> = ({
     isLoading,
     totalElements,
     getAllPlayer,
-    // page,
-    // totalPages,
+    getAllPlayerSortedByPrize,
+    cleanPlayers,
     playersByPage,
 }) => {
     // console.log(playersByPage);
@@ -33,16 +36,18 @@ const RankingTable: React.FC<RankingTableProps> = ({
     const [currentPage, setCurrentPage] = useState(1);
     const { workspaceId } = useWorkspace();
     useEffect(() => {
-        if (!playersByPage[currentPage]) {
+        if (!playersByPage[currentPage] && mode=="elo") {
             if (workspaceId) getAllPlayer(workspaceId, currentPage).catch(err => {
+                notify(`Lỗi kết nối tới sever ${err}`, 'error');
+            });
+        }
+        if (!playersByPage[currentPage] && mode=="prize") {
+            if (workspaceId) getAllPlayerSortedByPrize(workspaceId, currentPage).catch(err => {
                 notify(`Lỗi kết nối tới sever ${err}`, 'error');
             });
         }
     }, [currentPage, playersByPage]);
 
-    // useEffect(()=>{
-    //     if(workspaceId) getAllPlayer(workspaceId, currentPage);
-    // },[])
     const currentData = playersByPage[currentPage] || [];
 
     return (
@@ -63,14 +68,14 @@ const RankingTable: React.FC<RankingTableProps> = ({
                 <div
                     className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${mode === "elo" ? "text-white w-3/4" : "text-black w-1/4"
                         }`}
-                    onClick={() => setMode("elo")}
+                    onClick={() => {setMode("elo"); cleanPlayers()}}
                 >
                     Elo
                 </div>
                 <div
                     className={`z-10 text-center py-2 cursor-pointer transition-all duration-500 ${mode === "prize" ? "text-white w-3/4" : "text-black w-1/4"
                         }`}
-                    onClick={() => { setMode("prize"); notify('Đang cập nhật', 'error') }}
+                    onClick={() => { setMode("prize"); cleanPlayers() }}
                 >
                     Tiền
                 </div>
@@ -90,7 +95,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
                                     alt={item.name}
                                     className="w-20 h-20 bg-gray-200 overflow-hidden rounded-[1rem]"
                                 />
-                                <span>{item.name}</span>
+                                <span className="max-w-[100px] truncate">{item.name}</span>
                             </div>
                         ),
                         width: "60%",
@@ -98,7 +103,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
                     {
                         header: mode === "elo" ? "Elo" : "Prize",
                         accessor: (item: Player) =>
-                            mode === "elo" ? item.elo : `$${(item as any).prize ?? 0}`,
+                            mode === "elo" ? item.elo : formatFullVND(item.prize),
                         width: "30%",
                     },
                 ]}
@@ -127,8 +132,9 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getAllPlayer: (workspaceId: string, page: number) =>
-        dispatch(playerActions.getPlayers(workspaceId, page)),
+    getAllPlayer: (workspaceId: string, page: number) =>dispatch(playerActions.getPlayers(workspaceId, page)),
+    getAllPlayerSortedByPrize: (workspaceId: string, page: number) =>dispatch(playerActions.getAllPlayerSortedByPrize(workspaceId, page)),
+    cleanPlayers: () =>dispatch(playerActions.cleanPlayers()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RankingTable);

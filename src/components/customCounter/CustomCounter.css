@@ -1,0 +1,45 @@
+.counter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 0.75rem;
+  width: fit-content;
+}
+
+.counter-input {
+  width: 60px;
+  text-align: center;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: #333;
+  border-bottom: 2px solid gray;
+}
+
+.counter-input:disabled {
+  color: #aaa;
+  background-color: #eee;
+}
+
+.counter-btn {
+  font-size: 1.2rem;
+  padding: 0;
+}
+
+.counter-container.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Ẩn nút tăng/giảm mặc định trong Chrome, Safari, Edge */
+.counter-input::-webkit-outer-spin-button,
+.counter-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ẩn nút tăng/giảm trong Firefox */
+.counter-input[type=number] {
+  -moz-appearance: textfield;
+}

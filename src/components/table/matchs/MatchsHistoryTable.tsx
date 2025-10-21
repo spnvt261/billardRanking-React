@@ -3,7 +3,7 @@ import DataTable from "../DataTable"
 import Pagination from "../pagination/Pagination";
 import { connect } from "react-redux";
 import matchActions from "../../../redux/features/match/matchActions";
-import { MatchCategory, type Match } from "../../../types/match";
+import { MatchCategory, MatchStatus, type Match } from "../../../types/match";
 import { useNotification } from "../../../customhook/useNotifycation";
 import { useWorkspace } from "../../../customhook/useWorkspace";
 import { formatVND } from "../../../ultils/format";
@@ -36,39 +36,87 @@ const MatchesHistoryTable = ({
     }, [currentPage, matchesByPage]);
     const currentData = matchesByPage[currentPage] || [];
     // console.log(currentData);
-
+    // console.log(totalElements);
+    
     const columns = [
         {
             header: "Match",
             accessor: (row: Match) => {
-                const isTeam1Winner = row.winnerId === row.team1?.id
-                const isTeam2Winner = row.winnerId === row.team2?.id
+                const isTeam1Winner = row.winnerId === row.team1?.id;
+                const isTeam2Winner = row.winnerId === row.team2?.id;
+                const isPending = row.winnerId == null;
+
+                const getTeamName = (team?: any) => {
+                    if (team?.name) return team.name;
+                    return (team?.players || [])
+                        .map((player: any) => player?.name)
+                        .filter(Boolean)
+                        .join(" & ") || "N/A";
+                };
+
+                const getTeamColor = (isWinner: boolean) => {
+                    if (isPending) return "text-yellow-500";
+                    return isWinner ? "text-green-600" : "text-red-600";
+                };
+
+                const renderMiddle = () => {
+                    switch (row.status) {
+                        case MatchStatus.ONGOING:
+                        case MatchStatus.FINISHED:
+                            return `${row.scoreTeam1} - ${row.scoreTeam2}`;
+                        case MatchStatus.UPCOMING:
+                        case MatchStatus.NOT_STARTED:
+                            return "-";
+                        default:
+                            return "-";
+                    }
+                };
+
+                const getStatusClass = () => {
+                    switch (row.status) {
+                        case MatchStatus.ONGOING:
+                            return "bg-green-500";
+                        case MatchStatus.UPCOMING:
+                            return "bg-yellow-500";
+                        case MatchStatus.NOT_STARTED:
+                            return "bg-red-500";
+                        default:
+                            return "text-gray-500";
+                    }
+                };
+                //  const getStatusLabel = () => {
+                //     switch (row.status) {
+                //         case MatchStatus.ONGOING:
+                //             return "ONG";
+                //         case MatchStatus.UPCOMING:
+                //             return "text-yellow-600 font-semibold";
+                //         case MatchStatus.NOT_STARTED:
+                //             return "text-red-600 font-semibold";
+                //         default:
+                //             return "text-gray-500";
+                //     }
+                // };
 
                 return (
-                    <div className="font-medium">
-                        <span className={isTeam1Winner ? "text-green-600" : "text-red-600"}>
-                            {row.team1?.name
-                                ? row.team1.name
-                                : (row.team1?.players || [])
-                                    .map((player) => player?.name)
-                                    .filter(Boolean)
-                                    .join(" & ") || "N/A"}
+                    <div className="font-medium flex items-center gap-2">
+                         {
+                            row.status!==MatchStatus.FINISHED &&
+                            <span className={`rounded-[1rem] p-1 pl-2 pr-2 text-white scale-75 font-bold ${getStatusClass()}`}>
+                                {row.status}
+                            </span>
+                        }
+                        <span className={getTeamColor(isTeam1Winner)}>
+                            {getTeamName(row.team1)}
                         </span>{" "}
-                        <span className="text-gray-800">
-                            {row.scoreTeam1} - {row.scoreTeam2}
-                        </span>{" "}
-                        <span className={isTeam2Winner ? "text-green-600" : "text-red-600"}>
-                            {row.team2?.name
-                                ? row.team2.name
-                                : (row.team2?.players || [])
-                                    .map((player) => player?.name)
-                                    .filter(Boolean)
-                                    .join(" & ") || "N/A"}
+                        <span className="text-gray-800">{renderMiddle()}</span>{" "}
+                        <span className={getTeamColor(isTeam2Winner)}>
+                            {getTeamName(row.team2)}
                         </span>
+                       
                     </div>
-
-                )
+                );
             },
+
             width: "300px",
         },
         {

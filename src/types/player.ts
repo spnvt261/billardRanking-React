@@ -16,7 +16,7 @@ export interface Player{
     updatedAt:string;
     rank:number;
     seedNumber?:number;
-    prize?:number
+    prize:number
 }
 
 export interface PlayersRequest{

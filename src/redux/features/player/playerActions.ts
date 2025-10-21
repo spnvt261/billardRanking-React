@@ -5,9 +5,10 @@ import axios from "axios";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../constants/localStorage";
 import { getListPlayerSelect, upLoadImages } from "../common";
 
- const getPlayers =
+const getPlayers =
     (workspaceId: string, page: number) =>
         async (dispatch: Dispatch): Promise<PlayersResponse> => {
+
             dispatch({
                 type: types.GET_PLAYERS_REQUEST,
                 payload: null,
@@ -21,7 +22,39 @@ import { getListPlayerSelect, upLoadImages } from "../common";
                     },
                 });
                 // console.log(response.data);
-                
+
+                dispatch({
+                    type: types.GET_PLAYERS_SUCCESS,
+                    payload: response.data,
+                });
+
+                return response.data;
+            } catch (error: any) {
+                dispatch({
+                    type: types.GET_PLAYERS_FAIL,
+                    payload: error,
+                });
+                throw error;
+            }
+        };
+const getAllPlayerSortedByPrize =
+    (workspaceId: string, page: number) =>
+        async (dispatch: Dispatch): Promise<PlayersResponse> => {
+
+            dispatch({
+                type: types.GET_PLAYERS_REQUEST,
+                payload: null,
+            });
+
+            try {
+                const response = await axios.get<PlayersResponse>("/api/players/sort-prize", {
+                    params: {
+                        workspaceId,
+                        page
+                    },
+                });
+                // console.log(response.data);
+
                 dispatch({
                     type: types.GET_PLAYERS_SUCCESS,
                     payload: response.data,
@@ -37,7 +70,7 @@ import { getListPlayerSelect, upLoadImages } from "../common";
             }
         };
 
- const createPlayer =
+const createPlayer =
     (data: PlayersRequest) =>
         async (dispatch: Dispatch): Promise<PlayersResponse> => {
             dispatch({
@@ -75,12 +108,20 @@ import { getListPlayerSelect, upLoadImages } from "../common";
                 throw err;
             }
         };
+const cleanPlayers = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: types.CLEAN_PLAYERS,
+        payload: null,
+    });
+}
 
 const playerActions = {
     getPlayers,
     createPlayer,
     upLoadImages,
-    getListPlayerSelect
+    getListPlayerSelect,
+    getAllPlayerSortedByPrize,
+    cleanPlayers
 }
 
 export default playerActions;

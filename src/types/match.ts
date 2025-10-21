@@ -18,6 +18,14 @@ export const MatchCategory = {
 } as const;
 export type MatchCategory = typeof MatchCategory[keyof typeof MatchCategory];
 
+export const MatchStatus = {
+    ONGOING: "ONGOING",
+    FINISHED: "FINISHED",
+    NOT_STARTED: "NOT_STARTED",
+    UPCOMING:"UPCOMING"
+} as const;
+export type MatchStatus = typeof MatchStatus[keyof typeof MatchStatus];
+
 export interface Team {
     id: number
     workspaceId:number
@@ -42,7 +50,8 @@ export interface Match {
     betAmount?: number
     matchDate?: string
     note?: string
-    winnerId?: number
+    winnerId?: number;
+    status:MatchStatus
     createdAt: string
     updatedAt: string
 }
@@ -62,6 +71,7 @@ export interface MatchesRequest {
     betAmount?: number;
     matchDate?: string;
     note?: string;
+    status:MatchStatus
 }
 
 export interface MatchesResponse {
