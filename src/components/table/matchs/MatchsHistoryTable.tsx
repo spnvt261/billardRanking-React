@@ -7,6 +7,10 @@ import { MatchCategory, MatchStatus, type Match } from "../../../types/match";
 import { useNotification } from "../../../customhook/useNotifycation";
 import { useWorkspace } from "../../../customhook/useWorkspace";
 import { formatVND } from "../../../ultils/format";
+import { matchTypeMap } from "../../../ultils/mapEnum";
+import { NavLink } from "react-router-dom";
+import PATHS from "../../../router/path";
+import { GoTrophy } from "react-icons/go";
 
 interface props {
     getMatchesByPage: (workspaceId: string, page: number) => Promise<void>;
@@ -37,7 +41,7 @@ const MatchesHistoryTable = ({
     const currentData = matchesByPage[currentPage] || [];
     // console.log(currentData);
     // console.log(totalElements);
-    
+
     const columns = [
         {
             header: "Match",
@@ -84,23 +88,11 @@ const MatchesHistoryTable = ({
                             return "text-gray-500";
                     }
                 };
-                //  const getStatusLabel = () => {
-                //     switch (row.status) {
-                //         case MatchStatus.ONGOING:
-                //             return "ONG";
-                //         case MatchStatus.UPCOMING:
-                //             return "text-yellow-600 font-semibold";
-                //         case MatchStatus.NOT_STARTED:
-                //             return "text-red-600 font-semibold";
-                //         default:
-                //             return "text-gray-500";
-                //     }
-                // };
 
                 return (
                     <div className="font-medium flex items-center gap-2">
-                         {
-                            row.status!==MatchStatus.FINISHED &&
+                        {
+                            row.status !== MatchStatus.FINISHED &&
                             <span className={`rounded-[1rem] p-1 pl-2 pr-2 text-white scale-75 font-bold ${getStatusClass()}`}>
                                 {row.status}
                             </span>
@@ -112,7 +104,7 @@ const MatchesHistoryTable = ({
                         <span className={getTeamColor(isTeam2Winner)}>
                             {getTeamName(row.team2)}
                         </span>
-                       
+
                     </div>
                 );
             },
@@ -133,13 +125,33 @@ const MatchesHistoryTable = ({
                 // Nếu là "Bàn nước" thì chỉ hiện tên đó
                 if (row.matchCategory === MatchCategory.FUN) return "Bàn nước"
                 if (row.matchCategory === MatchCategory.BETTING && row.betAmount) return `Kèo ${formatVND(row.betAmount)}`
+                if (row.tournamentId && row.tournamentName) {
+                    return <div>
+                        <span className={`text-[0.9rem] text-slate-700 ${matchTypeMap[row.matchType].className}`}>{matchTypeMap[row.matchType].label}</span>
+                        <br></br>
+                        <div className="flex gap-1">
+                            <span>Giải</span>
+                            <NavLink to={`${PATHS.TOURNAMENT}/${row.tournamentId}`} className={`underline hover:text-gray-500 flex gap-1`}>
+                                <span className="flex gap-1">
+                                    {row.tournamentName}
+                                    <GoTrophy className="text-yellow-500 " size={20} />
+                                </span>
+                            </NavLink>
+                        </div>
+
+                    </div>
+                }
+
                 return `${row.matchType} - ${row.matchCategory}`
             },
             width: "180px",
         },
         {
-            header: "Match Rack",
-            accessor: () => "",
+            header: "Rack Check",
+            accessor: (row: Match) => {
+                if (row.tournamentId && row.tournamentName) return ""
+                return ""
+            },
             width: "150px",
         },
     ]

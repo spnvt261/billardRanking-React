@@ -105,14 +105,18 @@ const tournamentDetailReducer = (state = initState, action: TournamentDetailActi
             };
 
         // Round Robin
+        case types.OTHER_TYPE_REQUEST:
         case types.ROUND_ROBIN_REQUEST:
             return { ...state, isCreateRoundMatchLoading: true };
+
+        case types.OTHER_TYPE_SUCCESS:
         case types.ROUND_ROBIN_SUCCESS:
             return {
                 ...state,
                 isCreateRoundMatchLoading: false,
                 tournamentDetail: null
             }
+        case types.OTHER_TYPE_FAIL:
         case types.ROUND_ROBIN_FAIL:
             return { ...state, isCreateRoundMatchLoading: false };
 

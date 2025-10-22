@@ -11,7 +11,7 @@ const Navbar = () => {
     const toggleMenu = () => setIsOpen(!isOpen);
 
     return (
-        <div className="tournament-nav glass rounded-[1rem] z-10"
+        <div className="tournament-nav glass rounded-[1rem] z-40"
             style={isOpen?{width:'100%'}:{}}
         >
             <button className="menu-btn" onClick={toggleMenu}>

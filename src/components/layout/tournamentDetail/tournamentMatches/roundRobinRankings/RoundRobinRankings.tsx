@@ -46,7 +46,7 @@ const RoundRobinRankings = ({
     const { rankings } = roundRobinRankings;
     const groupLabels = ["A", "B", "C", "D", "E", "F","G","H","I"]; 
     return (
-        <div className="flex flex-wrap gap-4 bg-gray-500 p-4">
+        <div className="flex flex-wrap gap-4 bg-gray-500 p-4 overflow-x-auto">
             {Object.entries(rankings).map(([groupKey, teams],index) => {
                 const groupLabel = groupLabels[index] || groupKey; 
                 return (
@@ -66,6 +66,7 @@ const RoundRobinRankings = ({
                                     <th className="py-3 px-2 text-center">Participant</th>
                                     <th className="py-3 px-2 text-center">Match W-L-T</th>
                                     <th className="py-3 px-2 text-center">Pts</th>
+                                    <th className="py-3 px-2 text-center">Played</th>
                                     <th className="py-3 px-2 text-center">Match History</th>
                                 </tr>
                             </thead>
@@ -91,6 +92,9 @@ const RoundRobinRankings = ({
                                             </td>
                                             <td className="py-2 px-2 text-center">
                                                 {team.wins}
+                                            </td>
+                                            <td className="py-2 px-2 text-center">
+                                                {team.matchesPlayed} / {team.matchesTotal}
                                             </td>
                                             <td className="py-2 px-2 text-center">
                                                 <div className="flex justify-center gap-1">

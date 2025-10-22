@@ -2,7 +2,7 @@ import type { Dispatch } from "redux";
 import * as types from './tournamentDetailTypes';
 import axios from "axios";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../constants/localStorage";
-import type { RoundRobinValuesRequest } from "../../../types/round";
+import type { OtherTypeRequest, RoundRobinValuesRequest } from "../../../types/round";
 import type { Match } from "../../../types/match";
 
 const createRoundRobin = (data: RoundRobinValuesRequest, workspaceId: string,roundNumber:1|2|3) => async (dispatch: Dispatch): Promise<void> => {
@@ -39,6 +39,46 @@ const createRoundRobin = (data: RoundRobinValuesRequest, workspaceId: string,rou
     } catch (error: any) {
         dispatch({
             type: types.ROUND_ROBIN_FAIL,
+            payload: error,
+            roundNumber
+        });
+        throw error;
+    }
+};
+const createOtherType = (data: OtherTypeRequest, workspaceId: string,roundNumber:1|2|3) => async (dispatch: Dispatch): Promise<void> => {
+    dispatch({
+        type: types.OTHER_TYPE_REQUEST,
+        payload: null,
+        roundNumber,
+    });
+
+    try {
+        let token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
+        if (token && token.startsWith('"') && token.endsWith('"')) {
+            token = token.slice(1, -1); // bỏ dấu ngoặc kép ở đầu & cuối
+        }
+
+        if (!token) {
+            throw new Error('No access token found');
+        }
+
+        const response = await axios.post('/api/tournaments/other-round-type?workspaceId=' + workspaceId, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        dispatch({
+            type: types.OTHER_TYPE_SUCCESS,
+            payload: response.data,
+            roundNumber,
+        });
+
+        return response.data;
+    } catch (error: any) {
+        dispatch({
+            type: types.OTHER_TYPE_FAIL,
             payload: error,
             roundNumber
         });
@@ -144,7 +184,8 @@ const tournamentDetailActions = {
     createRoundRobin,
     getMatchesInTournament,
     updateMatchInTournament,
-    getRoundRobinRankings
+    getRoundRobinRankings,
+    createOtherType
 }
 
 export default tournamentDetailActions;

@@ -11,6 +11,8 @@ import tournamentDetailActions from "../../../../../redux/features/tournamentDet
 import { useWorkspace } from "../../../../../customhook/useWorkspace";
 import { useNotification } from "../../../../../customhook/useNotifycation";
 import WithLoading from "../../../../loading/WithLoading";
+import { useLocalStorage } from "../../../../../customhook/useLocalStorage";
+import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../../constants/localStorage";
 
 interface Props {
     match: Match;
@@ -26,6 +28,9 @@ const validationSchema = Yup.object({
 });
 
 const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading }) => {
+    const [accessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
+    const hasAccess = Boolean(accessToken);
+    const needPermission = hasAccess || null;
     const [mode, setMode] = useState<"CHOICE" | "ADD_RESULT">("CHOICE");
     const{workspaceId} = useWorkspace();
     const {notify} = useNotification();
@@ -111,11 +116,14 @@ const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading
                                 variant="type-2"
                                 onClick={() => alert("🚧 Chức năng đang phát triển")}
                             />
-                            <CustomButton
+                            {
+                                needPermission &&  <CustomButton
                                 label="Thêm kết quả"
                                 variant="type-1"
                                 onClick={() => setMode("ADD_RESULT")}
                             />
+                            }
+                           
                         </div>
                     )}
 

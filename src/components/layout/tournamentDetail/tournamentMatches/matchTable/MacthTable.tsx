@@ -41,7 +41,7 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
     const tableSet = new Set<string>();
     listMatch.forEach(match => {
         roundSet.add(match.round || 1);
-        tableSet.add(match.note || "Unknown");
+        tableSet.add(match.note || "");
     });
     const roundKeys = Array.from(roundSet).sort((a, b) => a - b);
     const tableKeys = Array.from(tableSet).sort();
@@ -53,7 +53,7 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
         roundKeys.forEach(round => {
             tableRoundMap[table][round] = [];
         });
-        const allMatchesOfTable = listMatch.filter(match => (match.note || "Unknown") === table);
+        const allMatchesOfTable = listMatch.filter(match => (match.note || "") === table);
         const allPlayersSet = new Set<string>();
         allMatchesOfTable.forEach(match => {
             match.team1?.players?.forEach(p => allPlayersSet.add(p.name));
@@ -61,9 +61,11 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
         });
         tablePlayerCount[table] = allPlayersSet.size;
     });
+    // console.log(listMatch);
+    
     listMatch.forEach(match => {
         const round = match.round || 1;
-        const table = match.note || "Unknown";
+        const table = match.note || "";
         tableRoundMap[table][round].push(match);
     });
 

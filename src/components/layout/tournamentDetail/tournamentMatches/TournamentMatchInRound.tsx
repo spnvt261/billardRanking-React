@@ -17,6 +17,7 @@ import { FaAngleDown } from "react-icons/fa6";
 import tournamentActions from "../../../../redux/features/tournament/tournamentActions";
 import { useNotification } from "../../../../customhook/useNotifycation";
 import RoundRobinRankings from "./roundRobinRankings/RoundRobinRankings";
+import OtherRoundFormat from "../../../forms/tournamentDetails/otherFormat/OtherRoundFormat";
 
 interface Props {
     title: string;
@@ -38,7 +39,7 @@ const TournamentMatchInRound = ({
 
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification()
-    const [showRoundRobinRankings,setShowRoundRobinRankings] = useState<boolean>(false)
+    const [showRoundRobinRankings, setShowRoundRobinRankings] = useState<boolean>(false)
     const roundType: TournamentType | "" =
         roundNumber === 1 ? tournament.tournamentType :
             roundNumber === 2 ? tournament.tournamentType2 || "" :
@@ -52,6 +53,11 @@ const TournamentMatchInRound = ({
     const isLoading = isLoadingByRound[roundNumber] || false;
 
     const listMatches = matchesByRound[roundNumber] || [];
+    
+    const gamePlayed = ([1, 2, 3] as const)
+        .map(round => matchesByRound[round]?.length || 0)
+        .reduce((acc, curr) => acc + curr, 0);
+
     const listTeams = tournament.listTeamByRound[roundNumber] || [];
     const [isCollapsed, setIsCollapsed] = useState(roundStatus !== TournamentRoundStatus.UPCOMING && roundStatus !== TournamentRoundStatus.ONGOING);
     useEffect(() => {
@@ -73,7 +79,6 @@ const TournamentMatchInRound = ({
             roundStatus !== TournamentRoundStatus.FINISHED &&
             workspaceId
         ) {
-            console.log(2);
 
             // ✅ 1. Cập nhật vòng hiện tại = FINISHED
             updateTouenamentRoundStatus(
@@ -189,22 +194,31 @@ const TournamentMatchInRound = ({
                         </div>
                         <div className="flex-1">
                             {
-                                roundType === TournamentType.ROUND_ROBIN && <RoundRobinForm tournament={tournament} roundNumber={roundNumber} />
+                                roundType === TournamentType.ROUND_ROBIN && <RoundRobinForm gamePlayed={gamePlayed} tournament={tournament} roundNumber={roundNumber} />
+                            }
+                            {
+                                roundType !== TournamentType.ROUND_ROBIN && roundType !== TournamentType.CUSTOM &&
+                                <OtherRoundFormat
+                                    gamePlayed={gamePlayed} 
+                                    roundNumber={roundNumber}
+                                    roundType={roundType}
+                                    tournament={tournament}
+                                />
                             }
                         </div>
                     </div>
                 )}
                 {
-                    (roundStatus === TournamentRoundStatus.ONGOING || roundStatus === TournamentRoundStatus.FINISHED) && roundType === TournamentType.ROUND_ROBIN && 
-                    <div className="w-full bg-gray-600 flex item-center justify-start">
+                    (roundStatus === TournamentRoundStatus.ONGOING || roundStatus === TournamentRoundStatus.FINISHED) && roundType === TournamentType.ROUND_ROBIN &&
+                    <div className="w-full bg-gray-600 flex item-center justify-start overflow-x-auto">
                         {/* <button onClick={()=>setShowRoundRobinRankings(!showRoundRobinRankings)}>show/hide</button> */}
-                        <div className={`p-2 pl-6 pr-6 cursor-pointer hover:bg-gray-800 ${!showRoundRobinRankings?'bg-gray-700':''}`}
-                            onClick={()=>setShowRoundRobinRankings(false)}
+                        <div className={`p-2 pl-6 pr-6 cursor-pointer hover:bg-gray-800 ${!showRoundRobinRankings ? 'bg-gray-700' : ''}`}
+                            onClick={() => setShowRoundRobinRankings(false)}
                         >
                             <p className="text-white">TRẬN ĐẤU</p>
                         </div>
-                        <div className={`p-2 pl-6 pr-6 cursor-pointer hover:bg-gray-800 ${showRoundRobinRankings?'bg-gray-700':''}`}
-                            onClick={()=>setShowRoundRobinRankings(true)}
+                        <div className={`p-2 pl-6 pr-6 cursor-pointer hover:bg-gray-800 ${showRoundRobinRankings ? 'bg-gray-700' : ''}`}
+                            onClick={() => setShowRoundRobinRankings(true)}
                         >
                             <p className="text-white ">BẢNG XẾP HẠNG</p>
                         </div>
@@ -213,12 +227,12 @@ const TournamentMatchInRound = ({
 
                 {/* MATCHES CONTENT: chỉ hiện khi ONGOING hoặc FINISHED */}
                 {
-                    showRoundRobinRankings && 
-                        <RoundRobinRankings 
-                            roundNumber={roundNumber}
-                            tournamentId={tournament.id.toString()}
-                            workspaceId={workspaceId}
-                        />
+                    showRoundRobinRankings &&
+                    <RoundRobinRankings
+                        roundNumber={roundNumber}
+                        tournamentId={tournament.id.toString()}
+                        workspaceId={workspaceId}
+                    />
                 }
                 {(roundStatus === TournamentRoundStatus.ONGOING || roundStatus === TournamentRoundStatus.FINISHED) && !showRoundRobinRankings && (
                     <div className="matches-content">

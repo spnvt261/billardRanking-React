@@ -1,14 +1,14 @@
 import type { Player } from "./player";
 import type { TournamentType } from "./tournament";
 
-const MatchType = {
-    GROUP: 'Vòng bảng',
-    QUARTERFINAL: 'Tứ kết',
-    SEMIFINAL: 'Bán kết',
-    FINAL: 'Chung kết',
-    THIRD_PLACE: 'Tranh hạng ba',
-    LAST16: 'Last16',
-    LAST32: 'Last32'
+export const MatchType = {
+    GROUP: 'GROUP',
+    QUARTERFINAL: 'QUARTERFINAL',
+    SEMIFINAL: 'SEMIFINAL',
+    FINAL: 'FINAL',
+    THIRD_PLACE: 'THIRD_PLACE',
+    LAST16: 'LAST16',
+    LAST32: 'LAST32'
 } as const;
 export type MatchType = typeof MatchType[keyof typeof MatchType];
 
@@ -31,6 +31,7 @@ export interface Team {
     id: number
     workspaceId:number
     name: string
+    teamName?:string
     players: Player[]
     createdAt:string
     updatedAt:string
@@ -40,6 +41,7 @@ export interface Match {
     id: number; //bắt buộc
     workspaceId: number; //bắt buộc
     tournamentId?: number;
+    tournamentName?:string
     tournamentRoundType?: TournamentType;
     team1Id: number
     team2Id: number

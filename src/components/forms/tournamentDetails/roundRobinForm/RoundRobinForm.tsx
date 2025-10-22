@@ -16,12 +16,15 @@ interface Props {
     tournament: TournamentDetail;
     roundNumber: 1 | 2 | 3;
     createRoundRobin: (data: RoundRobinValuesRequest, workspaceId: string,roundNumber:1|2|3) => Promise<void>
+    gamePlayed:number;
 }
 
 
 
-const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRoundRobin }: Props) => {
+const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRoundRobin,gamePlayed }: Props) => {
     // console.log(roundNumberProps);
+    console.log(gamePlayed);
+    
     
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification();
@@ -39,7 +42,7 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
         initialValues: {
             tournamentId: tournament.id,
             numGroups: 1,
-            gameNumberPlayed:0,
+            gameNumberPlayed:gamePlayed,
             roundNumber: roundNumberProps,
             roundPlayersAfter: 1, // ✅ init mặc định là 1 người qua
             groupSelections: [teamOptions.map((t) => String(t.value))],
@@ -217,12 +220,12 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
     );
 };
 
-const mapStateToProps = (state: any) => ({
-    isLoading: state.tournamentDetail.isCreateRoundMatchLoading,
-});
+// const mapStateToProps = (state: any) => ({
+//     isLoading: state.tournamentDetail.isCreateRoundMatchLoading,
+// });
 
 const mapDispatchToProps = (dispatch: any) => ({
     createRoundRobin: (data: RoundRobinValuesRequest, workspaceId: string,roundNumber:1|2|3) => dispatch(tournamentDetailActions.createRoundRobin(data, workspaceId,roundNumber)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoundRobinForm);
+export default connect(null, mapDispatchToProps)(RoundRobinForm);
