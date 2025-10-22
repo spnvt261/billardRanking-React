@@ -21,17 +21,18 @@ interface Props {
 
 
 const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRoundRobin }: Props) => {
-    console.log(roundNumberProps);
+    // console.log(roundNumberProps);
     
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification();
+    const listTeams = tournament.listTeamByRound[roundNumberProps] || []
     const teamOptions: Option[] = useMemo(
         () =>
-            tournament.listTeam.map((team) => ({
+            listTeams.map((team) => ({
                 label: team.players[0].name,
                 value: String(team.players[0].id),
             })),
-        [tournament.listTeam]
+        [listTeams]
     );
 
     const formik = useFormik<RoundRobinValuesRequest>({
@@ -46,11 +47,11 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
         validationSchema: Yup.object({
             numGroups: Yup.number()
                 .min(1, "Phải có ít nhất 1 bảng")
-                .max(Math.floor(tournament.listTeam.length / 2))
+                .max(Math.floor(listTeams.length / 2))
                 .required("Vui lòng chọn số bảng"),
             roundPlayersAfter: Yup.number()
                 .min(1, "Phải có ít nhất 1 người qua")
-                .max(tournament.listTeam.length, "Không thể vượt quá tổng số người chơi")
+                .max(listTeams.length, "Không thể vượt quá tổng số người chơi")
                 .required("Vui lòng nhập số lượng qua"),
             groupSelections: Yup.array()
                 .of(Yup.array().of(Yup.string()))
@@ -132,7 +133,7 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
                     <h2 className="font-semibold text-slate-600">BẢNG</h2>
                     <CustomCounter
                         minValue={1}
-                        maxValue={Math.floor(tournament.listTeam.length / 2)}
+                        maxValue={Math.floor(listTeams.length / 2)}
                         value={values.numGroups}
                         onChange={handleNumGroupsChange}
                     />
@@ -143,7 +144,7 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
                     <h2 className="font-semibold text-slate-600">LẤY PLAYER</h2>
                     <CustomCounter
                         minValue={1}
-                        maxValue={tournament.listTeam.length}
+                        maxValue={listTeams.length}
                         value={values.roundPlayersAfter}
                         onChange={(val) => setFieldValue("roundPlayersAfter", val)}
                     />

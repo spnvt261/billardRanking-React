@@ -9,7 +9,7 @@ type ContextType = {
 const TournamentMatches = () => {
     const { tournament } = useOutletContext<ContextType>();
     // console.log(tournament);
-    if (!tournament || !tournament.listTeam.length) {
+    if (!tournament || !tournament.listTeamByRound[1].length) {
         return (<div className="text-slate-500 font-bold">No DATA</div>)
     }
     return (

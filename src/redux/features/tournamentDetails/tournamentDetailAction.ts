@@ -74,6 +74,34 @@ const getMatchesInTournament = (tournamentId: string, roundNumber: 1 | 2 | 3, wo
     }
 }
 
+const getRoundRobinRankings = (tournamentId: string, roundNumber: 1 | 2 | 3, workspaceId: string) => async (dispatch: Dispatch): Promise<void> => {
+    
+    dispatch({
+        type: types.ROUND_ROBIN_RANKINGS_REQUEST,
+        roundNumber,
+    });
+
+    try {
+        const response = await axios.get("/api/tournaments/roundrobin-rankings", {
+            params: { tournamentId, roundNumber, workspaceId },
+        });
+
+        dispatch({
+            type: types.ROUND_ROBIN_RANKINGS_SUCCESS,
+            payload: response.data,
+            roundNumber,
+        });
+
+        return response.data;
+    } catch (err) {
+        dispatch({
+            type: types.ROUND_ROBIN_RANKINGS_FAIL,
+            roundNumber,
+        });
+        throw err;
+    }
+}
+
 const updateMatchInTournament = (matchId:string, newMatch:Match, workspaceId:string) => async (dispatch:Dispatch):Promise<void>=>{
     dispatch({
         type: types.UPDATE_MATCH_REQUEST,
@@ -112,11 +140,11 @@ const updateMatchInTournament = (matchId:string, newMatch:Match, workspaceId:str
     }
 }
 
-
 const tournamentDetailActions = {
     createRoundRobin,
     getMatchesInTournament,
-    updateMatchInTournament
+    updateMatchInTournament,
+    getRoundRobinRankings
 }
 
 export default tournamentDetailActions;

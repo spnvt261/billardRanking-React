@@ -16,6 +16,7 @@ import { MatchStatus, type Match } from "../../../../types/match";
 import { FaAngleDown } from "react-icons/fa6";
 import tournamentActions from "../../../../redux/features/tournament/tournamentActions";
 import { useNotification } from "../../../../customhook/useNotifycation";
+import RoundRobinRankings from "./roundRobinRankings/RoundRobinRankings";
 
 interface Props {
     title: string;
@@ -34,8 +35,10 @@ const TournamentMatchInRound = ({
     getMatchesInTournament, showLoading, updateTouenamentRoundStatus,
     isLoadingByRound, isUpdateMatchLoading
 }: Props) => {
+
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification()
+    const [showRoundRobinRankings,setShowRoundRobinRankings] = useState<boolean>(false)
     const roundType: TournamentType | "" =
         roundNumber === 1 ? tournament.tournamentType :
             roundNumber === 2 ? tournament.tournamentType2 || "" :
@@ -47,9 +50,9 @@ const TournamentMatchInRound = ({
                 tournament.round3Status;
 
     const isLoading = isLoadingByRound[roundNumber] || false;
-    console.log(matchesByRound);
-    
+
     const listMatches = matchesByRound[roundNumber] || [];
+    const listTeams = tournament.listTeamByRound[roundNumber] || [];
     const [isCollapsed, setIsCollapsed] = useState(roundStatus !== TournamentRoundStatus.UPCOMING && roundStatus !== TournamentRoundStatus.ONGOING);
     useEffect(() => {
         if (showLoading) showLoading(isLoading);
@@ -148,9 +151,9 @@ const TournamentMatchInRound = ({
                 {roundStatus === "UPCOMING" && (
                     <div className="setup p-4 flex flex-col gap-4">
                         <div className=" w-full">
-                            <h2>Người chơi ({tournament.listTeam.length})</h2>
+                            <h2>Người chơi ({listTeams.length})</h2>
                             <div className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2 w-full max-h-[220px] overflow-x-auto px-2 [@media(min-width:512px)]:grid-rows-1">
-                                {tournament.listTeam.map((team) => {
+                                {listTeams.map((team) => {
                                     const player = team.players[0];
                                     if (!player) return null;
 
@@ -191,9 +194,33 @@ const TournamentMatchInRound = ({
                         </div>
                     </div>
                 )}
+                {
+                    (roundStatus === TournamentRoundStatus.ONGOING || roundStatus === TournamentRoundStatus.FINISHED) && roundType === TournamentType.ROUND_ROBIN && 
+                    <div className="w-full bg-gray-600 flex item-center justify-start">
+                        {/* <button onClick={()=>setShowRoundRobinRankings(!showRoundRobinRankings)}>show/hide</button> */}
+                        <div className={`p-2 pl-6 pr-6 cursor-pointer hover:bg-gray-800 ${!showRoundRobinRankings?'bg-gray-700':''}`}
+                            onClick={()=>setShowRoundRobinRankings(false)}
+                        >
+                            <p className="text-white">TRẬN ĐẤU</p>
+                        </div>
+                        <div className={`p-2 pl-6 pr-6 cursor-pointer hover:bg-gray-800 ${showRoundRobinRankings?'bg-gray-700':''}`}
+                            onClick={()=>setShowRoundRobinRankings(true)}
+                        >
+                            <p className="text-white ">BẢNG XẾP HẠNG</p>
+                        </div>
+                    </div>
+                }
 
                 {/* MATCHES CONTENT: chỉ hiện khi ONGOING hoặc FINISHED */}
-                {(roundStatus === "ONGOING" || roundStatus === "FINISHED") && (
+                {
+                    showRoundRobinRankings && 
+                        <RoundRobinRankings 
+                            roundNumber={roundNumber}
+                            tournamentId={tournament.id.toString()}
+                            workspaceId={workspaceId}
+                        />
+                }
+                {(roundStatus === TournamentRoundStatus.ONGOING || roundStatus === TournamentRoundStatus.FINISHED) && !showRoundRobinRankings && (
                     <div className="matches-content">
                         <MatchTable listMatch={listMatches} />
                     </div>

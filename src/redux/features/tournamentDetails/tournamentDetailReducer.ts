@@ -1,4 +1,5 @@
 import type { Match } from '../../../types/match';
+import type { RoundRobinRankingsResponse } from '../../../types/round';
 import type { TournamentDetail } from '../../../types/tournament';
 import { CLEAN_TOURNAMENT_DETAIL, UPDATE_TOURNAMENT_ROUND_STATUS_FAIL, UPDATE_TOURNAMENT_ROUND_STATUS_REQUEST, UPDATE_TOURNAMENT_ROUND_STATUS_SUCCESS } from '../tournament/tournamentTypes';
 import * as types from './tournamentDetailTypes';
@@ -16,7 +17,8 @@ interface State {
     tournamentDetail: TournamentDetail | null;
     isGetDataLoading: boolean;
     isUpdateMatchLoading:boolean
-    isUpdateTournamentLoading:boolean
+    isUpdateTournamentLoading:boolean;
+    roundRobinRankingsByRound: Record<number, RoundRobinRankingsResponse|null>;
 }
 
 const initState: State = {
@@ -34,12 +36,40 @@ const initState: State = {
         2: false,
         3: false,
     },
+    roundRobinRankingsByRound:{
+        1:null,
+        2:null,
+        3:null,
+    },
     tournamentDetail: null
 };
 
 const tournamentDetailReducer = (state = initState, action: TournamentDetailAction): State => {
     switch (action.type) {
+        //GET ROUNDROBIN RANKINGS:
         //UPDATE ROUND STATUS
+        case types.ROUND_ROBIN_RANKINGS_REQUEST: {
+            const round = action.roundNumber!;
+            return{
+                ...state,
+                isLoadingByRound: { ...state.isLoadingByRound, [round]: true },
+            }
+        }
+        case types.ROUND_ROBIN_RANKINGS_SUCCESS:{
+            const round = action.roundNumber!;
+            return{
+                ...state,
+                isLoadingByRound: { ...state.isLoadingByRound, [round]: false },
+                roundRobinRankingsByRound:{ ...state.roundRobinRankingsByRound, [round]: action.payload },
+            }
+        }
+        case types.ROUND_ROBIN_RANKINGS_FAIL:{
+            const round = action.roundNumber!;
+            return{
+                ...state,
+                isLoadingByRound: { ...state.isLoadingByRound, [round]: false },
+            }
+        }
         case UPDATE_TOURNAMENT_ROUND_STATUS_REQUEST:
             return{
                 ...state,
@@ -134,6 +164,7 @@ const tournamentDetailReducer = (state = initState, action: TournamentDetailActi
                 ...state,
                 tournamentDetail: null,
                 matchesByRound: {},
+                roundRobinRankingsByRound:{}
             }
 
         default:

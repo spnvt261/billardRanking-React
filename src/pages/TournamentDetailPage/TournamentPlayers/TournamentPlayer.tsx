@@ -10,7 +10,7 @@ const TournamentPlayers = () => {
     const { tournament } = useOutletContext<ContextType>();
     // console.log(tournament);
     
-    if (!tournament || !tournament.listTeam.length) {
+    if (!tournament || !tournament.listTeamByRound[1].length) {
         return (
             <div className="p-4">
                 <h1 className="text-2xl font-semibold mb-4">Cơ thủ tham dự</h1>
@@ -24,7 +24,7 @@ const TournamentPlayers = () => {
             <h1 className="text-2xl font-semibold mb-6 text-slate-600">Cơ thủ tham dự</h1>
 
             <div className="flex flex-wrap gap-6">
-                {tournament.listTeam.map((team) => (
+                {tournament.listTeamByRound[1].map((team) => (
                     <PlayerCard key={team.players[0].id} player={team.players[0]} />
                 ))}
             </div>

@@ -9,13 +9,15 @@ interface MatchCardProps {
 }
 
 const MatchCard: FC<MatchCardProps> = ({ match }) => {
+    
+    
     const [showEdit, setShowEdit] = useState(false);
 
     const getTeamNames = (players?: { name: string }[]) => {
         if (!players || players.length === 0) return "TBA";
         return players.map(p => p.name).join(" & ");
     };
-
+    // console.log((match.team1?.players));
     const toggleEdit = () => setShowEdit(!showEdit);
 
     // ✅ Xác định đội thắng

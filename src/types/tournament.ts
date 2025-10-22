@@ -63,7 +63,7 @@ export interface TournamentDetail {
     updatedAt?:string;
     format:TournamentFormat
     listPlayer:Player[]; //bắt buộc
-    listTeam:Team[]
+    listTeamByRound:Record<number, Team[]>
 }
 
 export interface TournamentsRequest {
