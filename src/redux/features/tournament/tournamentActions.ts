@@ -105,7 +105,7 @@ const updateTournamentRoundStatus = (tournamentId: string, roundNumber: 1 | 2 | 
         type: types.UPDATE_TOURNAMENT_ROUND_STATUS_REQUEST,
     });
     // console.log(3);
-    
+
     try {
         let token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
         if (token && token.startsWith('"') && token.endsWith('"')) {
@@ -134,8 +134,8 @@ const updateTournamentRoundStatus = (tournamentId: string, roundNumber: 1 | 2 | 
 
         const response = await axios.put(
             `/api/tournaments/${tournamentId}?workspaceId=${workspaceId}&roundNumber=${roundNumber}`,
-            { 
-                [updateField]:roundStatus,
+            {
+                [updateField]: roundStatus,
                 teamIds: listIdsPass
             },
             {
@@ -161,6 +161,50 @@ const updateTournamentRoundStatus = (tournamentId: string, roundNumber: 1 | 2 | 
     }
 };
 
+const updateTournament = (tournamentId: string, dataRequest: TournamentsRequest, workspaceId: string) => async (dispatch: Dispatch): Promise<void> => {
+    dispatch({
+        type: types.UPDATE_TOURNAMENT_REQUEST,
+    });
+    // console.log(3);
+
+    try {
+        let token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
+        if (token && token.startsWith('"') && token.endsWith('"')) {
+            token = token.slice(1, -1);
+        }
+
+        if (!token) {
+            throw new Error('No access token found');
+        }
+
+        const response = await axios.put(
+            `/api/tournaments/${tournamentId}/basic?workspaceId=${workspaceId}`,
+            dataRequest,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        dispatch({
+            type: types.UPDATE_TOURNAMENT_SUCCESS,
+            payload: response.data,
+        });
+
+        return response.data;
+    } catch (err: any) {
+        dispatch({
+            type: types.UPDATE_TOURNAMENT_FAIL,
+            payload: err.response?.data || err.message,
+        });
+        throw err;
+    }
+};
+
+
+
 const cleanTournamentDetail = () => (dispatch: Dispatch) => {
     dispatch({
         type: types.CLEAN_TOURNAMENT_DETAIL,
@@ -174,7 +218,8 @@ const tournamentActions = {
     upLoadImages,
     getTournamentById,
     cleanTournamentDetail,
-    updateTournamentRoundStatus
+    updateTournamentRoundStatus,
+    updateTournament
 }
 
 export default tournamentActions

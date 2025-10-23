@@ -1,5 +1,5 @@
 import { MatchType } from "../types/match";
-import { TournamentRoundStatus } from "../types/tournament";
+import { TournamentRoundStatus, TournamentStatus, TournamentType } from "../types/tournament";
 
 interface Item {
     label: string;
@@ -23,6 +23,27 @@ export const tournamentStatusMap:TournamentStatusMap = {
         className: "border-yellow-400 text-yellow-400",
     },
     [TournamentRoundStatus.NOT_STARTED]: {
+        label: "Đợi",
+        className: "border-blue-600 text-blue-600",
+    },
+};
+type TournamentStatusMapDefault = {
+    [key in TournamentStatus]: Item;
+}
+export const tournamentStatusMapDefault:TournamentStatusMapDefault = {
+    [TournamentStatus.FINISHED]: {
+        label: "Đã kết thúc",
+        className: "border-red-400 text-red-400",
+    },
+    [TournamentStatus.ONGOING]: {
+        label: "Đang diễn ra",
+        className: "border-green-400 text-green-400",
+    },
+    [TournamentStatus.UPCOMING]: {
+        label: "Sắp diễn ra",
+        className: "border-yellow-400 text-yellow-400",
+    },
+    [TournamentStatus.PAUSED]: {
         label: "Đợi",
         className: "border-blue-600 text-blue-600",
     },
@@ -56,5 +77,33 @@ export const matchTypeMap :MatchTypeMap = {
     },
     [MatchType.THIRD_PLACE]: {
         label: "Tranh hạng ba",
+    },
+} 
+
+type TournamentTypeEnum = {
+    [key in TournamentType]: Item;
+}
+
+
+export const tournamentTypeMapEnum :TournamentTypeEnum = {
+     [TournamentType.CUSTOM]: {
+        label: "Tự do",
+        className: ""
+    },
+    [TournamentType.DOUBLE_ELIMINATION]: {
+        label: "Nhánh thắng/thua",
+        className:'text-yellow-500'
+    },
+    [TournamentType.ROUND_ROBIN]: {
+        label: "Vòng tròn",
+    },
+    [TournamentType.SINGLE_ELIMINATION]: {
+        label: "Loại trực tiếp",
+    },
+    [TournamentType.SPECIAL_DEN]: {
+        label: "Đền",
+    },
+    [TournamentType.SWEDISH]: {
+        label: "Thụy điển",
     },
 } 

@@ -1,18 +1,45 @@
 import type { FC } from "react";
 import type { Match } from "../../../../../types/match";
 import MatchCard from "../matchCard/MatchCard";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import WithLoading from "../../../../loading/WithLoading";
+import { connect } from "react-redux";
+import tournamentDetailActions from "../../../../../redux/features/tournamentDetails/tournamentDetailAction";
+import { useWorkspace } from "../../../../../customhook/useWorkspace";
+import { useNotification } from "../../../../../customhook/useNotifycation";
 
 interface MatchTableProps {
-    listMatch: Match[];
+    tournamentId:string;
+    roundNumber: 1|2|3;
+    // isLoadingByRound: { [key: number]: boolean };
+    matchesByRound: { [key: number]: Match[] };
+    isUpdateMatchLoading: boolean
+    getMatchesInTournament: (tournamentId: string, roundNumber: 1 | 2 | 3, workspaceId: string) => Promise<void>;
+    showLoading?: (isLoading: boolean) => void
 }
 
-const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
+const MatchTable: FC<MatchTableProps> = ({ roundNumber, matchesByRound,getMatchesInTournament,tournamentId,isUpdateMatchLoading,showLoading}) => {
+    const listMatches = matchesByRound[roundNumber] || [];
+    const {notify} = useNotification();
+    const {workspaceId} = useWorkspace();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
-
+    useEffect (()=>{
+        if(showLoading) showLoading(isUpdateMatchLoading)
+    },[isUpdateMatchLoading])
+    useEffect(() => {
+        // console.log(1);
+        // console.log(listMatches);
+        if (workspaceId && (!listMatches || listMatches.length == 0)) {
+            // console.log(2);
+            
+            getMatchesInTournament(tournamentId, roundNumber, workspaceId).catch((err) => {
+                notify(`Lỗi khi lấy dữ liệu ${err}`, 'error')
+            })
+        }
+    }, [isUpdateMatchLoading])
     const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
         setIsDragging(true);
         document.body.style.userSelect = "none"; // ❌ chặn bôi đen khi kéo
@@ -39,7 +66,7 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
     // --- Xử lý dữ liệu ---
     const roundSet = new Set<number>();
     const tableSet = new Set<string>();
-    listMatch.forEach(match => {
+    listMatches.forEach(match => {
         roundSet.add(match.round || 1);
         tableSet.add(match.note || "");
     });
@@ -53,7 +80,7 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
         roundKeys.forEach(round => {
             tableRoundMap[table][round] = [];
         });
-        const allMatchesOfTable = listMatch.filter(match => (match.note || "") === table);
+        const allMatchesOfTable = listMatches.filter(match => (match.note || "") === table);
         const allPlayersSet = new Set<string>();
         allMatchesOfTable.forEach(match => {
             match.team1?.players?.forEach(p => allPlayersSet.add(p.name));
@@ -61,9 +88,8 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
         });
         tablePlayerCount[table] = allPlayersSet.size;
     });
-    // console.log(listMatch);
-    
-    listMatch.forEach(match => {
+
+    listMatches.forEach(match => {
         const round = match.round || 1;
         const table = match.note || "";
         tableRoundMap[table][round].push(match);
@@ -112,7 +138,7 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
                                     >
                                         <div className="flex flex-col items-center gap-2">
                                             {tableRoundMap[table][round].map(match => (
-                                                <MatchCard key={match.id} match={match} />
+                                                <MatchCard key={match.id} match={match} roundNumber={roundNumber}/>
                                             ))}
                                         </div>
                                     </td>
@@ -125,5 +151,13 @@ const MatchTable: FC<MatchTableProps> = ({ listMatch }) => {
         </div>
     );
 };
+const mapStateToProps = (state: any) => ({
+    // isLoadingByRound: state.tournamentDetail.isLoadingByRound,
+    isUpdateMatchLoading: state.tournamentDetail.isUpdateMatchLoading,
+    matchesByRound: state.tournamentDetail.matchesByRound,
+});
 
-export default MatchTable;
+const mapDispatchToProps = (dispatch: any) => ({
+    getMatchesInTournament: (tournamentId: string, roundNumber: 1 | 2 | 3, workspaceId: string) => dispatch(tournamentDetailActions.getMatchesInTournament(tournamentId, roundNumber, workspaceId)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(MatchTable));

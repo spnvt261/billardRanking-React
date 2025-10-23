@@ -14,6 +14,7 @@ interface MatchState {
     totalElements: number;
     totalPages: number;
     last: boolean;
+    match:Match | null
 }
 
 const initState: MatchState = {
@@ -25,11 +26,13 @@ const initState: MatchState = {
     totalElements: 0,
     totalPages: 0,
     last: false,
+    match: null
 };
 
 const matchReducer = (state=initState, action:MatchAction) =>{
     switch (action.type) {
             //Request
+            case types.GET_MATCH_REQUEST:
             case types.GET_MATCHES_REQUEST:
             case types.CREATE_MATCH_REQUEST:
                 return {
@@ -59,8 +62,15 @@ const matchReducer = (state=initState, action:MatchAction) =>{
                     matchesByPage: {},
                     totalPages:0
                 }
+            case types.GET_MATCH_SUCCESS:
+                return{
+                    ...state,
+                    isLoading: false,
+                    match:action.payload
+                }
 
             //fail
+            case types.GET_MATCH_FAIL:
             case types.GET_MATCHES_FAIL:
             case types.CREATE_MATCH_FAIL:
                 return {

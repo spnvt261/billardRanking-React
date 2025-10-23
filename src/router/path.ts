@@ -10,6 +10,7 @@ const PATHS ={
     TOURNAMENT_DETAIL_OVERVIEW:'',
     TOURNAMENT_DETAIL_RANKINGS:'ranking',
     TOURNAMENT_DETAIL_PLAYERS:'players',
+    SCORE_COUNTER:'/score-counter',
 }
 
 export default PATHS;

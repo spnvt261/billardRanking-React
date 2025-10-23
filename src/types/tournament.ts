@@ -88,7 +88,7 @@ export interface TournamentsRequest {
     rules?: string;
     banner?: File |string | null;
     status: TournamentStatus;
-    playerIds:number[];
+    playerIds?:number[];
     format:TournamentFormat
 }
 

@@ -8,7 +8,6 @@ import {
 import { tournamentStatusMap } from "../../../../ultils/mapEnum";
 import RoundRobinForm from "../../../forms/tournamentDetails/roundRobinForm/RoundRobinForm";
 import MatchTable from "./matchTable/MacthTable";
-import tournamentDetailActions from "../../../../redux/features/tournamentDetails/tournamentDetailAction";
 import { useEffect, useState } from "react";
 import WithLoading from "../../../loading/WithLoading";
 import { useWorkspace } from "../../../../customhook/useWorkspace";
@@ -26,16 +25,14 @@ interface Props {
     roundNumber: 1 | 2 | 3;
     isLoadingByRound: { [key: number]: boolean };
     matchesByRound: { [key: number]: Match[] };
-    getMatchesInTournament: (tournamentId: string, roundNumber: 1 | 2 | 3, workspaceId: string) => Promise<void>
-    updateTouenamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string,listId:number[]) => Promise<void>
+    updateTournamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string,listId:number[]) => Promise<void>
     showLoading?: (isLoading: boolean) => void
-    isUpdateMatchLoading: boolean
 }
 
 const TournamentMatchInRound = ({
     title, roundNumber, tournament, matchesByRound,
-    getMatchesInTournament, showLoading, updateTouenamentRoundStatus,
-    isLoadingByRound, isUpdateMatchLoading
+    showLoading, updateTournamentRoundStatus,
+    isLoadingByRound
 }: Props) => {
 
     const { workspaceId } = useWorkspace();
@@ -72,14 +69,6 @@ const TournamentMatchInRound = ({
     }, [isLoading])
 
     useEffect(() => {
-        if (workspaceId && (!listMatches || listMatches.length == 0)) {
-            getMatchesInTournament(tournament.id.toString(), roundNumber, workspaceId).catch((err) => {
-                notify(`Lỗi khi lấy dữ liệu ${err}`, 'error')
-            })
-        }
-    }, [isUpdateMatchLoading])
-
-    useEffect(() => {
         if (
             listMatches.length > 0 &&
             listMatches.every((match) => match.status === MatchStatus.FINISHED || match.status === MatchStatus.NOT_STARTED) &&
@@ -89,10 +78,10 @@ const TournamentMatchInRound = ({
             setShowEndRound(true);
         }
     }, [listMatches])
-    const handleEndRound = (listIds:number[]) => {
+    const handleEndRound = async (listIds:number[]) => {
         if (workspaceId) {
             // ✅ 1. Cập nhật vòng hiện tại = FINISHED
-            updateTouenamentRoundStatus(
+            await updateTournamentRoundStatus(
                 tournament.id.toString(),
                 roundNumber,
                 TournamentRoundStatus.FINISHED,
@@ -102,7 +91,7 @@ const TournamentMatchInRound = ({
                 .then(() => {
                     if (roundNumber === 1 && tournament.tournamentType2) {
                         // Có vòng 2
-                        updateTouenamentRoundStatus(
+                        updateTournamentRoundStatus(
                             tournament.id.toString(),
                             2,
                             TournamentRoundStatus.UPCOMING,
@@ -113,7 +102,7 @@ const TournamentMatchInRound = ({
                         });
                     } else if (roundNumber === 2 && tournament.tournamentType3) {
                         // Có vòng 3
-                        updateTouenamentRoundStatus(
+                        updateTournamentRoundStatus(
                             tournament.id.toString(),
                             3,
                             TournamentRoundStatus.UPCOMING,
@@ -142,7 +131,7 @@ const TournamentMatchInRound = ({
     return (
         <div className="w-full bg-white rounded-[1rem] border border-gray-400  overflow-hidden mb-4">
             <div
-                className="tournament-matches-header relative flex items-center w-full p-4"
+                className="tournament-matches-header relative flex items-center w-full px-4 pb-2 pt-6"
                 style={{ background: 'linear-gradient(to bottom , #374151, #6b7280)' }}
                 onClick={() => setIsCollapsed(prev => !prev)}
             >
@@ -150,7 +139,8 @@ const TournamentMatchInRound = ({
                     {title.toUpperCase()} - {roundTypeLabel.toUpperCase()}
                 </h1>
                 <span
-                    className={`border-2 font-bold bg-transparent text-[0.8rem] px-2 rounded-[1rem] bg-white ml-2 ${statusInfo.className}`}
+                    className={`absolute top-1 -left-0 border font-bold bg-transparent text-[0.7rem] px-2 rounded-[1rem] bg-white ml-2 ${statusInfo.className}`}
+                    // style={{}}
                 >
                     {statusInfo.label.toUpperCase()}
                 </span>
@@ -163,7 +153,7 @@ const TournamentMatchInRound = ({
             </div>
             <div
                 className={`transition-max-height duration-500 ease-in-out overflow-hidden`}
-                style={{ maxHeight: isCollapsed ? 0 : "800px" }}
+                style={{ maxHeight: isCollapsed ? 0 : "1000px" }}
             >
                 {/* SETUP: chỉ hiện khi UPCOMING */}
                 {roundStatus === "UPCOMING" && (
@@ -249,14 +239,18 @@ const TournamentMatchInRound = ({
                 }
                 {(roundStatus === TournamentRoundStatus.ONGOING || roundStatus === TournamentRoundStatus.FINISHED) && !showRoundRobinRankings && (
                     <div className="matches-content">
-                        <MatchTable listMatch={listMatches} />
+                        <MatchTable 
+                            tournamentId={tournament.id.toString()}
+                            roundNumber={roundNumber}
+                        />
                     </div>
                 )}
                 {
                     showEndRound &&
                     <EndRoundForm
+                        roundType={roundType}
                         roundNumber={roundNumber}
-                        tournamentId={tournament.id.toString()}
+                        tournament={tournament}
                         workspaceId={workspaceId}
                         handleEndRound={handleEndRound}
                         roundPlayersAfter={roundPlayersAfter}
@@ -271,13 +265,11 @@ const TournamentMatchInRound = ({
 
 const mapStateToProps = (state: any) => ({
     isLoadingByRound: state.tournamentDetail.isLoadingByRound,
-    isUpdateMatchLoading: state.tournamentDetail.isUpdateMatchLoading,
     matchesByRound: state.tournamentDetail.matchesByRound,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getMatchesInTournament: (tournamentId: string, roundNumber: 1 | 2 | 3, workspaceId: string) => dispatch(tournamentDetailActions.getMatchesInTournament(tournamentId, roundNumber, workspaceId)),
-    updateTouenamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string,listId:number[]) => dispatch(tournamentActions.updateTournamentRoundStatus(tournamentId, roundNumber, roundStatus, workspaceId,listId))
+    updateTournamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string,listId:number[]) => dispatch(tournamentActions.updateTournamentRoundStatus(tournamentId, roundNumber, roundStatus, workspaceId,listId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(TournamentMatchInRound));

@@ -142,10 +142,11 @@ const getRoundRobinRankings = (tournamentId: string, roundNumber: 1 | 2 | 3, wor
     }
 }
 
-const updateMatchInTournament = (matchId:string, newMatch:Match, workspaceId:string) => async (dispatch:Dispatch):Promise<void>=>{
+const updateMatchInTournament = (matchId:string, newMatch:Match, workspaceId:string,roundNumber: 1 | 2 | 3) => async (dispatch:Dispatch):Promise<void>=>{
     dispatch({
         type: types.UPDATE_MATCH_REQUEST,
         payload:null,
+        roundNumber
     });
 
      try {
@@ -168,13 +169,15 @@ const updateMatchInTournament = (matchId:string, newMatch:Match, workspaceId:str
         dispatch({
             type: types.UPDATE_MATCH_SUCCESS,
             payload: response.data,
+            roundNumber
         });
 
         return response.data;
     } catch (error: any) {
         dispatch({
             type: types.UPDATE_MATCH_FAIL,
-            payload: error
+            payload: error,
+            roundNumber
         });
         throw error;
     }

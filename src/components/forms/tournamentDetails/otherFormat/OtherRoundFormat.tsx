@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { TournamentDetail, TournamentType } from "../../../../types/tournament";
+import { TournamentType, type TournamentDetail } from "../../../../types/tournament";
 import CustomCounter from "../../../customCounter/CustomCounter";
 import CustomButton from "../../../customButtons/CustomButton";
 import type { OtherTypeRequest } from "../../../../types/round";
@@ -20,7 +20,7 @@ const OtherRoundFormat = ({ tournament, roundNumber, roundType, gamePlayed, crea
     const listTeams = tournament.listTeamByRound[roundNumber] || []
     const [roundPlayersAfter, setRoundPlayersAfter] = useState<number>(1)
     const { workspaceId } = useWorkspace();
-    const {notify} = useNotification();
+    const { notify } = useNotification();
     const getPlayerIds = (listTeams: typeof tournament.listTeamByRound[1]) => {
         return listTeams.map(team => team.players[0].id);
     };
@@ -39,26 +39,32 @@ const OtherRoundFormat = ({ tournament, roundNumber, roundType, gamePlayed, crea
         }
         try {
             if (workspaceId) await createOtherType(valuesRequest, workspaceId, roundNumber);
-            notify('Tạo lượt trận thành công','success')
+            notify('Tạo lượt trận thành công', 'success')
         } catch (err) {
-            notify(`Lỗi ${err}`,'error')
+            notify(`Lỗi ${err}`, 'error')
             console.log(err);
-            
+
         }
 
 
     }
     return (
         <div>
-            <div className="flex items-center mb-4">
-                <h2 className="font-semibold text-slate-600 mr-4">SỐ NGƯỜI CHƠI VƯỢT QUA</h2>
-                <CustomCounter
-                    minValue={1}
-                    maxValue={Math.floor(listTeams.length / 2)}
-                    value={roundPlayersAfter}
-                    onChange={handleNumGroupsChange}
-                />
-            </div>
+            {
+                roundType !== TournamentType.SINGLE_ELIMINATION ? <div className="flex items-center mb-4">
+                    <h2 className="font-semibold text-slate-600 mr-4">SỐ NGƯỜI CHƠI VƯỢT QUA</h2>
+                    <CustomCounter
+                        minValue={1}
+                        maxValue={Math.floor(listTeams.length / 2)}
+                        value={roundPlayersAfter}
+                        onChange={handleNumGroupsChange} />
+                </div>
+                    :
+                    <div>
+                        <h2 className="font-semibold text-slate-500">TÌM NHÀ VÔ ĐỊCH</h2>
+                    </div>
+            }
+
             <CustomButton
                 label={`Bắt đầu ROUND${roundNumber}`}
                 variant="type-5"

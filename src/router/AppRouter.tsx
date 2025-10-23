@@ -17,6 +17,7 @@ import TournamentPlayers from "../pages/TournamentDetailPage/TournamentPlayers/T
 import TournamentRanking from "../pages/TournamentDetailPage/TournamentRanking/TournamentRanking";
 import TournamentMatches from "../pages/TournamentDetailPage/TournamentMatches/TournamentMatches";
 import WithLoading from "../components/loading/WithLoading";
+import ScoreCounterPage from "../pages/ScoreCounterPage/ScoreCounterPage";
 
 const AppRouters =()=>{
     const TournamentMatchesWithLoading = WithLoading(TournamentMatches);
@@ -43,6 +44,7 @@ const AppRouters =()=>{
                 <Route path={PATHS.SETTINGS} element ={<ProtectedRoute><SettingPage/></ProtectedRoute>}/>
                 <Route path="/test" element={<TestComponent/>}/>
             </Route>
+            <Route path={`${PATHS.SCORE_COUNTER}/:id`} element={<ProtectedRoute><ScoreCounterPage/></ProtectedRoute> }/>
         </Routes>
     )
 }

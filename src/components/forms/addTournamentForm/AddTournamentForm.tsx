@@ -52,12 +52,12 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
             name: "",
             tournamentType: undefined,
             round1PlayersAfter: undefined,
-            round1Status:TournamentRoundStatus.UPCOMING,
+            round1Status: TournamentRoundStatus.UPCOMING,
             tournamentType2: undefined,
             round2PlayersAfter: undefined,
-            round2Status:TournamentRoundStatus.NOT_STARTED,
+            round2Status: TournamentRoundStatus.NOT_STARTED,
             tournamentType3: undefined,
-            round3Status:TournamentRoundStatus.NOT_STARTED,
+            round3Status: TournamentRoundStatus.NOT_STARTED,
             startDate: "",
             endDate: undefined,
             location: undefined,
@@ -156,13 +156,13 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
                 <p className="mr-2 min-w-[80px] flex flex-col justify-center">
                     Players* <br />
                     <span className="text-xs text-gray-600 font-normal">
-                        Đã chọn [{formik.values.playerIds.length}]
+                        Đã chọn [{formik.values.playerIds?.length}]
                     </span>
                 </p>
                 <div className="relative flex-1 w-[70%]">
                     <CustomSelect
                         options={playerOptions.map(p => ({ label: p.label, value: p.value.toString() }))}
-                        value={formik.values.playerIds.map(p => p.toString())}
+                        value={formik.values.playerIds?.map(p => p.toString())}
                         onChange={(v: string[]) => formik.setFieldValue(
                             "playerIds",
                             v.map(s => Number(s))
@@ -188,7 +188,16 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
                     <CustomSelect
                         options={tournamentTypeOptions}
                         value={[formik.values.tournamentType ? formik.values.tournamentType : '']}
-                        onChange={(v: string[]) => formik.setFieldValue("tournamentType", v[0] as TournamentType)}
+                        onChange={(v: string[]) => {
+                            const selected = v[0] as TournamentType;
+                            formik.setFieldValue("tournamentType", selected);
+
+                            // Nếu ROUND 1 là SINGLE_ELIMINATION thì reset các vòng sau
+                            if (selected === TournamentType.SINGLE_ELIMINATION) {
+                                formik.setFieldValue("tournamentType2", undefined);
+                                formik.setFieldValue("tournamentType3", undefined);
+                            }
+                        }}
                         multiple={false}
                         placeholder="Chọn thể thức"
                         className="flex-1 w-[70%]"
@@ -204,7 +213,15 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
                         <CustomSelect
                             options={tournamentTypeOptions}
                             value={[formik.values.tournamentType2]}
-                            onChange={(v: string[]) => formik.setFieldValue("tournamentType2", v[0] as TournamentType)}
+                            onChange={(v: string[]) => {
+                                const selected = v[0] as TournamentType;
+                                formik.setFieldValue("tournamentType2", selected);
+
+                                // Nếu ROUND 2 là SINGLE_ELIMINATION thì reset vòng 3
+                                if (selected === TournamentType.SINGLE_ELIMINATION) {
+                                    formik.setFieldValue("tournamentType3", undefined);
+                                }
+                            }}
                             multiple={false}
                             placeholder="Chọn thể thức"
                             className="flex-1 w-[70%]"
@@ -227,10 +244,9 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
                 )}
 
                 {/* Nhóm nút thêm/giảm */}
-                {
                     <div className="flex gap-3 mt-1">
                         {/* Nút thêm */}
-                        {(!formik.values.tournamentType3 && formik.values.tournamentType3 !== null) && (
+                        {(!formik.values.tournamentType3 && formik.values.tournamentType3 !== null)&&(formik.values.tournamentType2!==TournamentType.SINGLE_ELIMINATION && formik.values.tournamentType!==TournamentType.SINGLE_ELIMINATION) && (
                             <button
                                 type="button"
                                 className="text-blue-500 text-sm hover:underline"
@@ -261,7 +277,6 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
                             </button>
                         )}
                     </div>
-                }
 
             </div>
 

@@ -34,6 +34,36 @@ const getMatchesByPage = (workspaceId: string, page: number) => async (dispatch:
     }
 };
 
+const getMatchesById = (workspaceId: string, id: number) => async (dispatch: Dispatch): Promise<MatchesResponse> => {
+    
+    dispatch({
+        type: types.GET_MATCH_REQUEST,
+        payload: null,
+    });
+
+    try {
+        const response = await axios.get<MatchesResponse>("/api/matches/"+id, {
+            params: {
+                workspaceId
+            },
+        });
+        // console.log(response.data);
+
+        dispatch({
+            type: types.GET_MATCH_SUCCESS,
+            payload: response.data,
+        });
+
+        return response.data;
+    } catch (error: any) {
+        dispatch({
+            type: types.GET_MATCH_FAIL,
+            payload: error,
+        });
+        throw error;
+    }
+};
+
 const createMatch = (data: MatchesRequest) => async (dispatch: Dispatch): Promise<MatchesResponse> => {
     dispatch({
         type: types.CREATE_MATCH_REQUEST,
@@ -73,7 +103,8 @@ const createMatch = (data: MatchesRequest) => async (dispatch: Dispatch): Promis
 
 const matchActions = {
     getMatchesByPage,
-    createMatch
+    createMatch,
+    getMatchesById
 }
 
 export default matchActions

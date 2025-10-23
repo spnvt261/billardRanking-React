@@ -6,9 +6,10 @@ import EditMatch from "../editMatch/EditMatch";
 
 interface MatchCardProps {
     match: Match;
+    roundNumber: 1 | 2 | 3
 }
 
-const MatchCard: FC<MatchCardProps> = ({ match }) => {
+const MatchCard: FC<MatchCardProps> = ({ match,roundNumber }) => {
 
     const canEdit =
         (!match.team1?.players || match.team1.players.length === 0) &&
@@ -89,6 +90,7 @@ const MatchCard: FC<MatchCardProps> = ({ match }) => {
                 <EditMatch
                     match={match}
                     onClose={toggleEdit}
+                    roundNumber={roundNumber}
                 />
             )}
         </>

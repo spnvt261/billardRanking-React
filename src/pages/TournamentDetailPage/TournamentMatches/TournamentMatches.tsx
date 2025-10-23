@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import type { TournamentDetail } from "../../../types/tournament";
+import { type TournamentDetail } from "../../../types/tournament";
 import TournamentMatchInRound from "../../../components/layout/tournamentDetail/tournamentMatches/TournamentMatchInRound";
 
 type ContextType = {
@@ -34,9 +34,9 @@ const TournamentMatches = () => {
                     roundNumber={3}
                     tournament={tournament}
                 />
-            }
+            } 
         </div>
     )
 }
 
-export default TournamentMatches
+export default (TournamentMatches)

@@ -147,7 +147,7 @@ const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRound
                     <h2 className="font-semibold text-slate-600">LẤY PLAYER</h2>
                     <CustomCounter
                         minValue={1}
-                        maxValue={listTeams.length}
+                        maxValue={listTeams.length-1}
                         value={values.roundPlayersAfter}
                         onChange={(val) => setFieldValue("roundPlayersAfter", val)}
                     />

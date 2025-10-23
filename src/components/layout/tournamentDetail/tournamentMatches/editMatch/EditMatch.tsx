@@ -18,8 +18,9 @@ interface Props {
     match: Match;
     onClose: () => void;
     isLoading: boolean;
-    updateMatch: (matchId: string, newMatch: Match, workspaceId: string) => Promise<void>;
-    showLoading?: (isLoading: boolean) => void
+    updateMatch: (matchId: string, newMatch: Match, workspaceId: string,roundNumber: 1 | 2 | 3) => Promise<void>;
+    showLoading?: (isLoading: boolean) => void;
+    roundNumber: 1 | 2 | 3
 }
 
 const validationSchema = Yup.object({
@@ -27,7 +28,7 @@ const validationSchema = Yup.object({
     scoreTeam2: Yup.number().typeError("Điểm phải là số").min(0).required("Nhập điểm đội 2"),
 });
 
-const EditMatch: FC<Props> = ({ match, onClose, isLoading, updateMatch, showLoading }) => {
+const EditMatch: FC<Props> = ({ match, onClose, isLoading, updateMatch, showLoading,roundNumber }) => {
     const [accessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
     const hasAccess = Boolean(accessToken);
     const needPermission = hasAccess || null;
@@ -54,7 +55,7 @@ const EditMatch: FC<Props> = ({ match, onClose, isLoading, updateMatch, showLoad
             }
             // console.log(matchUpdated);
             try {
-                if (workspaceId) await updateMatch(matchUpdated.id.toString(), matchUpdated, workspaceId)
+                if (workspaceId) await updateMatch(matchUpdated.id.toString(), matchUpdated, workspaceId,roundNumber)
                 notify('Tỉ số đã được cập nhật!', 'success')
             } catch (err) {
                 notify(`Lỗi khi cập nhật tỉ số ${err}`, 'error')
@@ -245,7 +246,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    updateMatch: (matchId: string, newMatch: Match, workspaceId: string) => dispatch(tournamentDetailActions.updateMatchInTournament(matchId, newMatch, workspaceId))
+    updateMatch: (matchId: string, newMatch: Match, workspaceId: string,roundNumber: 1 | 2 | 3) => dispatch(tournamentDetailActions.updateMatchInTournament(matchId, newMatch, workspaceId,roundNumber))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(EditMatch));

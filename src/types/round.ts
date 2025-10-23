@@ -1,4 +1,5 @@
 import type { Team } from "./match";
+import type { Player } from "./player";
 import type { TournamentType } from "./tournament";
 
 export interface RoundRobinValuesRequest {
@@ -25,8 +26,10 @@ interface RoundRobinTeam{
     matchesPlayed:number;
     matchesTotal:number;
     recentResults:string[]
+    players:Player[]
 }
 
 export interface RoundRobinRankingsResponse{
     rankings: Record<number, RoundRobinTeam[]>;
+    otherTypesTeams: Record<TournamentType, RoundRobinTeam[]>;
 }

@@ -146,15 +146,17 @@ const tournamentDetailReducer = (state = initState, action: TournamentDetailActi
 
         //Update Matches
         case types.UPDATE_MATCH_REQUEST:
+            // const round = action.roundNumber!;
             return{
                 ...state,
                 isUpdateMatchLoading:true,
             }
         case types.UPDATE_MATCH_SUCCESS:
+            const round = action.roundNumber!;
             return{
                 ...state,
                 isUpdateMatchLoading:false,
-                matchesByRound:{}
+                matchesByRound:{...state.matchesByRound, [round]: []}
             }
         case types.UPDATE_MATCH_FAIL:
             return{
