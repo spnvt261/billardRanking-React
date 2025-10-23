@@ -17,9 +17,9 @@ import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../../constants/localStorag
 interface Props {
     match: Match;
     onClose: () => void;
-    isLoading:boolean;
-    updateMatch: (matchId:string, newMatch:Match, workspaceId:string)=>Promise<void>;
-    showLoading?:(isLoading:boolean) => void
+    isLoading: boolean;
+    updateMatch: (matchId: string, newMatch: Match, workspaceId: string) => Promise<void>;
+    showLoading?: (isLoading: boolean) => void
 }
 
 const validationSchema = Yup.object({
@@ -27,16 +27,16 @@ const validationSchema = Yup.object({
     scoreTeam2: Yup.number().typeError("Điểm phải là số").min(0).required("Nhập điểm đội 2"),
 });
 
-const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading }) => {
+const EditMatch: FC<Props> = ({ match, onClose, isLoading, updateMatch, showLoading }) => {
     const [accessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
     const hasAccess = Boolean(accessToken);
     const needPermission = hasAccess || null;
     const [mode, setMode] = useState<"CHOICE" | "ADD_RESULT">("CHOICE");
-    const{workspaceId} = useWorkspace();
-    const {notify} = useNotification();
-    useEffect(()=>{
-        if(showLoading) showLoading(isLoading)
-    },[isLoading])
+    const { workspaceId } = useWorkspace();
+    const { notify } = useNotification();
+    useEffect(() => {
+        if (showLoading) showLoading(isLoading)
+    }, [isLoading])
     const formik = useFormik({
         initialValues: {
             scoreTeam1: match.scoreTeam1 || 0,
@@ -45,22 +45,22 @@ const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading
         },
         validationSchema,
         onSubmit: async (values) => {
-            const matchUpdated : Match ={
+            const matchUpdated: Match = {
                 ...match,
-                scoreTeam1:values.scoreTeam1,
-                scoreTeam2:values.scoreTeam2,
-                winnerId:values.winnerId?values.winnerId:undefined,
-                status:MatchStatus.FINISHED
+                scoreTeam1: values.scoreTeam1,
+                scoreTeam2: values.scoreTeam2,
+                winnerId: values.winnerId ? values.winnerId : undefined,
+                status: MatchStatus.FINISHED
             }
             // console.log(matchUpdated);
-            try{
-                if(workspaceId) await updateMatch(matchUpdated.id.toString(),matchUpdated,workspaceId)
-                notify('Tỉ số đã được cập nhật!','success')
-            }catch(err){
-                notify(`Lỗi khi cập nhật tỉ số ${err}`,'error')
+            try {
+                if (workspaceId) await updateMatch(matchUpdated.id.toString(), matchUpdated, workspaceId)
+                notify('Tỉ số đã được cập nhật!', 'success')
+            } catch (err) {
+                notify(`Lỗi khi cập nhật tỉ số ${err}`, 'error')
                 console.log(err);
             }
-            
+
             onClose();
         },
     });
@@ -83,7 +83,7 @@ const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center cursor-default"
+                className="fixed p-2 inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center cursor-default"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -117,13 +117,13 @@ const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading
                                 onClick={() => alert("🚧 Chức năng đang phát triển")}
                             />
                             {
-                                needPermission &&  <CustomButton
-                                label="Thêm kết quả"
-                                variant="type-1"
-                                onClick={() => setMode("ADD_RESULT")}
-                            />
+                                needPermission && <CustomButton
+                                    label="Thêm kết quả"
+                                    variant="type-1"
+                                    onClick={() => setMode("ADD_RESULT")}
+                                />
                             }
-                           
+
                         </div>
                     )}
 
@@ -149,7 +149,7 @@ const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading
                                                 <p className="truncate max-w-[180px]">
                                                     {getTeamNames(match.team1?.players)}
                                                 </p>
-                                                
+
                                             </td>
                                             <td className="px-3 py-2">
                                                 <CustomTextField
@@ -180,40 +180,41 @@ const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading
                                     </tbody>
                                 </table>
                             </div>
-
+                            {formik.values.scoreTeam1 === formik.values.scoreTeam2 && (
+                                <p className="text-red-500 text-sm text-left">
+                                    Không thể lưu kết quả khi hai đội hòa nhau.
+                                </p>
+                            )}
                             {/* Hiển thị đội thắng */}
-                            <div className="border-t pt-3">
+                            <div className="border-t">
                                 <h3 className="text-sm font-semibold mb-2 text-gray-600">Bên thắng</h3>
                                 <div className="flex gap-3">
                                     {/* Đội 1 */}
                                     <div
-                                        className={`px-3 py-1 border rounded-md w-[100px] text-center text-sm truncate ${
-                                            formik.values.winnerId === match.team1Id
+                                        className={`px-3 py-1 border rounded-md w-[100px] text-center text-sm truncate ${formik.values.winnerId === match.team1Id
                                                 ? "bg-gray-200 border-gray-500 font-semibold"
                                                 : "bg-gray-50 border-gray-300"
-                                        }`}
+                                            }`}
                                     >
                                         {getTeamNames(match.team1?.players)}
                                     </div>
 
                                     {/* Hòa */}
                                     <div
-                                        className={`px-3 py-1 border rounded-md w-[100px] text-center text-sm ${
-                                            formik.values.winnerId === null
+                                        className={`px-3 py-1 border rounded-md w-[100px] text-center text-sm ${formik.values.winnerId === null
                                                 ? "bg-gray-200 border-gray-500 font-semibold"
                                                 : "bg-gray-50 border-gray-300"
-                                        }`}
+                                            }`}
                                     >
                                         Hòa
                                     </div>
 
                                     {/* Đội 2 */}
                                     <div
-                                        className={`px-3 py-1 border rounded-md w-[100px] text-center text-sm truncate ${
-                                            formik.values.winnerId === match.team2Id
+                                        className={`px-3 py-1 border rounded-md w-[100px] text-center text-sm truncate ${formik.values.winnerId === match.team2Id
                                                 ? "bg-gray-200 border-gray-500 font-semibold"
                                                 : "bg-gray-50 border-gray-300"
-                                        }`}
+                                            }`}
                                     >
                                         {getTeamNames(match.team2?.players)}
                                     </div>
@@ -227,8 +228,9 @@ const EditMatch: FC<Props> = ({ match, onClose,isLoading,updateMatch,showLoading
                                     variant="type-5"
                                     onClick={() => setMode("CHOICE")}
                                     className="mr-3"
+
                                 />
-                                <CustomButton label="Lưu kết quả" variant="type-1" type="submit" />
+                                <CustomButton label="Lưu kết quả" variant="type-1" type="submit" disabled={formik.values.scoreTeam1 === formik.values.scoreTeam2} />
                             </div>
                         </form>
                     )}
@@ -243,7 +245,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    updateMatch: (matchId:string, newMatch:Match, workspaceId:string)=>dispatch(tournamentDetailActions.updateMatchInTournament(matchId,newMatch,workspaceId))
+    updateMatch: (matchId: string, newMatch: Match, workspaceId: string) => dispatch(tournamentDetailActions.updateMatchInTournament(matchId, newMatch, workspaceId))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(EditMatch) );
+export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(EditMatch));

@@ -63,7 +63,8 @@ const MatchCard: FC<MatchCardProps> = ({ match }) => {
                 </div>
 
                 {/* Teams */}
-                <div className="flex justify-between items-center pl-5 pr-3 py-1 border-b border-gray-300 bg-gray-100">
+                <div className={`flex justify-between items-center pl-5 pr-3 py-1 border-b border-gray-300 bg-gray-100 ${winnerTeam1 ? "font-bold" : ""}`}
+                >
                     <span className="truncate text-gray-800">{getTeamNames(match.team1?.teamName, match.team1?.players)}</span>
                     <span
                         className={`px-2 py-0.5 border text-gray-700 rounded font-semibold ${winnerTeam1 ? " bg-green-500" : " border-gray-400"
@@ -73,7 +74,7 @@ const MatchCard: FC<MatchCardProps> = ({ match }) => {
                     </span>
                 </div>
 
-                <div className="flex justify-between items-center pl-5 pr-3 py-1 bg-gray-100">
+                <div className={`flex justify-between items-center pl-5 pr-3 py-1 bg-gray-100 ${winnerTeam2 ? "font-bold" : ""}`}>
                     <span className="truncate text-gray-800">{getTeamNames(match.team2?.teamName, match.team2?.players)}</span>
                     <span
                         className={`px-2 py-0.5 border rounded text-gray-700 font-semibold ${winnerTeam2 ? "bg-green-500" : "border-gray-400"

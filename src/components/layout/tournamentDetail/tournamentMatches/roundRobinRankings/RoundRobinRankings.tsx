@@ -25,10 +25,10 @@ const RoundRobinRankings = ({
     const roundRobinRankings = roundRobinRankingsByRound[roundNumber];
     
     useEffect(() => {
-        if (workspaceId && !roundRobinRankings) {
+        if (workspaceId) {
             getRoundRobinRankings(tournamentId, roundNumber, workspaceId);
         }
-    }, [workspaceId, roundNumber, roundRobinRankings]);
+    }, [roundNumber]);
 
     if (!roundRobinRankings) {
         return (

@@ -23,7 +23,7 @@ interface Props {
 
 const RoundRobinForm = ({ tournament, roundNumber: roundNumberProps, createRoundRobin,gamePlayed }: Props) => {
     // console.log(roundNumberProps);
-    console.log(gamePlayed);
+    // console.log(gamePlayed);
     
     
     const { workspaceId } = useWorkspace();

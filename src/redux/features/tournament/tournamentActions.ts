@@ -100,7 +100,7 @@ const createTournament = (data: TournamentsRequest) => async (dispatch: Dispatch
     }
 };
 
-const updateTournamentRoundStatus = (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string) => async (dispatch: Dispatch): Promise<void> => {
+const updateTournamentRoundStatus = (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string, listIdsPass: number[]) => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
         type: types.UPDATE_TOURNAMENT_ROUND_STATUS_REQUEST,
     });
@@ -133,8 +133,11 @@ const updateTournamentRoundStatus = (tournamentId: string, roundNumber: 1 | 2 | 
         }
 
         const response = await axios.put(
-            `/api/tournaments/${tournamentId}?workspaceId=${workspaceId}`,
-            { [updateField]:roundStatus },
+            `/api/tournaments/${tournamentId}?workspaceId=${workspaceId}&roundNumber=${roundNumber}`,
+            { 
+                [updateField]:roundStatus,
+                teamIds: listIdsPass
+            },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -144,7 +144,7 @@ const MatchesHistoryTable = ({
 
                 return `${row.matchType} - ${row.matchCategory}`
             },
-            width: "180px",
+            width: "250px",
         },
         {
             header: "Rack Check",
@@ -152,7 +152,7 @@ const MatchesHistoryTable = ({
                 if (row.tournamentId && row.tournamentName) return ""
                 return ""
             },
-            width: "150px",
+            width: "100px",
         },
     ]
 
