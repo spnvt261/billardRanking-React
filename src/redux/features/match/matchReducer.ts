@@ -1,4 +1,5 @@
 import type { Match } from "../../../types/match";
+import { UPDATE_MATCH_SUCCESS } from "../tournamentDetails/tournamentDetailTypes";
 import * as types from "./matchTypes";
 
 interface MatchAction {
@@ -54,7 +55,11 @@ const matchReducer = (state=initState, action:MatchAction) =>{
                     totalPages: action.payload.totalPages,
                     last: action.payload.last,
                 };
-    
+            case UPDATE_MATCH_SUCCESS:
+                return{
+                    ...state,
+                    matchesByPage:{}
+                }
             case types.CREATE_MATCH_SUCCESS:
                 return {
                     ...state,

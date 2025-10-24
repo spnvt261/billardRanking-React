@@ -10,16 +10,16 @@ import { connect } from "react-redux";
 import tournamentDetailActions from "../../../../../redux/features/tournamentDetails/tournamentDetailAction";
 import { useWorkspace } from "../../../../../customhook/useWorkspace";
 import { useNotification } from "../../../../../customhook/useNotifycation";
-import WithLoading from "../../../../loading/WithLoading";
+// import WithLoading from "../../../../loading/WithLoading";
 import { useLocalStorage } from "../../../../../customhook/useLocalStorage";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../../constants/localStorage";
 
 interface Props {
     match: Match;
     onClose: () => void;
-    isLoading: boolean;
+    // isLoading: boolean;
     updateMatch: (matchId: string, newMatch: Match, workspaceId: string,roundNumber: 1 | 2 | 3) => Promise<void>;
-    showLoading?: (isLoading: boolean) => void;
+    // showLoading?: (isLoading: boolean) => void;
     roundNumber: 1 | 2 | 3
 }
 
@@ -28,16 +28,16 @@ const validationSchema = Yup.object({
     scoreTeam2: Yup.number().typeError("Điểm phải là số").min(0).required("Nhập điểm đội 2"),
 });
 
-const EditMatch: FC<Props> = ({ match, onClose, isLoading, updateMatch, showLoading,roundNumber }) => {
+const EditMatch: FC<Props> = ({ match, onClose,  updateMatch, roundNumber }) => {
     const [accessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
     const hasAccess = Boolean(accessToken);
     const needPermission = hasAccess || null;
     const [mode, setMode] = useState<"CHOICE" | "ADD_RESULT">("CHOICE");
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification();
-    useEffect(() => {
-        if (showLoading) showLoading(isLoading)
-    }, [isLoading])
+    // useEffect(() => {
+    //     if (showLoading) showLoading(isLoading)
+    // }, [isLoading])
     const formik = useFormik({
         initialValues: {
             scoreTeam1: match.scoreTeam1 || 0,
@@ -241,12 +241,13 @@ const EditMatch: FC<Props> = ({ match, onClose, isLoading, updateMatch, showLoad
     );
 };
 
-const mapStateToProps = (state: any) => ({
-    isLoading: state.tournamentDetail.isUpdateMatchLoading,
-});
+// const mapStateToProps = (state: any) => ({
+//     isLoading: state.tournamentDetail.isUpdateMatchLoading,
+// });
 
 const mapDispatchToProps = (dispatch: any) => ({
     updateMatch: (matchId: string, newMatch: Match, workspaceId: string,roundNumber: 1 | 2 | 3) => dispatch(tournamentDetailActions.updateMatchInTournament(matchId, newMatch, workspaceId,roundNumber))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(EditMatch));
+// export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(EditMatch));
+export default connect(null, mapDispatchToProps)(EditMatch);

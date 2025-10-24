@@ -33,12 +33,12 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
     switch (action.type) {
             //Request
             // case types.GET_ONE_TOURNAMENT_REQUEST:
-            // case types.UPDATE_TOURNAMENT_REQUEST:{
-            //     return{
-            //         ...state,
-            //         isUpdateDataLoading
-            //     }
-            // }
+            case types.UPDATE_TOURNAMENT_SUCCESS:{
+                return{
+                    ...state,
+                    isFetched:false
+                }
+            }
             case types.GET_TOURNAMENTS_REQUEST:
                 return{
                      ...state,

@@ -11,7 +11,7 @@ import MatchTable from "./matchTable/MacthTable";
 import { useEffect, useState } from "react";
 import WithLoading from "../../../loading/WithLoading";
 import { useWorkspace } from "../../../../customhook/useWorkspace";
-import { MatchStatus, type Match } from "../../../../types/match";
+// import {type Match } from "../../../../types/match";
 import { FaAngleDown } from "react-icons/fa6";
 import tournamentActions from "../../../../redux/features/tournament/tournamentActions";
 import { useNotification } from "../../../../customhook/useNotifycation";
@@ -24,13 +24,14 @@ interface Props {
     tournament: TournamentDetail;
     roundNumber: 1 | 2 | 3;
     isLoadingByRound: { [key: number]: boolean };
-    matchesByRound: { [key: number]: Match[] };
-    updateTournamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string,listId:number[]) => Promise<void>
+    // isUpdateTournamentLoading:boolean;
+    // matchesByRound: { [key: number]: Match[] };
+    updateTournamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string, listId: number[]) => Promise<void>
     showLoading?: (isLoading: boolean) => void
 }
 
 const TournamentMatchInRound = ({
-    title, roundNumber, tournament, matchesByRound,
+    title, roundNumber, tournament,
     showLoading, updateTournamentRoundStatus,
     isLoadingByRound
 }: Props) => {
@@ -56,11 +57,11 @@ const TournamentMatchInRound = ({
 
     const isLoading = isLoadingByRound[roundNumber] || false;
 
-    const listMatches = matchesByRound[roundNumber] || [];
+    // const listMatches = matchesByRound[roundNumber] || [];
 
-    const gamePlayed = ([1, 2, 3] as const)
-        .map(round => matchesByRound[round]?.length || 0)
-        .reduce((acc, curr) => acc + curr, 0);
+    // const gamePlayed = ([1, 2, 3] as const)
+    //     .map(round => matchesByRound[round]?.length || 0)
+    //     .reduce((acc, curr) => acc + curr, 0);
 
     const listTeams = tournament.listTeamByRound[roundNumber] || [];
     const [isCollapsed, setIsCollapsed] = useState(roundStatus !== TournamentRoundStatus.UPCOMING && roundStatus !== TournamentRoundStatus.ONGOING);
@@ -68,17 +69,20 @@ const TournamentMatchInRound = ({
         if (showLoading) showLoading(isLoading);
     }, [isLoading])
 
-    useEffect(() => {
-        if (
-            listMatches.length > 0 &&
-            listMatches.every((match) => match.status === MatchStatus.FINISHED || match.status === MatchStatus.NOT_STARTED) &&
-            roundStatus !== TournamentRoundStatus.FINISHED &&
-            workspaceId
-        ) {
-            setShowEndRound(true);
-        }
-    }, [listMatches])
-    const handleEndRound = async (listIds:number[]) => {
+    // useEffect(() => {
+    //     if (
+    //         listMatches.length > 0 &&
+    //         listMatches.every((match) => match.status === MatchStatus.FINISHED || match.status === MatchStatus.NOT_STARTED) &&
+    //         roundStatus !== TournamentRoundStatus.FINISHED &&
+    //         workspaceId
+    //     ) {
+    //         setShowEndRound(true);
+    //     }
+    // }, [listMatches])
+    const handleShowEndRound = (i: boolean) => {
+        setShowEndRound(i);
+    };
+    const handleEndRound = async (listIds: number[]) => {
         if (workspaceId) {
             // ✅ 1. Cập nhật vòng hiện tại = FINISHED
             await updateTournamentRoundStatus(
@@ -140,7 +144,7 @@ const TournamentMatchInRound = ({
                 </h1>
                 <span
                     className={`absolute top-1 -left-0 border font-bold bg-transparent text-[0.7rem] px-2 rounded-[1rem] bg-white ml-2 ${statusInfo.className}`}
-                    // style={{}}
+                // style={{}}
                 >
                     {statusInfo.label.toUpperCase()}
                 </span>
@@ -197,12 +201,12 @@ const TournamentMatchInRound = ({
                         </div>
                         <div className="flex-1">
                             {
-                                roundType === TournamentType.ROUND_ROBIN && <RoundRobinForm gamePlayed={gamePlayed} tournament={tournament} roundNumber={roundNumber} />
+                                roundType === TournamentType.ROUND_ROBIN && <RoundRobinForm gamePlayed={0} tournament={tournament} roundNumber={roundNumber} />
                             }
                             {
                                 roundType !== TournamentType.ROUND_ROBIN && roundType !== TournamentType.CUSTOM &&
                                 <OtherRoundFormat
-                                    gamePlayed={gamePlayed}
+                                    gamePlayed={0}
                                     roundNumber={roundNumber}
                                     roundType={roundType}
                                     tournament={tournament}
@@ -239,9 +243,11 @@ const TournamentMatchInRound = ({
                 }
                 {(roundStatus === TournamentRoundStatus.ONGOING || roundStatus === TournamentRoundStatus.FINISHED) && !showRoundRobinRankings && (
                     <div className="matches-content">
-                        <MatchTable 
+                        <MatchTable
                             tournamentId={tournament.id.toString()}
                             roundNumber={roundNumber}
+                            roundStatus={roundStatus}
+                            showEndRound={handleShowEndRound}
                         />
                     </div>
                 )}
@@ -265,11 +271,12 @@ const TournamentMatchInRound = ({
 
 const mapStateToProps = (state: any) => ({
     isLoadingByRound: state.tournamentDetail.isLoadingByRound,
-    matchesByRound: state.tournamentDetail.matchesByRound,
+    // isUpdateTournamentLoading: state.tournamentDetail.isUpdateTournamentLoading,
+    // matchesByRound: state.tournamentDetail.matchesByRound,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    updateTournamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string,listId:number[]) => dispatch(tournamentActions.updateTournamentRoundStatus(tournamentId, roundNumber, roundStatus, workspaceId,listId))
+    updateTournamentRoundStatus: (tournamentId: string, roundNumber: 1 | 2 | 3, roundStatus: TournamentRoundStatus, workspaceId: string, listId: number[]) => dispatch(tournamentActions.updateTournamentRoundStatus(tournamentId, roundNumber, roundStatus, workspaceId, listId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(TournamentMatchInRound));

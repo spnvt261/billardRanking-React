@@ -23,7 +23,7 @@ const WithLoading = <P extends object>(
                     <WrappedComponent {...(props as P)} showLoading={handleShowLoading} />
                 </div>
                 {isLoading && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-10 z-10">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-10 z-100">
                         <div className="w-12 h-12 border-4 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
                         <p className="mt-4 text-gray-600 font-medium">{loadingText || "Loading..."}</p>
                     </div>
