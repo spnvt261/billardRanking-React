@@ -3,7 +3,7 @@ import tournamentDetailActions from "../../../../../redux/features/tournamentDet
 import type { RoundRobinRankingsResponse } from "../../../../../types/round";
 import { useEffect, useMemo, useState } from "react";
 import CustomButton from "../../../../customButtons/CustomButton";
-import { TournamentStatus, TournamentType, type TournamentDetail, type TournamentsRequest } from "../../../../../types/tournament";
+import { TournamentRoundStatus, TournamentStatus, TournamentType, type TournamentDetail, type TournamentsRequest } from "../../../../../types/tournament";
 import { FaMedal } from "react-icons/fa6";
 import { formatDateVN } from "../../../../../ultils/format";
 import tournamentActions from "../../../../../redux/features/tournament/tournamentActions";
@@ -164,19 +164,20 @@ const EndRoundForm = ({
     };
 
     const handleEndTournament = async () => {
-
-        const tournamentRequest: TournamentsRequest = {
-            ...tournament,
-            winnerId: allTeams?.[0]?.players?.[0]?.id || allTeams?.[0]?.team?.players?.[0]?.id,
-            runnerUpId: allTeams?.[1]?.players?.[0]?.id || allTeams?.[1]?.team?.players?.[0]?.id,
-            thirdPlaceId: allTeams?.[2]?.players?.[0]?.id || allTeams?.[2]?.team?.players?.[0]?.id,
-            endDate: formatDateVN(new Date()),
-            status: TournamentStatus.FINISHED,
-        }
-        console.log(tournamentRequest);
-
         try {
             handleEndRound(passedIds).then(() => {
+                const tournamentRequest: TournamentsRequest = {
+                    ...tournament,
+                    winnerId: allTeams?.[0]?.players?.[0]?.id || allTeams?.[0]?.team?.players?.[0]?.id,
+                    runnerUpId: allTeams?.[1]?.players?.[0]?.id || allTeams?.[1]?.team?.players?.[0]?.id,
+                    thirdPlaceId: allTeams?.[2]?.players?.[0]?.id || allTeams?.[2]?.team?.players?.[0]?.id,
+                    round1Status:TournamentRoundStatus.FINISHED,
+                    round2Status:tournament.tournamentType2? TournamentRoundStatus.FINISHED:TournamentRoundStatus.NOT_STARTED,
+                    round3Status:tournament.tournamentType3? TournamentRoundStatus.FINISHED:TournamentRoundStatus.NOT_STARTED,
+                    endDate: formatDateVN(new Date()),
+                    status: TournamentStatus.FINISHED,
+                }
+
                 if (workspaceId) updateTournament(tournament.id.toString(), tournamentRequest, workspaceId)
             }
             )
@@ -341,12 +342,14 @@ const EndRoundForm = ({
                                     variant="type-4"
                                     disabled={!canEndTournament}
                                     onClick={handleEndTournament}
+                                    needPermission
                                 /> :
 
                                 <CustomButton
                                     label={`End ROUND${roundNumber}`}
                                     variant="type-4"
                                     onClick={() => handleEndRound(passedIds)}
+                                    needPermission
                                 />
 
                         }

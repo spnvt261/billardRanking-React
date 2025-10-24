@@ -3,8 +3,8 @@ import AddTournamentForm from "../../components/forms/addTournamentForm/AddTourn
 const CreateTournamentPage = () => {
     return (
         <div>
-            <h1>CREATE TOURNAMENT PAGES</h1>
-            <div className="w-[700px] border shadow p-3">
+            <div className="max-w-[700px] mx-auto border shadow p-3">
+                <h1 className="text-[1.25rem] font-bold text-slate-600">CREATE TOURNAMENT PAGES (UPDATEING)</h1>
                 <AddTournamentForm
                     btnCancel={() => { }}
                 />

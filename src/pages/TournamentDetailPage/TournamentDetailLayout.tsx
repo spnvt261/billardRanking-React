@@ -5,6 +5,7 @@ import { useWorkspace } from "../../customhook/useWorkspace";
 import { useEffect } from "react";
 import tournamentActions from "../../redux/features/tournament/tournamentActions";
 import { connect } from "react-redux";
+import WithLoading from "../../components/loading/WithLoading";
 
 interface Props {
     getTournamentById: (id: string, workspaceId: string) => Promise<void>;
@@ -13,8 +14,9 @@ interface Props {
     showLoading?:(isLoading:boolean) =>void;
     cleanTournamentDetail:()=>void;
     isUpdateTournamentLoading:boolean
+    isGetDataLoading:boolean
 }
-const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLoading,cleanTournamentDetail,isUpdateTournamentLoading }: Props) => {
+const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLoading,cleanTournamentDetail,isUpdateTournamentLoading,isGetDataLoading }: Props) => {
     // console.log('TournamentsDetails');
     // console.log(tournament);
     
@@ -32,8 +34,11 @@ const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLo
 
 
     useEffect(()=>{
-        if(showLoading) showLoading(isLoading)
-    },[isLoading,isUpdateTournamentLoading])
+        if(showLoading) {
+            
+            showLoading(isLoading || isUpdateTournamentLoading || isGetDataLoading)
+        } 
+    },[isLoading,isUpdateTournamentLoading,isGetDataLoading])
     return (
         <div className="relative flex flex-col sm:flex-row gap-4">
             <Navbar />
@@ -46,6 +51,7 @@ const TournamentDetailLayout = ({ getTournamentById, tournament,isLoading,showLo
 }
 const mapStateToProps = (state: any) => ({
     isLoading: state.tournamentDetail.isCreateRoundMatchLoading,
+    isGetDataLoading: state.tournamentDetail.isGetDataLoading,
     isUpdateTournamentLoading: state.tournamentDetail.isUpdateTournamentLoading,
     tournament: state.tournamentDetail.tournamentDetail
 });
@@ -58,4 +64,4 @@ const mapDispatchToProps = (dispatch: any) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TournamentDetailLayout) 
+export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(TournamentDetailLayout) ) 
