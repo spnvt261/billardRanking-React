@@ -37,6 +37,8 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
     }));
 
     useEffect(() => {
+        console.log(isLoading);
+        
         if (showLoading) showLoading(isLoading)
     }, [isLoading])
 

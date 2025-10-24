@@ -1,5 +1,5 @@
 import type {TournamentDetail, TournamentsResponse } from "../../../types/tournament";
-import { UPLOAD_IMAGE_REQUEST } from "../common";
+import { UPLOAD_IMAGE_FAIL, UPLOAD_IMAGE_REQUEST, UPLOAD_IMAGE_SUCCESS } from "../common";
 import * as types from "./tournamentTypes";
 
 interface TournamentAction {
@@ -65,6 +65,11 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
                     isCreateLoading: false,
                     isFetched: false
                 }
+            case UPLOAD_IMAGE_SUCCESS:
+                return{
+                    ...state,
+                    isCreateLoading: false
+                }
             // case types.GET_ONE_TOURNAMENT_SUCCESS:
             //     return{
             //         ...state,
@@ -74,6 +79,7 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
 
             //fail
             // case types.GET_ONE_TOURNAMENT_FAIL:
+            case UPLOAD_IMAGE_FAIL:
             case types.GET_TOURNAMENTS_FAIL:
             case types.CREATE_TOURNAMENT_FAIL:
                 return {
@@ -82,7 +88,7 @@ const tournamentReducer = (state=initState, action:TournamentAction) =>{
                     isCreateLoading:false,
                     error: action.payload
                 }
-                
+            
             //clean
             // case types.CLEAN_TOURNAMENT_DETAIL:
             //     return{
