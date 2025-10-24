@@ -70,13 +70,12 @@ export const upLoadImages = (file: File) => async (dispatch: Dispatch) => {
 export const getListPlayerSelect =(workspaceId:string) => async (dispatch: Dispatch)=>{
     dispatch({ type: GET_LIST_PLAYERS_SELECT_REQUEST, payload: null });
     try{
-          let token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
-        if (token && token.startsWith('"') && token.endsWith('"')) {
-            token = token.slice(1, -1);
-        }
-        if (!token) throw new Error("No access token found");
+        //   let token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
+        // if (token && token.startsWith('"') && token.endsWith('"')) {
+        //     token = token.slice(1, -1);
+        // }
+        // if (!token) throw new Error("No access token found");
 
-        // Gửi request upload
         const response = await axios.get("/api/players/get-list?workspaceId=" + workspaceId);
         dispatch({ type: GET_LIST_PLAYERS_SELECT_SUCCESS, payload: response.data });
     }
