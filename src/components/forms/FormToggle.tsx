@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import './FormToggle.css'
 import CustomButton from '../customButtons/CustomButton'
-import { useEffect, useRef, useState, type ComponentType } from 'react';
+import { useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import WithLoading from '../loading/WithLoading';
 interface FormToggleProps {
@@ -14,8 +14,9 @@ interface FormToggleProps {
     formWidth?: string;
     className?: string;
     onConfirm?:()=>void;
+    Icon?: ReactNode;
 }
-const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission,onConfirm,formWidth }: FormToggleProps) => {
+const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission,onConfirm,formWidth,Icon }: FormToggleProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const originRef = useRef<HTMLDivElement>(null);;
@@ -65,6 +66,7 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
                     variant={btnVariant ? btnVariant : 'type-7'}
                     onClick={btnAddTournament}
                     needPermission={needPermission}
+                    Icon ={Icon}
                 />
             </div>
             <AnimatePresence>

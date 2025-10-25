@@ -44,7 +44,7 @@ const AppRouters =()=>{
                 <Route path={PATHS.SETTINGS} element ={<ProtectedRoute><SettingPage/></ProtectedRoute>}/>
                 <Route path="/test" element={<TestComponent/>}/>
             </Route>
-            <Route path={`${PATHS.SCORE_COUNTER}/:id`} element={<ProtectedRoute><ScoreCounterPage/></ProtectedRoute> }/>
+            <Route path={`${PATHS.SCORE_COUNTER}/:uuid`} element={<ProtectedRoute><ScoreCounterPage/></ProtectedRoute> }/>
         </Routes>
     )
 }

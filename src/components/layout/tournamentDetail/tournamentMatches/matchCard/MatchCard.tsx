@@ -53,7 +53,7 @@ const MatchCard: FC<MatchCardProps> = ({ match,roundNumber }) => {
                     )}
 
                     {/* Edit Button */}
-                    {match.status !== MatchStatus.FINISHED && match.status !== MatchStatus.ONGOING && !canEdit  && (
+                    {match.status !== MatchStatus.FINISHED && !canEdit  && (
                         <button
                             className="absolute h-full top-0 right-0 text-gray-600 hover:text-gray-800 w-[30px] h-[30px] flex items-center justify-center"
                             onClick={toggleEdit}

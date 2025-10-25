@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, type ReactNode } from "react";
 import "./CustomButton.css";
 import { useLocalStorage } from "../../customhook/useLocalStorage";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../constants/localStorage";
@@ -13,11 +13,12 @@ interface CustomButtonProps {
     needPermission?: boolean;
     textPadding?:string
     disabled?:boolean
+    Icon?: ReactNode;
 }
 
 const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
     ({ label, variant, width = "auto", type = "button", onClick, className = "",textPadding,
-        needPermission, disabled
+        needPermission, disabled, Icon
     }, ref) => {
         const [accessToken] = useLocalStorage<string | null>(LOCAL_STORAGE_ACCESS_TOKEN, '');
         const hasAccess = Boolean(accessToken);
@@ -37,7 +38,9 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
                         <span className="custom-button-inner relative py-3 px-6 transition-all ease-in duration-75 rounded-[.75rem]"
                             style={{padding:textPadding}}
                         >
-                            {label}
+                            {label}  {Icon === "right" && (
+                                <span className="icon">{Icon}</span>
+                            )}
                         </span>
                     </button>
                 }

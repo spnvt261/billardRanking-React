@@ -45,6 +45,7 @@ const Header = () => {
         setWorkspaceKey(null);
         setAccessToken(null);
         setWorkspaceId(null);
+        localStorage.clear();
         notify('Đã đăng xuất', 'success');
         await dispatch<any>(clearCache());
     }

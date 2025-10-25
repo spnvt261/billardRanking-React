@@ -1,6 +1,6 @@
 import type { Dispatch } from "redux";
 import * as types from "./matchTypes";
-import type { MatchesRequest, MatchesResponse } from "../../../types/match"
+import type { Match, MatchesRequest, MatchesResponse } from "../../../types/match"
 import axios from "axios";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../constants/localStorage";
 
@@ -34,7 +34,7 @@ const getMatchesByPage = (workspaceId: string, page: number) => async (dispatch:
     }
 };
 
-const getMatchesById = (workspaceId: string, id: number) => async (dispatch: Dispatch): Promise<MatchesResponse> => {
+const getMatchById = (workspaceId: string, uuid: string) => async (dispatch: Dispatch): Promise<MatchesResponse> => {
     
     dispatch({
         type: types.GET_MATCH_REQUEST,
@@ -42,7 +42,7 @@ const getMatchesById = (workspaceId: string, id: number) => async (dispatch: Dis
     });
 
     try {
-        const response = await axios.get<MatchesResponse>("/api/matches/"+id, {
+        const response = await axios.get<MatchesResponse>("/api/matches/uuid/"+uuid, {
             params: {
                 workspaceId
             },
@@ -64,7 +64,7 @@ const getMatchesById = (workspaceId: string, id: number) => async (dispatch: Dis
     }
 };
 
-const createMatch = (data: MatchesRequest) => async (dispatch: Dispatch): Promise<MatchesResponse> => {
+const createMatch = (data: MatchesRequest) => async (dispatch: Dispatch): Promise<Match> => {
     dispatch({
         type: types.CREATE_MATCH_REQUEST,
     });
@@ -100,11 +100,34 @@ const createMatch = (data: MatchesRequest) => async (dispatch: Dispatch): Promis
         throw err;
     }
 };
+const createScoreCounterMatch = (data: MatchesRequest) => async (dispatch: Dispatch): Promise<Match> => {
+    dispatch({
+        type: types.CREATE_MATCH_REQUEST,
+    });
+
+    try {
+        const response = await axios.post('/api/matches/create-score-counter', data);
+
+        dispatch({
+            type: types.CREATE_MATCH_SUCCESS,
+            payload: response.data,
+        });
+
+        return response.data;
+    } catch (err: any) {
+        dispatch({
+            type: types.CREATE_MATCH_FAIL,
+            payload: err.response?.data || err.message,
+        });
+        throw err;
+    }
+};
 
 const matchActions = {
     getMatchesByPage,
     createMatch,
-    getMatchesById
+    getMatchById,
+    createScoreCounterMatch
 }
 
 export default matchActions

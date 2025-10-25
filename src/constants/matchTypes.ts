@@ -7,6 +7,16 @@ export const matchTypeOptions = [
     { label: "4v4", value: "4v4" },
 ];
 
+export const scoreCounterReasonOptions = [
+    { label: "Win", value: "Win" },
+    { label: "Rùa 9", value: "Rùa 9" },
+    { label: "Nhặt 9", value: "Nhặt 9" },
+    { label: "Nhặt 8", value: "Nhặt 8" },
+    { label: "3 đui", value: "3 đui" },
+    { label: "Golden Break", value: "Golden Break" },
+    { label: "Khác", value: "Khác" },
+];
+
 export const matchCategoryOptions =[
     { label: "Bàn nước", value:MatchCategory.FUN},
     { label: "Kèo tiền", value:MatchCategory.BETTING},

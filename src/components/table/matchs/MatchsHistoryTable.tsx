@@ -124,7 +124,7 @@ const MatchesHistoryTable = ({
             accessor: (row: Match) => {
                 // Nếu là "Bàn nước" thì chỉ hiện tên đó
                 if (row.matchCategory === MatchCategory.FUN) return "Bàn nước"
-                if (row.matchCategory === MatchCategory.BETTING && row.betAmount) return `Kèo ${formatVND(row.betAmount)}`
+                if (row.matchCategory === MatchCategory.BETTING) return `Kèo ${row.betAmount? formatVND(row.betAmount):"Tiền"}`
                 if (row.tournamentId && row.tournamentName) {
                     return <div>
                         <span className={`text-[0.9rem] text-slate-700 ${matchTypeMap[row.matchType].className}`}>{matchTypeMap[row.matchType].label}</span>

@@ -8,6 +8,7 @@ interface MatchAction {
 }
 interface MatchState {
     isLoading: boolean;
+    isGetMatchLoading: boolean;
     matchesByPage: Record<number, Match[]>;
     error: Error | null;
     page: number;
@@ -20,6 +21,7 @@ interface MatchState {
 
 const initState: MatchState = {
     isLoading: false,
+    isGetMatchLoading:false,
     matchesByPage: {},
     error: null,
     page: 0,
@@ -34,6 +36,10 @@ const matchReducer = (state=initState, action:MatchAction) =>{
     switch (action.type) {
             //Request
             case types.GET_MATCH_REQUEST:
+                return{
+                    ...state,
+                    isGetMatchLoading:true
+                }
             case types.GET_MATCHES_REQUEST:
             case types.CREATE_MATCH_REQUEST:
                 return {
@@ -70,8 +76,8 @@ const matchReducer = (state=initState, action:MatchAction) =>{
             case types.GET_MATCH_SUCCESS:
                 return{
                     ...state,
-                    isLoading: false,
-                    match:action.payload
+                    isGetMatchLoading: false,
+                    // match:action.payload
                 }
 
             //fail
@@ -81,7 +87,8 @@ const matchReducer = (state=initState, action:MatchAction) =>{
                 return {
                     ...state,
                     isLoading: false,
-                    error: action.payload
+                    error: action.payload,
+                    isGetMatchLoading:false
                 }
     
         

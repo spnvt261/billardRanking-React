@@ -39,6 +39,7 @@ export interface Team {
 
 export interface Match {
     id: number; //bắt buộc
+    uuid:string;
     workspaceId: number; //bắt buộc
     tournamentId?: number;
     tournamentName?:string
@@ -49,6 +50,8 @@ export interface Match {
     team2?: Team
     scoreTeam1: number
     scoreTeam2: number
+    raceTo?:number
+    scoreCounterLockToken?:string
     matchType: MatchType
     matchCategory: MatchCategory
     betAmount?: number
@@ -72,6 +75,7 @@ export interface MatchesRequest {
     winnerId?: number;
     scoreTeam1: number;
     scoreTeam2: number;
+    raceTo?:number
     matchType?: MatchType;
     matchCategory: MatchCategory;
     betAmount?: number;

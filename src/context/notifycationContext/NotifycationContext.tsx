@@ -1,8 +1,8 @@
 // src/contexts/Notification/NotificationContext.tsx
 import React, { createContext, useState, type ReactNode } from 'react';
-import Notification from '../../components/nofitication/Notification';
+import Notification, { type NotificationType } from '../../components/nofitication/Notification';
 
-export type NotificationType = 'success' | 'error' | 'loading';
+// export type NotificationType = 'success' | 'error' | 'loading';
 
 export interface NotificationData {
     message: string;
