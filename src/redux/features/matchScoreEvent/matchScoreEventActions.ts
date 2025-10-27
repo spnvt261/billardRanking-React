@@ -235,6 +235,12 @@ const pauseMatch = (matchId: string, token: string) => async (dispatch: Dispatch
     }
 };
 
+const cleanData = () => async (dispatch:Dispatch):Promise<void>=>{
+    dispatch({
+        type:types.CLEAN_MATCH_SCORE_EVENTS,
+    })
+}
+
 const matchScoreEventActions = {
     getAllMatchScoreEvents,
     createMatchScoreEvent,
@@ -243,7 +249,8 @@ const matchScoreEventActions = {
     unlockScoreCounterByUuid,
     verifyTokenLockCounter,
     endMatch,
-    pauseMatch
+    pauseMatch,
+    cleanData
 }
 
 export default matchScoreEventActions

@@ -31,7 +31,8 @@ interface Props {
     totalElements: number;
     getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => Promise<void>;
     endMatch: (matchId: string, token: string) => Promise<void>;
-    pauseMatch: (matchId: string, token: string) => Promise<void>
+    pauseMatch: (matchId: string, token: string) => Promise<void>;
+    cleanMatchScoreEvents:()=>Promise<void>;
 }
 
 const ScoreCounterPage: React.FC<Props> = ({
@@ -41,7 +42,8 @@ const ScoreCounterPage: React.FC<Props> = ({
     verifyTokenLockCounter,
     unlockScoreCounterByUuid,
     totalElements, getAllMatchScoreEvents,
-    endMatch, pauseMatch
+    endMatch, pauseMatch,
+    cleanMatchScoreEvents
 }) => {
     const { uuid } = useParams<{ uuid: string }>();
     const { state } = useLocation();
@@ -71,7 +73,7 @@ const ScoreCounterPage: React.FC<Props> = ({
                 try {
                     if (!storedToken) {
                         notify('Invalid Token!', 'error');
-                        // navigate(-1);
+                        navigate(-1);
                     } else {
                         const isValid = await verifyTokenLockCounter(uuid, workspaceId, storedToken);
                         if (!isValid) {
@@ -83,7 +85,7 @@ const ScoreCounterPage: React.FC<Props> = ({
                     setMatchData(data);
                 } catch (error) {
                     notify('Bảng tỉ số này đã có người sử dụng!', 'error');
-                    // navigate(-1);
+                    navigate(-1);
                 }
             };
             fetchMatch();
@@ -212,7 +214,7 @@ const ScoreCounterPage: React.FC<Props> = ({
             await saveEvents(uuid!, events);
 
             await syncEvents(uuid!, storedToken);
-            notify('Cập nhật điểm thành công', 'success');
+            // notify('Cập nhật điểm thành công', 'success');
         } catch (err: any) {
             if (err.response?.status === 400 || err.response?.status === 401) {
                 setScore1(prevScore1);
@@ -237,6 +239,7 @@ const ScoreCounterPage: React.FC<Props> = ({
             notify('Token Score Counter Không tồn tại!', 'error')
             return;
         }
+        cleanMatchScoreEvents()
         syncEvents(uuid!, storedToken);
         endMatch(matchData.id.toString(), storedToken).then(() => {
             navigate(-1);
@@ -249,6 +252,7 @@ const ScoreCounterPage: React.FC<Props> = ({
             notify('Token Score Counter Không tồn tại!', 'error')
             return;
         }
+        cleanMatchScoreEvents()
         syncEvents(uuid!, storedToken);
         pauseMatch(matchData.id.toString(), storedToken).then(() => {
             navigate(-1);
@@ -459,7 +463,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     pauseMatch: (matchId: string, token: string) => dispatch(matchScoreEventActions.pauseMatch(matchId, token)),
     unlockScoreCounterByUuid: (matchUuid: string, workspaceId: string, token: string) => dispatch(matchScoreEventActions.unlockScoreCounterByUuid(matchUuid, workspaceId, token)),
     verifyTokenLockCounter: (matchUuid: string, workspaceId: string, token: string) => dispatch(matchScoreEventActions.verifyTokenLockCounter(matchUuid, workspaceId, token)),
-    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => dispatch(matchScoreEventActions.getAllMatchScoreEvents(workspaceId, matchId, page))
+    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => dispatch(matchScoreEventActions.getAllMatchScoreEvents(workspaceId, matchId, page)),
+    cleanMatchScoreEvents: ()=>dispatch(matchScoreEventActions.cleanData()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(ScoreCounterPage));

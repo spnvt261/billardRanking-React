@@ -25,7 +25,8 @@ interface RackCheckTableProps {
     isLoading: boolean;
     totalPages: number;
     listDataByPage: Record<number, MatchScoreEvent[]>;
-    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => Promise<void>
+    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => Promise<void>;
+    cleanMatchScoreEvents: () => Promise<void>
 }
 
 const RackCheckTable: React.FC<RackCheckTableProps> = ({
@@ -37,13 +38,13 @@ const RackCheckTable: React.FC<RackCheckTableProps> = ({
     isLoading,
     totalElements,
     listDataByPage,
-    getAllMatchScoreEvents
+    getAllMatchScoreEvents,
+    cleanMatchScoreEvents
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification();
-    console.log(1);
-    
+
     useEffect(() => {
         if (!listDataByPage[currentPage]) {
             if (workspaceId) getAllMatchScoreEvents(workspaceId, matchId.toString(), currentPage).catch(err => {
@@ -51,7 +52,13 @@ const RackCheckTable: React.FC<RackCheckTableProps> = ({
             });
         }
     }, [currentPage, listDataByPage]);
-
+    useEffect(() => {
+        return () => {
+            if (!history) {
+                cleanMatchScoreEvents()
+            }
+        }
+    }, [])
     const currentData = listDataByPage[currentPage] || [];
 
     const columns = [
@@ -135,68 +142,68 @@ const RackCheckTable: React.FC<RackCheckTableProps> = ({
 
     return (
         <>
-        {/* // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2"> */}
+            {/* // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2"> */}
             {/* // <div className="bg-white rounded-lg shadow-lg w-[500px] max-h-[80vh] overflow-y-auto hide-scrollbar"> */}
-                {
-                    history && history?.length > 0 && <>
-                        {/* Header */}
-                        <div className="flex justify-between items-center border-b px-4 py-2">
-                            <h2 className="text-lg font-bold text-slate-600">New Racks</h2>
-                            <button
-                                onClick={onClose}
-                                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                            >
-                                &times;
-                            </button>
-                        </div>
-
-                        {/* Body */}
-                        <div className="p-4">
-                            <DataTable<HistoryItem>
-                                columns={columns}
-                                data={history}
-                                totalElement={history.length}
-                                isLoading={false}
-                                getRowClassName={getRowClassName}
-                                getHeaderClass={getHeaderClass}
-                                minHeight="200px"
-                            />
-                        </div>
-                    </>
-                }
-
-                {/* Header */}
-                <div className="flex justify-between items-center border-b px-4 py-2">
-                    <h2 className="text-lg font-bold text-slate-600">History Rack Check</h2>
-                    {
-                        (!history || history?.length === 0) && <button
+            {
+                history && history?.length > 0 && <>
+                    {/* Header */}
+                    <div className="flex justify-between items-center border-b px-4 py-2">
+                        <h2 className="text-lg font-bold text-slate-600">New Racks</h2>
+                        <button
                             onClick={onClose}
                             className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
                         >
                             &times;
                         </button>
-                    }
-                </div>
+                    </div>
 
-                {/* Body */}
-                <div className="p-4">
-                    <DataTable<MatchScoreEvent>
-                        columns={columnsHistory}
-                        data={currentData}
-                        totalElement={totalElements}
-                        isLoading={isLoading}
-                        getRowClassName={(row) => getRowClassNameHistory(row, team1Id, team2Id)}
-                        getHeaderClass={getHeaderClass}
-                    />
-                    <Pagination
-                        currentPage={currentPage}
-                        onPageChange={setCurrentPage}
-                        pageSize={10}
-                        totalItems={totalElements}
-                    />
-                </div>
+                    {/* Body */}
+                    <div className="p-4">
+                        <DataTable<HistoryItem>
+                            columns={columns}
+                            data={history}
+                            totalElement={history.length}
+                            isLoading={false}
+                            getRowClassName={getRowClassName}
+                            getHeaderClass={getHeaderClass}
+                            minHeight="200px"
+                        />
+                    </div>
+                </>
+            }
+
+            {/* Header */}
+            <div className="flex justify-between items-center border-b px-4 py-2">
+                <h2 className="text-lg font-bold text-slate-600">History Rack Check</h2>
+                {
+                    (!history || history?.length === 0) && <button
+                        onClick={onClose}
+                        className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+                    >
+                        &times;
+                    </button>
+                }
+            </div>
+
+            {/* Body */}
+            <div className="p-4">
+                <DataTable<MatchScoreEvent>
+                    columns={columnsHistory}
+                    data={currentData}
+                    totalElement={totalElements}
+                    isLoading={isLoading}
+                    getRowClassName={(row) => getRowClassNameHistory(row, team1Id, team2Id)}
+                    getHeaderClass={getHeaderClass}
+                />
+                <Pagination
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                    pageSize={10}
+                    totalItems={totalElements}
+                />
+            </div>
             {/* // </div> */}
-        {/* // </div> */}
+            {/* // </div> */}
         </>
     );
 };
@@ -210,7 +217,8 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => dispatch(matchScoreEventActions.getAllMatchScoreEvents(workspaceId, matchId, page))
+    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => dispatch(matchScoreEventActions.getAllMatchScoreEvents(workspaceId, matchId, page)),
+    cleanMatchScoreEvents: () => dispatch(matchScoreEventActions.cleanData())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(RackCheckTable));

@@ -94,6 +94,12 @@ const matchScoreEventReducer = (state = initState, action: MatchScoreEventAction
                 isUpdateDataLoading: false,
                 error: action.payload
             }
+
+        case types.CLEAN_MATCH_SCORE_EVENTS:
+            return{
+                ...state,
+                listDataByPage:{},
+            }
         default:
             return state;
     }

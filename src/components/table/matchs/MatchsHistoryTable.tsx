@@ -52,7 +52,9 @@ const MatchesHistoryTable = ({
         if (!workspaceId) return;
 
         const storedToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_LOCK_SCORE_COUNTER);
-
+        if(match.status!=MatchStatus.PAUSED){
+            return;
+        }
         try {
             if (!storedToken) {
                 const token = await lockScoreCounterByUuid(match.uuid, workspaceId, match.raceTo? match.raceTo:-1);
@@ -105,11 +107,11 @@ const MatchesHistoryTable = ({
                 const getStatusClass = () => {
                     switch (row.status) {
                         case MatchStatus.ONGOING:
-                            return "bg-green-500 cursor-pointer hover:bg-green-600";
+                            return "bg-green-500";
                         case MatchStatus.UPCOMING:
                             return "bg-yellow-400";
                         case MatchStatus.PAUSED:
-                            return "bg-yellow-500";
+                            return "bg-yellow-500 cursor-pointer hover:bg-yellow-600";
                         case MatchStatus.NOT_STARTED:
                             return "bg-red-500";
                         default:

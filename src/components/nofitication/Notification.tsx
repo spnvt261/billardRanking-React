@@ -96,7 +96,7 @@ const NotificationContainer: React.FC = () => {
     }, [addNotification]);
 
     return createPortal(
-        <div className="fixed bottom-5 left-5 flex flex-col items-center z-50 space-y-3">
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 flex flex-col items-center z-50 space-y-3">
             {notifications.map((n) => (
                 <NotificationItem key={n.id} data={n} onRemove={removeNotification} />
             ))}

@@ -11,6 +11,7 @@ import { useNotification } from "../../../../customhook/useNotifycation";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../constants/localStorage";
 import { useLocalStorage } from "../../../../customhook/useLocalStorage";
 import type { CheckWorkspaceResponse, LoginWorkspaceResponse } from "../../../../types/workspace";
+import WithLoading from "../../../loading/WithLoading";
 
 interface Props {
     btnCancel: () => void;
@@ -94,6 +95,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                     notify('Lỗi kết nối server', 'error');
                 }
             } else {
+                notify('Đang đăng nhập','loading');
                 const data = {
                     workspaceKey: Number(values.key),
                     password: values.password
@@ -115,7 +117,8 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                     }
                 } catch (err: any) {
                     // console.log(err.status);
-                    if (err.status === 400) {
+                    if (err.status === 400) {   
+                        notify('Sai mật khẩu','error')
                         setErrorMessage("Key hoặc mật khẩu không đúng!");
                         return;
                     }
@@ -195,4 +198,4 @@ const mapDispatchToProps = (dispatch: any) => {
         loginWorkspace: (data: { workspaceKey: Number, password: string }) => dispatch(workspaceAction.loginWorkspace(data))
     };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(FormJoinWorkSpace);
+export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(FormJoinWorkSpace));
