@@ -1,5 +1,6 @@
 import type { Match } from "../../../types/match";
-import { UPDATE_MATCH_SUCCESS } from "../tournamentDetails/tournamentDetailTypes";
+import { END_MATCH_SUCCESS, PAUSE_MATCH_SUCCESS } from "../matchScoreEvent/matchScoreEventTypes";
+import { OTHER_TYPE_SUCCESS, ROUND_ROBIN_SUCCESS, UPDATE_MATCH_SUCCESS } from "../tournamentDetails/tournamentDetailTypes";
 import * as types from "./matchTypes";
 
 interface MatchAction {
@@ -7,6 +8,7 @@ interface MatchAction {
     payload?: any;
 }
 interface MatchState {
+    isUpdateMatchLoading: boolean;
     isLoading: boolean;
     isGetMatchLoading: boolean;
     matchesByPage: Record<number, Match[]>;
@@ -22,6 +24,7 @@ interface MatchState {
 const initState: MatchState = {
     isLoading: false,
     isGetMatchLoading:false,
+    isUpdateMatchLoading:false,
     matchesByPage: {},
     error: null,
     page: 0,
@@ -35,6 +38,7 @@ const initState: MatchState = {
 const matchReducer = (state=initState, action:MatchAction) =>{
     switch (action.type) {
             //Request
+
             case types.GET_MATCH_REQUEST:
                 return{
                     ...state,
@@ -61,6 +65,10 @@ const matchReducer = (state=initState, action:MatchAction) =>{
                     totalPages: action.payload.totalPages,
                     last: action.payload.last,
                 };
+            case OTHER_TYPE_SUCCESS:
+            case ROUND_ROBIN_SUCCESS:
+            case END_MATCH_SUCCESS:
+            case PAUSE_MATCH_SUCCESS:
             case UPDATE_MATCH_SUCCESS:
                 return{
                     ...state,
@@ -79,7 +87,6 @@ const matchReducer = (state=initState, action:MatchAction) =>{
                     isGetMatchLoading: false,
                     // match:action.payload
                 }
-
             //fail
             case types.GET_MATCH_FAIL:
             case types.GET_MATCHES_FAIL:
@@ -88,7 +95,8 @@ const matchReducer = (state=initState, action:MatchAction) =>{
                     ...state,
                     isLoading: false,
                     error: action.payload,
-                    isGetMatchLoading:false
+                    isGetMatchLoading:false,
+                    isUpdateMatchLoading:false
                 }
     
         

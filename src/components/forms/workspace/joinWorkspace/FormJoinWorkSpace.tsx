@@ -103,6 +103,7 @@ const FormJoinWorkSpace = ({ btnCancel, showLoading, isLoading, joinWorkspace, l
                     if (result.workspace) {
                         const resultParsed = {
                             ...result.workspace,
+                            showKey:false,
                             isAdmin: true
                         }
                         setAccessToken(result.accessToken);

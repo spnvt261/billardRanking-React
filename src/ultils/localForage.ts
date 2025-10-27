@@ -1,20 +1,9 @@
 import localforage from 'localforage';
 import axios, { type AxiosResponse } from 'axios';
-import axiosRetry from 'axios-retry';
 import type { MatchScoreEvent, MatchScoreEventRequest } from '../types/matchScoreEvents';
+import axiosRetry from 'axios-retry';
+// import { axiosWithRetry } from './axiosConfig';
 
-// Cấu hình axios-retry
-axiosRetry(axios, {
-    retries: 3, // Số lần thử lại
-    retryDelay: (retryCount: number) => retryCount * 1000, // Delay 1s, 2s, 3s
-    retryCondition: (error): boolean => {
-        // Chỉ retry cho lỗi mạng hoặc lỗi server (5xx), không retry cho lỗi 400
-        return (
-            !!axiosRetry.isNetworkOrIdempotentRequestError(error) ||
-            (error.response?.status ? error.response.status >= 500 : false)
-        );
-    },
-});
 
 // Khởi tạo localforage instance
 const offlineStore = localforage.createInstance({
@@ -37,7 +26,7 @@ export const saveRackToBE = async (
     scoreCounterLockToken: string
 ): Promise<{ success: boolean; data?: MatchScoreEvent; error?: any }> => {
     try {
-        
+
         const response: AxiosResponse<MatchScoreEvent> = await axios.post(
             `/api/match-score-events?token=${scoreCounterLockToken}`,
             {
@@ -49,6 +38,19 @@ export const saveRackToBE = async (
                 rackNumber: event.rackNumber,
                 pointsReceived: event.pointsReceived,
                 note: event.note,
+            },
+            {
+                // Tùy chọn retry chỉ cho request này
+                'axios-retry': {
+                    retries: 3, // Retry 5 lần
+                    retryDelay: (retryCount: number) => retryCount * 2000, // Delay 2s, 4s, 6s, 8s, 10s
+                    retryCondition: (error): boolean => {
+                        return (
+                            !!axiosRetry.isNetworkOrIdempotentRequestError(error) ||
+                            (error.response?.status ? error.response.status >= 500 : false)
+                        );
+                    },
+                },
             }
         );
         return { success: true, data: response.data };
@@ -58,13 +60,13 @@ export const saveRackToBE = async (
 };
 
 // Đồng bộ tất cả events chưa sync
-export const syncEvents = async (matchId: string, scoreCounterLockToken: string): Promise<MatchScoreEventRequest[]> => {
+export const syncEvents = async (matchId: string, scoreCounterLockToken: string):Promise<MatchScoreEventRequest[]> => {
     const events = await getEvents(matchId);
     const updatedEvents = [...events];
 
     for (let i = 0; i < updatedEvents.length; i++) {
         if (!updatedEvents[i].isSynced && updatedEvents[i].retryCount < 5) {
-            const result = await saveRackToBE(updatedEvents[i],scoreCounterLockToken);
+            const result = await saveRackToBE(updatedEvents[i], scoreCounterLockToken);
             if (result.success) {
                 updatedEvents[i].isSynced = true;
             } else {

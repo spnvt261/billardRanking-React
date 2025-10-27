@@ -15,8 +15,21 @@ interface FormToggleProps {
     className?: string;
     onConfirm?:()=>void;
     Icon?: ReactNode;
+    padding?:string
+    btnPadding?:string
 }
-const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, className, needPermission,onConfirm,formWidth,Icon }: FormToggleProps) => {
+const FormToggle = ({ btnLabel, 
+    formTitle, 
+    element: Element, 
+    btnVariant, 
+    className, 
+    needPermission,
+    onConfirm,
+    formWidth,
+    Icon,
+    padding,
+    btnPadding
+}: FormToggleProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const originRef = useRef<HTMLDivElement>(null);;
@@ -67,6 +80,7 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
                     onClick={btnAddTournament}
                     needPermission={needPermission}
                     Icon ={Icon}
+                    textPadding={btnPadding}
                 />
             </div>
             <AnimatePresence>
@@ -102,7 +116,9 @@ const FormToggle = ({ btnLabel, formTitle, element: Element, btnVariant, classNa
                             style={{maxWidth:formWidth?formWidth:'600px'}}
                         >
                             <div className='content-wrapper'>
-                                <div className={` p-6 rounded-2xl shadow-2xl max-h-[600px] overflow-y-auto hide-scrollbar`}>
+                                <div className={` p-6 rounded-2xl shadow-2xl max-h-[600px] overflow-y-auto hide-scrollbar`}
+                                    style={padding?{padding:padding}:{}}
+                                >
                                     <h3 className='text-xl font-bold mb-2'>{formTitle}</h3>
                                     <div className='p-2'>
                                         {WithLoading ? (

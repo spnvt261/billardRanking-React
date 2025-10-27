@@ -15,13 +15,13 @@ const Pagination: React.FC<PaginationProps> = ({
     onPageChange,
     maxPagesToShow = 5,
 }) => {
+    
     const totalPages = Math.ceil(totalItems / pageSize);
-    if (totalPages <= 1) return null;
 
     const [dropdownPages, setDropdownPages] = useState<number[] | null>(null);
     const [dropdownPos, setDropdownPos] = useState<{ left: number } | null>(null);
-    const [leftEllips,setLeftEllips] = useState<boolean>(false)
-    const [righteEllips,setRightEllips] = useState<boolean>(false)
+    const [leftEllips, setLeftEllips] = useState<boolean>(false)
+    const [righteEllips, setRightEllips] = useState<boolean>(false)
     const containerRef = useRef<HTMLDivElement>(null);
 
     // Close dropdown nếu click ra ngoài
@@ -56,7 +56,7 @@ const Pagination: React.FC<PaginationProps> = ({
     };
 
     const pages = getPages();
-
+    if (totalPages <= 1) return null;
     // Khi click vào ...
     const handleEllipsisClick = (
         start: number,
@@ -78,8 +78,8 @@ const Pagination: React.FC<PaginationProps> = ({
         start: number,
         end: number,
         e: React.MouseEvent<HTMLButtonElement>
-    ) =>{
-        handleEllipsisClick(start,end,e);
+    ) => {
+        handleEllipsisClick(start, end, e);
         setLeftEllips(true)
         setRightEllips(false)
     }
@@ -87,8 +87,8 @@ const Pagination: React.FC<PaginationProps> = ({
         start: number,
         end: number,
         e: React.MouseEvent<HTMLButtonElement>
-    ) =>{
-        handleEllipsisClick(start,end,e);
+    ) => {
+        handleEllipsisClick(start, end, e);
         setLeftEllips(false)
         setRightEllips(true)
     }
@@ -125,7 +125,7 @@ const Pagination: React.FC<PaginationProps> = ({
                                 >
                                     {dropdownPages.map((p) => (
                                         <button
-                                            key={p}
+                                            key={`page-${p}`}
                                             onClick={() => {
                                                 onPageChange(p);
                                                 setDropdownPages(null);
@@ -151,7 +151,7 @@ const Pagination: React.FC<PaginationProps> = ({
                             className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 relative"
                         >
                             ...
-                            {dropdownPages && dropdownPos  && righteEllips && (
+                            {dropdownPages && dropdownPos && righteEllips && (
                                 <div
                                     className="absolute bg-white bottom-full border shadow-md rounded flex flex-col z-10"
                                     style={{
@@ -181,19 +181,21 @@ const Pagination: React.FC<PaginationProps> = ({
                         </button>
                     );
                 }
+                if (typeof page === "number") {
+                    return (
+                        <button
+                            key={idx}
+                            onClick={() => onPageChange(page)}
+                            className={`px-3 py-1 rounded ${page === currentPage
+                                ? "bg-gray-400 text-white"
+                                : "bg-gray-200 hover:bg-gray-300"
+                                }`}
+                        >
+                            {page}
+                        </button>
+                    );
+                }
 
-                return (
-                    <button
-                        key={idx}
-                        onClick={() => onPageChange(page as number)}
-                        className={`px-3 py-1 rounded ${page === currentPage
-                            ? "bg-gray-400 text-white"
-                            : "bg-gray-200 hover:bg-gray-300"
-                            }`}
-                    >
-                        {page}
-                    </button>
-                );
             })}
 
             {/* Next */}

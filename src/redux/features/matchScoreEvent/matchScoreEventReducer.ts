@@ -34,17 +34,24 @@ const initState: State = {
 const matchScoreEventReducer = (state = initState, action: MatchScoreEventAction) => {
     switch (action.type) {
         //Request
+        case types.PAUSE_MATCH_REQUEST:
+        case types.END_MATCH_REQUEST:
+            return {
+                ...state,
+                isUpdateDataLoading: true
+            }
         case types.GET_ALL_MATCH_SCORE_EVENTS_REQUEST:
             return {
                 ...state,
                 isGetDataLoading: true,
             }
-        case types.CREATE_MATCH_SCORE_EVENT_REQUEST: {
+        case types.SYNC_EVENTS_REQUEST:
+        case types.CREATE_MATCH_SCORE_EVENT_REQUEST: 
             return {
                 ...state,
                 isCreateLoading: true,
             }
-        }
+        
         //success
         case types.CREATE_MATCH_SCORE_EVENT_SUCCESS:
             return {
@@ -67,14 +74,24 @@ const matchScoreEventReducer = (state = initState, action: MatchScoreEventAction
                 totalPages: action.payload.totalPages,
                 last: action.payload.last,
             }
-
+        case types.PAUSE_MATCH_SUCCESS:
+        case types.END_MATCH_SUCCESS:
+            return {
+                ...state,
+                isUpdateDataLoading: false
+            }
         //fail
+        case types.SYNC_EVENTS_SUCCESS:
+        case types.SYNC_EVENTS_FAIL:
+        case types.PAUSE_MATCH_FAIL:
+        case types.END_MATCH_FAIL:
         case types.CREATE_MATCH_SCORE_EVENT_FAIL:
         case types.GET_ALL_MATCH_SCORE_EVENTS_FAIL:
             return {
                 ...state,
                 isGetDataLoading: false,
                 isCreateLoading: false,
+                isUpdateDataLoading: false,
                 error: action.payload
             }
         default:

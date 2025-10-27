@@ -12,7 +12,7 @@ import { useWorkspace } from "../../../../customhook/useWorkspace";
 import { useNotification } from "../../../../customhook/useNotifycation";
 import { useLocalStorage } from "../../../../customhook/useLocalStorage";
 import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../../constants/localStorage";
-import type { CheckWorkspaceResponse, CreateWorkspaceResponse, LoginWorkspaceResponse, WorkspaceDataToCreate } from "../../../../types/workspace";
+import type { CheckWorkspaceResponse, CreateWorkspaceResponse, LoginWorkspaceResponse, WorkspaceData, WorkspaceDataToCreate } from "../../../../types/workspace";
 
 interface Props {
     btnCancel: () => void;
@@ -84,11 +84,12 @@ const FormAddWorkSpace = ({ btnCancel, showLoading, isLoading, createWorkspace, 
                 if (result.success) {
                     notify('Tạo nhóm thành công', 'success');
                     if (result.workspaceId) {
-                        const resultParsed = {
+                        const resultParsed:WorkspaceData = {
                             id: result.workspaceId,
                             name: parsedValues.name,
                             shareKey: parsedValues.shareKey,
-                            isAdmin: true
+                            isAdmin: true,
+                            showKey:false,
                         }
                         addWorkspace(resultParsed);
                         btnCancel();

@@ -37,7 +37,7 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
     }));
 
     useEffect(() => {
-        console.log(isLoading);
+        // console.log(isLoading);
         
         if (showLoading) showLoading(isLoading)
     }, [isLoading])
@@ -350,11 +350,13 @@ const AddTournamentForm = ({ btnCancel, getListPlayerSelect, createTournament, u
                     variant="type-4"
                     className="mr-2"
                     onClick={btnCancel}
+                    needPermission
                 />
                 <CustomButton
                     label="Tạo"
                     variant="type-2"
                     type="submit"
+                    needPermission
                 />
             </div>
         </form>

@@ -23,7 +23,8 @@ export const MatchStatus = {
     ONGOING: "ONGOING",
     FINISHED: "FINISHED",
     NOT_STARTED: "NOT_STARTED",
-    UPCOMING:"UPCOMING"
+    UPCOMING:"UPCOMING",
+    PAUSED:"PAUSED",
 } as const;
 export type MatchStatus = typeof MatchStatus[keyof typeof MatchStatus];
 
@@ -60,6 +61,7 @@ export interface Match {
     round?:number;
     gameNumber?:number;
     winnerId?: number;
+    hasRackCheck:boolean
     status:MatchStatus
     createdAt: string
     updatedAt: string
@@ -72,6 +74,20 @@ export interface MatchesRequest {
     tournamentId?: number;
     team1Id?: number;
     team2Id?: number;
+    winnerId?: number;
+    scoreTeam1: number;
+    scoreTeam2: number;
+    raceTo?:number
+    matchType?: MatchType;
+    matchCategory: MatchCategory;
+    betAmount?: number;
+    matchDate?: string;
+    note?: string;
+    status:MatchStatus
+}
+
+export interface MatchUpdateRequest {
+    tournamentId?: number;
     winnerId?: number;
     scoreTeam1: number;
     scoreTeam2: number;

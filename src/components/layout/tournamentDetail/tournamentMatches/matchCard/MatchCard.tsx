@@ -46,8 +46,13 @@ const MatchCard: FC<MatchCardProps> = ({ match,roundNumber }) => {
                             {match.status}
                         </span>
                     )}
+                    {match.status === MatchStatus.PAUSED && (
+                        <span className="text-[0.6rem] ml-1 px-2 bg-white text-yellow-600 border-2 border-yellow-500 rounded-full">
+                            {match.status}
+                        </span>
+                    )}
                     {match.status === MatchStatus.UPCOMING && (
-                        <span className="text-[0.6rem] ml-1 px-2 bg-white text-yellow-500 border border-yellow-400 rounded-full">
+                        <span className="text-[0.6rem] ml-1 px-2 bg-white text-yellow-400 border border-yellow-400 rounded-full">
                             {match.status}
                         </span>
                     )}

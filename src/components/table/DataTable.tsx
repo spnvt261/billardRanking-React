@@ -8,6 +8,8 @@ interface Column<T> {
     header: string;
     accessor: keyof T | ((row: T) => React.ReactNode) | string;
     width?: string;
+    className?: string;        // ✅ thêm class cho header
+    cellClassName?: string;    // ✅ thêm class cho cell
 }
 
 interface DataTableProps<T> {
@@ -15,10 +17,13 @@ interface DataTableProps<T> {
     data: T[];
     showLoading?: (show: boolean) => void;
     isLoading?: boolean;
-    totalElement?: number
+    totalElement?: number;
+    getRowClassName?: (row: T) => string; 
+    getHeaderClass?: (col: Column<T>, index: number) => string; 
+    minHeight?:string
 }
 
-const DataTable = <T extends object>({ columns, data, showLoading, isLoading, totalElement }: DataTableProps<T>) => {
+const DataTable = <T extends object>({ columns, data, showLoading, isLoading, totalElement,getRowClassName,getHeaderClass,minHeight }: DataTableProps<T>) => {
     // console.log('DataTable');
     useEffect(() => {
         if (showLoading) {
@@ -27,36 +32,39 @@ const DataTable = <T extends object>({ columns, data, showLoading, isLoading, to
     }, [isLoading])
     return (
         <div className="relative"
-            style={{ minHeight: `${totalElement == 0 ? '500px' : data.length == 0 ? '700px' : ''}` }}
+            style={{ minHeight: `${minHeight?minHeight :totalElement == 0 ? '500px' : data.length == 0 ? '700px' : ''}` }}
         >
             <table className=" w-full border-collapse text-left"
             >
                 <thead>
                     <tr>
-                        {columns.map((col, i) => (
+                        {columns.map((col, i) => {
+                            return(
                             <th
                                 key={i}
-                                className="p-3 border-t-0"
+                                 className={`p-3 border-t-0 ${col.className || ""} ${getHeaderClass ? getHeaderClass(col, i) : ""}`}
                                 style={{ width: col.width || "auto" }}
                             >
                                 {col.header}
                             </th>
-                        ))}
+                        )})}
                     </tr>
                 </thead>
                 <AnimatePresence>
                     <tbody
                     >
 
-                        {data && data.length > 0 && (data.map((row) => (
+                        {data && data.length > 0 && (data.map((row,rowIndex) => {
+                            const rowClass = getRowClassName ? getRowClassName(row) : "";
+                            return(
                             <motion.tr
-                                key={(row as any).match_id || (row as any).id}
+                                key={(row as any).match_id || (row as any).id || `row-${rowIndex}`}
                                 layout
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="hover:bg-[var(--tr-hover-color)]"
+                                 className={`hover:bg-[var(--tr-hover-color)] ${rowClass}`}
 
                             >
                                 {columns.map((col, j) => {
@@ -71,21 +79,21 @@ const DataTable = <T extends object>({ columns, data, showLoading, isLoading, to
                                     }
 
                                     return (
-                                        <td key={j} className="p-3 border-b">
+                                        <td key={j}  className={`p-3 border-b ${col.cellClassName || ""}`}>
                                             {cellContent}
                                         </td>
                                     );
                                 })}
                             </motion.tr>
-                        )))}
+                        )}))}
 
                     </tbody>
                 </AnimatePresence>
             </table>
             {
                 totalElement == 0 &&
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <h2 className="text-xl font-bold mb-4 text-slate-500">CHƯA CÓ DỮ LIỆU</h2>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit">
+                    <h2 className="text-xl font-bold mt-4 text-slate-500">CHƯA CÓ DỮ LIỆU</h2>
                 </div>
             }
         </div>

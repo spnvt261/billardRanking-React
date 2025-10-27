@@ -123,11 +123,12 @@ const createScoreCounterMatch = (data: MatchesRequest) => async (dispatch: Dispa
     }
 };
 
+
 const matchActions = {
     getMatchesByPage,
     createMatch,
     getMatchById,
-    createScoreCounterMatch
+    createScoreCounterMatch,
 }
 
 export default matchActions

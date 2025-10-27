@@ -88,6 +88,19 @@
     background: linear-gradient(to bottom right, #374151, #6b7280);
 }
 
+/* Type 7 - Gray */
+.type-8 {
+    color: #eeeb3b;
+    /* text-gray-600 */
+    background: linear-gradient(to bottom right, #eeeb3b, #ccf732);
+    /* from-gray-700 to-gray-500 */
+}
+
+.type-8:hover {
+    color: white;
+    background: linear-gradient(to bottom right, #eeeb3b, #ccf732);
+}
+
 /* Inner span for hover opacity effect (all variants) */
 .custom-button-inner {
     background-color: white;

@@ -64,7 +64,7 @@ const TournamentMatchInRound = ({
     //     .reduce((acc, curr) => acc + curr, 0);
 
     const listTeams = tournament.listTeamByRound[roundNumber] || [];
-    const [isCollapsed, setIsCollapsed] = useState(roundStatus !== TournamentRoundStatus.UPCOMING && roundStatus !== TournamentRoundStatus.ONGOING);
+    const [isCollapsed, setIsCollapsed] = useState(roundStatus !== TournamentRoundStatus.UPCOMING && roundStatus !== TournamentRoundStatus.ONGOING && roundStatus !== TournamentRoundStatus.FINISHED);
     useEffect(() => {
         if (showLoading) showLoading(isLoading);
     }, [isLoading])

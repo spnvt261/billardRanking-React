@@ -15,6 +15,7 @@ interface CustomTextFieldProps {
     helperText?: string;
     error?: boolean;
     className?: string;
+    disabled?:boolean
 }
 
 
@@ -27,7 +28,8 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     onBlur,
     helperText,
     error = false,
-    className = ''
+    className = '',
+    disabled:disabledProp
 }) => {
     const [value, setValue] = useState<string>(propValue || '');
 
@@ -100,6 +102,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                         onFocus={() => { handleFocus(); }}
                         onBlur={handleBlur}
                         onKeyDown={(e) => e.preventDefault()}
+                        disabled={disabledProp}
                     // readOnly
                     />
                     <label className={isActive ? 'active' : ''}>{label}</label>
@@ -139,6 +142,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                         if (onBlur) onBlur(e);
                     }}
                     className={`${isActive ? 'active' : ''}`}
+                    disabled={disabledProp}
                 // disabled
                 />
                 <label className={isActive ? 'active' : ''}>{label}</label>

@@ -34,7 +34,7 @@ const validationSchema = Yup.object({
 
 const EditMatch: FC<Props> = ({ match, onClose, updateMatch, roundNumber, showLoading, isLoading, lockScoreCounterByUuid }) => {
     const [mode, setMode] = useState<"CHOICE" | "ADD_RESULT" | "SCORE_COUNTER">("CHOICE");
-    const [raceTo, setRaceTo] = useState<number>(0);
+    const [raceTo, setRaceTo] = useState<number>(match.raceTo?match.raceTo:0);
     const [raceToHellperText, setRaceToHellperText] = useState<string | undefined>(undefined);
     const { workspaceId } = useWorkspace();
     const { notify } = useNotification();
@@ -294,16 +294,21 @@ const EditMatch: FC<Props> = ({ match, onClose, updateMatch, roundNumber, showLo
                                         </p>
                                     </div>
                                 </div>
-                                <CustomTextField
-                                    name="race_to"
-                                    type="number"
-                                    label="Race To"
-                                    className="mt-4"
-                                    value={raceTo}
-                                    onChange={(e) => setRaceTo(Number(e.target.value))}
-                                    error={raceToHellperText ? true : false}
-                                    helperText={raceToHellperText}
-                                />
+                                {
+                                    // (match.raceTo!==0 && !match.raceTo) && 
+                                    <CustomTextField
+                                        name="race_to"
+                                        type="number"
+                                        label="Race To"
+                                        className="mt-4"
+                                        value={raceTo}
+                                        onChange={(e) => setRaceTo(Number(e.target.value))}
+                                        error={raceToHellperText ? true : false}
+                                        helperText={raceToHellperText}
+                                        disabled={match.raceTo?true:false}
+                                    />
+                                }
+
 
                                 <div>
                                     <div className="flex justify-end mt-4">

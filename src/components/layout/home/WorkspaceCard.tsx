@@ -11,15 +11,16 @@ interface WorkspaceCardProps {
     name: string;
     workspaceKey: number;
     isAdmin?: boolean;
-    workspaceId:number
+    workspaceId: number
+    showKey: boolean
 }
 const formatKey = (key: number) => {
     const keyStr = key.toString().padStart(8, "0");
     return `${keyStr.slice(0, 4)}-${keyStr.slice(4)}`;
 };
-const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdmin,workspaceId }) => {
-    const { removeWorkspace, setWorkspaceKey,setWorkspaceId } = useWorkspace();
-    const [showKey, setShowKey] = useState(false);
+const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdmin, workspaceId, showKey: showKeyProp }) => {
+    const { removeWorkspace, setWorkspaceKey, setWorkspaceId, updateWorkspaceShowKey } = useWorkspace();
+    const [showKey, setShowKey] = useState(showKeyProp);
     const [showJoinForm, setShowJoinForm] = useState(false);
     const [origin, setOrigin] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const cardRef = useRef<HTMLDivElement>(null);
@@ -103,7 +104,11 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
-                                setShowKey((prev) => !prev);
+                                setShowKey((prev) => {
+                                    const newValue = !prev;
+                                    updateWorkspaceShowKey(workspaceKey, newValue);
+                                    return newValue;
+                                });
                             }}
                             className="p-1 rounded-md hover:bg-gray-100 transition-colors"
                             aria-label="Toggle key visibility"
@@ -114,19 +119,19 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ name, workspaceKey, isAdm
                 </div>
             </div>
             <div className="absolute top-3 right-1 rounded-[1rem] p-3"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                    }}
-                >
-                    {/* <MdDeleteForever  size={24} /> */}
-                    <FormToggle
-                        btnLabel="Delete"
-                        btnVariant="type-6"
-                        formTitle={`Bạn có chắc chắn muốn rời workspace '${name}'`}
-                        element={FormConfirm}
-                        onConfirm={handleDelete}
-                    />
-                </div>
+                onClick={(e) => {
+                    e.stopPropagation();
+                }}
+            >
+                {/* <MdDeleteForever  size={24} /> */}
+                <FormToggle
+                    btnLabel="Delete"
+                    btnVariant="type-6"
+                    formTitle={`Bạn có chắc chắn muốn rời workspace '${name}'`}
+                    element={FormConfirm}
+                    onConfirm={handleDelete}
+                />
+            </div>
         </div>
 
     );

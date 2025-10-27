@@ -2,7 +2,8 @@ export interface WorkspaceData {
     id: number;
     name: string;
     shareKey: number;
-    isAdmin?:boolean
+    isAdmin?:boolean;
+    showKey:boolean
 }
 
 export interface WorkspaceDataToCreate {

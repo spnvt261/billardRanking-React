@@ -5,17 +5,18 @@ import { LOCAL_STORAGE_ACCESS_TOKEN } from "../../../constants/localStorage";
 import type { } from "../../../types/tournament";
 import type { AllMatchScoreEventsResponse, MatchScoreEvent, MatchScoreEventRequest } from "../../../types/matchScoreEvents";
 
-const getAllMatchScoreEvents = (workspaceId: string, matchId: string) => async (dispatch: Dispatch): Promise<AllMatchScoreEventsResponse> => {
+const getAllMatchScoreEvents = (workspaceId: string, matchId: string, page: number) => async (dispatch: Dispatch): Promise<AllMatchScoreEventsResponse> => {
     dispatch({
         type: types.GET_ALL_MATCH_SCORE_EVENTS_REQUEST,
         payload: null,
     });
 
     try {
-        const response = await axios.get<AllMatchScoreEventsResponse>("/api/tournaments/get-all", {
+        const response = await axios.get<AllMatchScoreEventsResponse>("/api/match-score-events", {
             params: {
                 workspaceId,
-                matchId
+                matchId,
+                page
             },
         });
         // console.log(response.data);
@@ -73,7 +74,7 @@ const createMatchScoreEvent = (data: MatchScoreEventRequest) => async (dispatch:
     }
 };
 
-const lockScoreCounterByUuid = (uuid: string, workspaceId: string,raceTo:number) => async (dispatch: Dispatch): Promise<string> => {
+const lockScoreCounterByUuid = (uuid: string, workspaceId: string, raceTo: number) => async (dispatch: Dispatch): Promise<string> => {
     dispatch({
         type: types.LOCK_SCORE_COUNTER_REQUEST
     })
@@ -83,7 +84,7 @@ const lockScoreCounterByUuid = (uuid: string, workspaceId: string,raceTo:number)
         const response = await axios.put(`/api/matches/uuid/${uuid}/lock-score-counter`,
             {},
             {
-                params:{
+                params: {
                     workspaceId,
                     raceTo
                 }
@@ -176,13 +177,73 @@ const verifyTokenLockCounter = (matchUuid: string, workspaceId: string, token: s
     }
 }
 
+const endMatch = (matchId: string, token: string) => async (dispatch: Dispatch): Promise<void> => {
+    dispatch({
+        type: types.END_MATCH_REQUEST,
+    });
+
+    try {
+        const response = await axios.put(`/api/match-score-events/end-match/${matchId}`,
+            {},
+            {
+                params: {
+                    token
+                }
+            }
+        );
+
+        dispatch({
+            type: types.END_MATCH_SUCCESS,
+            payload: response.data,
+        });
+
+        return response.data;
+    } catch (err: any) {
+        dispatch({
+            type: types.END_MATCH_FAIL,
+            payload: err.response?.data || err.message,
+        });
+        throw err;
+    }
+};
+const pauseMatch = (matchId: string, token: string) => async (dispatch: Dispatch): Promise<void> => {
+    dispatch({
+        type: types.PAUSE_MATCH_REQUEST,
+    });
+
+    try {
+        const response = await axios.put(`/api/match-score-events/pause-match/${matchId}`,
+            {},
+            {
+                params: {
+                    token
+                }
+            }
+        );
+        dispatch({
+            type: types.PAUSE_MATCH_SUCCESS,
+            payload: response.data,
+        });
+
+        return response.data;
+    } catch (err: any) {
+        dispatch({
+            type: types.PAUSE_MATCH_FAIL,
+            payload: err.response?.data || err.message,
+        });
+        throw err;
+    }
+};
+
 const matchScoreEventActions = {
     getAllMatchScoreEvents,
     createMatchScoreEvent,
     lockScoreCounterByUuid,
     refreshScoreCounterLockByUuid,
     unlockScoreCounterByUuid,
-    verifyTokenLockCounter
+    verifyTokenLockCounter,
+    endMatch,
+    pauseMatch
 }
 
 export default matchScoreEventActions

@@ -9,7 +9,7 @@ interface CustomButtonProps {
     type?: "button" | "submit" | "reset";
     onClick?: () => void;
     className?: string;
-    variant: "type-1" | "type-2" | "type-3" | "type-4" | "type-5" | "type-6" | "type-7";
+    variant: "type-1" | "type-2" | "type-3" | "type-4" | "type-5" | "type-6" | "type-7" | "type-8" ;
     needPermission?: boolean;
     textPadding?:string
     disabled?:boolean
@@ -35,10 +35,10 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
                         style={{ width }}
                         disabled = {disabled} 
                     >
-                        <span className="custom-button-inner relative py-3 px-6 transition-all ease-in duration-75 rounded-[.75rem]"
+                        <span className="flex gap-1 custom-button-inner relative py-3 px-6 transition-all ease-in duration-75 rounded-[.75rem]"
                             style={{padding:textPadding}}
                         >
-                            {label}  {Icon === "right" && (
+                            {label}  {Icon && (
                                 <span className="icon">{Icon}</span>
                             )}
                         </span>

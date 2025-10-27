@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useWorkspace } from '../../../customhook/useWorkspace';
 import { useNotification } from '../../../customhook/useNotifycation';
 import { useLocalStorage } from '../../../customhook/useLocalStorage';
-import { LOCAL_STORAGE_ACCESS_TOKEN } from '../../../constants/localStorage';
+import { LOCAL_STORAGE_ACCESS_TOKEN, LOCAL_STORAGE_TOKEN_LOCK_SCORE_COUNTER } from '../../../constants/localStorage';
 import { useDispatch } from 'react-redux';
 import { clearCache } from '../../../redux/features/common';
 const Header = () => {
@@ -45,7 +45,7 @@ const Header = () => {
         setWorkspaceKey(null);
         setAccessToken(null);
         setWorkspaceId(null);
-        localStorage.clear();
+        localStorage.removeItem(LOCAL_STORAGE_TOKEN_LOCK_SCORE_COUNTER);
         notify('Đã đăng xuất', 'success');
         await dispatch<any>(clearCache());
     }

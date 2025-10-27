@@ -11,9 +11,9 @@ export interface MatchScoreEvent {
     rackNumber: number;
     pointsReceived: number;
     note?: string
-    isSynced?: boolean;
-    retryCount?: number;
-    lastAttempt?: string | null;
+    isSynced: boolean;
+    retryCount: number;
+    lastAttempt: string | null;
 }
 
 export interface MatchScoreEventRequest {

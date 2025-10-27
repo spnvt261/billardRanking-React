@@ -15,11 +15,12 @@ import { scoreCounterReasonOptions } from "../../constants/matchTypes";
 import CustomSelect from "../../components/customSelect/CustomSelect";
 import CustomTextField from "../../components/customTextField/CustomTextField";
 import CustomButton from "../../components/customButtons/CustomButton";
-import RackCheckTable from "../../components/table/rackCheck/RackCheckTable";
+import RackCheckTable, { type HistoryItem } from "../../components/table/rackCheck/RackCheckTable";
 import { getEvents, saveEvents, syncEvents } from "../../ultils/localForage";
 import type { MatchScoreEventRequest } from "../../types/matchScoreEvents";
 import { HiMiniTrophy } from "react-icons/hi2";
 import { matchTypeMap } from "../../ultils/mapEnum";
+import FormToggle from "../../components/forms/FormToggle";
 
 interface Props {
     isLoading: boolean;
@@ -27,10 +28,21 @@ interface Props {
     getMatchById: (workspaceId: string, uuid: string) => Promise<Match>
     unlockScoreCounterByUuid: (matchUuid: string, workspaceId: string, token: string) => Promise<string>
     verifyTokenLockCounter: (matchUuid: string, workspaceId: string, token: string) => Promise<boolean>
-
+    totalElements: number;
+    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => Promise<void>;
+    endMatch: (matchId: string, token: string) => Promise<void>;
+    pauseMatch: (matchId: string, token: string) => Promise<void>
 }
 
-const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchById, verifyTokenLockCounter, unlockScoreCounterByUuid }) => {
+const ScoreCounterPage: React.FC<Props> = ({
+    isLoading,
+    showLoading,
+    getMatchById,
+    verifyTokenLockCounter,
+    unlockScoreCounterByUuid,
+    totalElements, getAllMatchScoreEvents,
+    endMatch, pauseMatch
+}) => {
     const { uuid } = useParams<{ uuid: string }>();
     const { state } = useLocation();
     const { notify } = useNotification()
@@ -40,12 +52,11 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
     const [score1, setScore1] = useState(0);
     const [score2, setScore2] = useState(0);
     const [showModal, setShowModal] = useState(false);
-    const [showHistory, setShowHistory] = useState(false);
-    const [showResult, setShowResult] = useState(false);
     const [reason, setReason] = useState("Win");
     const [customReason, setCustomReason] = useState("");
     const [winnerId, setWinnerId] = useState<number | null>(null);
-    const [history, setHistory] = useState<{ rack: number; winner: string; note: string }[]>([])
+    const [history, setHistory] = useState<HistoryItem[]>([])
+    const [lastScoreTime, setLastScoreTime] = useState<number | null>(null);
     const storedToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_LOCK_SCORE_COUNTER);
     // --- Khi có matchData ---
     useEffect(() => {
@@ -60,7 +71,7 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
                 try {
                     if (!storedToken) {
                         notify('Invalid Token!', 'error');
-                        navigate(-1);
+                        // navigate(-1);
                     } else {
                         const isValid = await verifyTokenLockCounter(uuid, workspaceId, storedToken);
                         if (!isValid) {
@@ -72,7 +83,7 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
                     setMatchData(data);
                 } catch (error) {
                     notify('Bảng tỉ số này đã có người sử dụng!', 'error');
-                    navigate(-1);
+                    // navigate(-1);
                 }
             };
             fetchMatch();
@@ -118,10 +129,20 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
     useEffect(() => {
         if (showLoading) showLoading(isLoading)
     }, [isLoading])
+    useEffect(() => {
+        if (workspaceId && matchData) {
+            getAllMatchScoreEvents(workspaceId, matchData.id.toString(), 1)
+        }
+    }, [matchData])
 
     if (!matchData) {
-        return
+        return (
+            <div className="h-screen w-screen">
+
+            </div>
+        )
     }
+
 
     const handleScoreClick = (team: 1 | 2) => {
         setShowModal(true);
@@ -129,19 +150,34 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
     };
 
     const confirmPoint = async () => {
+        const now = Date.now();
+        if (lastScoreTime && now - lastScoreTime < 30000) {
+            const remaining = Math.ceil((30000 - (now - lastScoreTime)) / 1000);
+            notify(`Vui lòng chờ ${remaining}s trước khi cộng điểm tiếp theo.`, 'warning');
+            return;
+        }
+
         if (!storedToken) {
             notify('Không tìm thấy token khóa bảng điểm', 'error');
             return;
         }
+        if (!winnerId) {
+            notify('Chưa chọn đội thắng', 'error');
+            return;
+        }
 
         const note = reason === 'Khác' ? customReason : reason;
-        const nextRack = history.length + 1;
+        const nextRack = totalElements + history.length + 1;
+
+        const newScore1 = winnerId === matchData.team1Id ? score1 + 1 : score1;
+        const newScore2 = winnerId === matchData.team2Id ? score2 + 1 : score2;
+
         const event: MatchScoreEventRequest = {
             workspaceId: workspaceId ? Number(workspaceId) : 0,
             tournamentId: matchData.tournamentId,
             matchId: matchData.id,
-            teamId: winnerId!,
-            playerId: undefined, // Nếu cần, lấy từ matchData.teamX.players
+            teamId: winnerId,
+            playerId: undefined,
             rackNumber: nextRack,
             pointsReceived: 1,
             note,
@@ -150,67 +186,84 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
             lastAttempt: null,
         };
 
-        // Lưu vào offline
-        const events = await getEvents(uuid!);
-        events.push(event);
-        await saveEvents(uuid!, events);
+        const prevScore1 = score1;
+        const prevScore2 = score2;
+        const prevHistory = [...history];
 
-        // Cập nhật UI (optimistic update)
-        if (winnerId === matchData.team1Id) {
-            setScore1((s) => s + 1);
-            setHistory([...history, { rack: nextRack, winner: matchData.team1?.name || 'Team 1', note }]);
-        } else if (winnerId === matchData.team2Id) {
-            setScore2((s) => s + 1);
-            setHistory([...history, { rack: nextRack, winner: matchData.team2?.name || 'Team 2', note }]);
-        }
-
-        // Thử đồng bộ
-        await syncEvents(uuid!, storedToken).catch((err) => {
-            notify('Lỗi đồng bộ dữ liệu, đã lưu offline', "warning");
-            console.log(err);
-
-        });
+        // UI optimistic update
+        setScore1(newScore1);
+        setScore2(newScore2);
+        setHistory(prev => [{
+            rack: nextRack,
+            winner: winnerId === matchData.team1Id
+                ? getTeamNames(matchData.team1?.players) || 'Team 1'
+                : getTeamNames(matchData.team2?.players) || 'Team 2',
+            note,
+            winnerId,
+        }, ...prev]);
+        setLastScoreTime(Date.now());
 
         setShowModal(false);
         setCustomReason('');
+
+        try {
+            const events = await getEvents(uuid!);
+            events.push(event);
+            await saveEvents(uuid!, events);
+
+            await syncEvents(uuid!, storedToken);
+            notify('Cập nhật điểm thành công', 'success');
+        } catch (err: any) {
+            if (err.response?.status === 400 || err.response?.status === 401) {
+                setScore1(prevScore1);
+                setScore2(prevScore2);
+                setHistory(prevHistory);
+                notify(`Lỗi: ${err.response?.data?.message || 'Token hoặc dữ liệu không hợp lệ'}`, 'error');
+                navigate(-1);
+            } else {
+                notify('Lỗi đồng bộ dữ liệu, đã lưu offline', 'warning');
+                console.error('Sync error:', err);
+            }
+        }
+
+        if (newScore1 === matchData.raceTo || newScore2 === matchData.raceTo) {
+            btnEndMatch();
+        }
     };
 
-    const endMatch = () => {
-        setShowResult(true)
+
+    const btnEndMatch = async () => {
+        if (!storedToken) {
+            notify('Token Score Counter Không tồn tại!', 'error')
+            return;
+        }
+        syncEvents(uuid!, storedToken);
+        endMatch(matchData.id.toString(), storedToken).then(() => {
+            navigate(-1);
+            notify('Trận đấu đã kết thúc!', 'success')
+        })
+
     };
-    // const endMatch = async () => {
-    //     if (!storedToken) {
-    //         notify('Không tìm thấy token khóa bảng điểm', 'error');
-    //         return;
-    //     }
+    const btnPauseMatch = async () => {
+        if (!storedToken) {
+            notify('Token Score Counter Không tồn tại!', 'error')
+            return;
+        }
+        syncEvents(uuid!, storedToken);
+        pauseMatch(matchData.id.toString(), storedToken).then(() => {
+            navigate(-1);
+            notify('Trận đấu đã tạm dừng!', 'warning')
+        })
 
-    //     // Đồng bộ tất cả events
-    //     const events = await syncEvents(uuid!, storedToken);
-    //     if (events.some((e) => !e.isSynced)) {
-    //         notify('Vẫn còn dữ liệu chưa đồng bộ, vui lòng thử lại', 'warning');
-    //         return;
-    //     }
+    }
 
-    //     const finalData = { score1, score2, history, status: MatchStatus.FINISHED };
-    //     try {
-    //         await dispatch(matchActions.endMatch(workspaceId, uuid!, finalData));
-    //         await clearEvents(uuid!); // Xóa dữ liệu offline
-    //         setShowResult(true);
-    //         notify('Trận đấu kết thúc thành công', 'success');
-    //     } catch {
-    //         await saveEvents(uuid!, [{ ...finalData, isSynced: false, retryCount: 0, lastAttempt: null }]);
-    //         notify('Kết thúc trận lưu tạm, sẽ sync khi online', 'warning');
-    //         setShowResult(true);
-    //     }
-    // };
     const closeAll = () => {
         setShowModal(false);
-        setShowHistory(false);
-        setShowResult(false);
     };
 
     if (matchData?.status !== MatchStatus.ONGOING) {
         notify(`Trận đấu không hợp lệ !`, 'error')
+        navigate(-1)
         return
     }
 
@@ -218,30 +271,43 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
         if (!players || players.length === 0) {
             return "TBA";
         }
-        return players.map(p => p.name).join(" & ");
+        return players.map(p => p.name.toLocaleUpperCase()).join(" & ");
     };
 
     return (
-        <div className="h-screen w-screen flex flex-col bg-gray-100 overflow-hidden fixed inset-0">
+        <div className="h-screen w-screen flex flex-col bg-gray-100 overflow-hidden ">
 
             {/* Header */}
             <div id="header-inner" className="flex justify-between items-center py-4 px-4 border-b">
-                {/* View History */}
-                <button onClick={() => setShowHistory(true)} type="button" className="p-2 rounded-lg flex bg-blue-400 hover:bg-blue-600">
-                    <span className="span-text-hide-moblie mr-2">Rack check</span>
-                    <MdHistory size={24} />
-                </button>
+                <FormToggle
+                    btnLabel="Rack"
+                    Icon={<MdHistory size={24} />}
+                    formTitle=""
+                    padding="0"
+                    btnPadding=".5rem .75rem"
+                    btnVariant="type-2"
+                    element={(props) => (
+                        <RackCheckTable
+                            matchId={matchData.id}
+                            history={history}
+                            team1Id={matchData.team1Id}
+                            team2Id={matchData.team2Id}
+                            onClose={props.btnCancel} // FormToggle tự truyền hàm này
+                        />
+                    )}
+
+                />
 
                 {/* Match Info */}
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-slate-600">
                         Race to {matchData.raceTo}
                     </h1>
-                    <p className="flex text-sm text-gray-600">
+                    <p className="flex items-center justify-center relative text-sm text-gray-600 [@media(max-width:512px)]:flex-col">
                         {
                             matchData.matchCategory === MatchCategory.TOURNAMENT &&
-                            <>{matchData.matchType && <span>{matchTypeMap[matchData.matchType].label} -</span>}
-                                <span className="flex items-center"> - Giải {matchData.tournamentName || "Tournament"} <HiMiniTrophy  className="ml-1 text-yellow-500 " size={20} /></span>
+                            <>{matchData.matchType && <span className="w-fit">{matchTypeMap[matchData.matchType].label}<span className="[@media(max-width:512px)]:hidden px-1">-</span></span>}
+                                <span className="flex items-center justify-center"> Giải {matchData.tournamentName || "Tournament"}</span> <HiMiniTrophy className="text-yellow-500" size={20} />
                             </>
 
                         }
@@ -254,11 +320,51 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
 
                     </p>
                 </div>
+                <FormToggle
+                    btnLabel="End Match"
+                    formTitle=""
+                    padding="0"
+                    btnPadding=".5rem .75rem"
+                    btnVariant="type-4"
+                    element={(props) => (
+                        <>
+                            <div className="bg-white px-6 pt-6 pb-2 w-full h-full text-center relative">
+                                <button
+                                    onClick={props.btnCancel}
+                                    className="absolute top-0 right-0 px-[1rem] text-gray-500 hover:text-gray-700 text-2xl font-bold"
+                                >
+                                    &times;
+                                </button>
 
-                {/* End Match */}
-                <button onClick={endMatch} className="bg-red-400 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                    End <span className="[@media(max-width:512px)]:hidden">Match</span>
-                </button>
+                                <h2 className="text-lg font-semibold mb-4">Kết quả trận đấu</h2>
+                                <div className="flex items-center justify-center text-2xl font-bold mb-4">
+                                    <span
+                                        className={`text-3xl mr-2 ${score1 > score2 ? "text-green-500" : "text-red-500"}`}
+                                    >{getTeamNames(matchData.team1?.players)}</span>
+                                    {score1} - {score2}
+                                    <span
+                                        className={`text-3xl ml-2 ${score1 < score2 ? "text-green-500" : "text-red-500"}`}
+                                    >{getTeamNames(matchData.team2?.players)}</span>
+                                </div>
+                                <div className="flex justify-end gap-3">
+                                    <CustomButton
+                                        label="Tạm dừng"
+                                        variant="type-8"
+                                        onClick={btnPauseMatch}
+                                    />
+                                    {
+                                        score1 != score2 && <CustomButton
+                                            label="Kết thúc"
+                                            variant="type-4"
+                                            onClick={btnEndMatch}
+                                        />
+                                    }
+
+                                </div>
+                            </div>
+                        </>
+                    )}
+                />
             </div>
 
             {/* Players */}
@@ -337,34 +443,6 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
                     </div>
                 </div>
             )}
-
-
-            {/* History Modal */}
-            {showHistory && (
-                <RackCheckTable
-                    history={history}
-                    onClose={closeAll}
-                    show
-                />
-            )}
-
-            {/* Result Modal */}
-            {showResult && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="bg-black bg-opacity-30 fixed inset-0 z-10"></div>
-                    <div className="bg-white p-6 rounded-xl shadow-xl w-[400px] text-center z-50 relative">
-                        <h2 className="text-lg font-semibold mb-4">Kết quả trận đấu</h2>
-                        <div className="text-2xl font-bold mb-4">
-                            {matchData.team1?.name} {score1} - {score2} {matchData.team2?.name}
-                        </div>
-                        <div className="flex justify-center gap-3">
-                            <button onClick={closeAll} className="px-4 py-2 rounded bg-gray-300">
-                                Đóng
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
@@ -372,12 +450,16 @@ const ScoreCounterPage: React.FC<Props> = ({ isLoading, showLoading, getMatchByI
 // --- Redux ---
 const mapStateToProps = (state: any) => ({
     isLoading: state.matches.isGetMatchLoading,
+    totalElements: state.scoreEvent.totalElements,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
     getMatchById: (workspaceId: string, uuid: string) => dispatch(matchActions.getMatchById(workspaceId, uuid)),
+    endMatch: (matchId: string, token: string) => dispatch(matchScoreEventActions.endMatch(matchId, token)),
+    pauseMatch: (matchId: string, token: string) => dispatch(matchScoreEventActions.pauseMatch(matchId, token)),
     unlockScoreCounterByUuid: (matchUuid: string, workspaceId: string, token: string) => dispatch(matchScoreEventActions.unlockScoreCounterByUuid(matchUuid, workspaceId, token)),
-    verifyTokenLockCounter: (matchUuid: string, workspaceId: string, token: string) => dispatch(matchScoreEventActions.verifyTokenLockCounter(matchUuid, workspaceId, token))
+    verifyTokenLockCounter: (matchUuid: string, workspaceId: string, token: string) => dispatch(matchScoreEventActions.verifyTokenLockCounter(matchUuid, workspaceId, token)),
+    getAllMatchScoreEvents: (workspaceId: string, matchId: string, page: number) => dispatch(matchScoreEventActions.getAllMatchScoreEvents(workspaceId, matchId, page))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WithLoading(ScoreCounterPage));

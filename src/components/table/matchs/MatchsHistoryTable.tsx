@@ -8,9 +8,14 @@ import { useNotification } from "../../../customhook/useNotifycation";
 import { useWorkspace } from "../../../customhook/useWorkspace";
 import { formatVND } from "../../../ultils/format";
 import { matchTypeMap } from "../../../ultils/mapEnum";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PATHS from "../../../router/path";
 import { GoTrophy } from "react-icons/go";
+import FormToggle from "../../forms/FormToggle";
+import RackCheckTable from "../rackCheck/RackCheckTable";
+import { MdHistory } from "react-icons/md";
+import matchScoreEventActions from "../../../redux/features/matchScoreEvent/matchScoreEventActions";
+import { LOCAL_STORAGE_TOKEN_LOCK_SCORE_COUNTER } from "../../../constants/localStorage";
 
 interface props {
     getMatchesByPage: (workspaceId: string, page: number) => Promise<void>;
@@ -19,6 +24,7 @@ interface props {
     totalElements: number;
     totalPages: number;
     page: number;
+    lockScoreCounterByUuid: (matchUuid: string, workspaceId: string, raceTo: number) => Promise<string>;
 }
 
 const MatchesHistoryTable = ({
@@ -26,10 +32,11 @@ const MatchesHistoryTable = ({
     isLoading,
     matchesByPage,
     totalElements,
-    // totalPages, 
+    lockScoreCounterByUuid,
 }: props) => {
     const { notify } = useNotification();
     const { workspaceId } = useWorkspace();
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     useEffect(() => {
         if (!matchesByPage[currentPage]) {
@@ -41,7 +48,25 @@ const MatchesHistoryTable = ({
     const currentData = matchesByPage[currentPage] || [];
     // console.log(currentData);
     // console.log(totalElements);
+    const openScoreCounter = async (match: Match) => {
+        if (!workspaceId) return;
 
+        const storedToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_LOCK_SCORE_COUNTER);
+
+        try {
+            if (!storedToken) {
+                const token = await lockScoreCounterByUuid(match.uuid, workspaceId, match.raceTo? match.raceTo:-1);
+                localStorage.setItem(LOCAL_STORAGE_TOKEN_LOCK_SCORE_COUNTER, token);
+                navigate(`${PATHS.SCORE_COUNTER}/${match.uuid}`);
+                return;
+            } else {
+                navigate(`${PATHS.SCORE_COUNTER}/${match.uuid}`);
+            }
+        } catch (err) {
+            notify('Trận này đã có bảng tỉ số!', 'error');
+            console.error(err);
+        }
+    }
     const columns = [
         {
             header: "Match",
@@ -65,6 +90,7 @@ const MatchesHistoryTable = ({
 
                 const renderMiddle = () => {
                     switch (row.status) {
+                        case MatchStatus.PAUSED:
                         case MatchStatus.ONGOING:
                         case MatchStatus.FINISHED:
                             return `${row.scoreTeam1} - ${row.scoreTeam2}`;
@@ -79,8 +105,10 @@ const MatchesHistoryTable = ({
                 const getStatusClass = () => {
                     switch (row.status) {
                         case MatchStatus.ONGOING:
-                            return "bg-green-500";
+                            return "bg-green-500 cursor-pointer hover:bg-green-600";
                         case MatchStatus.UPCOMING:
+                            return "bg-yellow-400";
+                        case MatchStatus.PAUSED:
                             return "bg-yellow-500";
                         case MatchStatus.NOT_STARTED:
                             return "bg-red-500";
@@ -93,7 +121,9 @@ const MatchesHistoryTable = ({
                     <div className="font-medium flex items-center gap-2">
                         {
                             row.status !== MatchStatus.FINISHED &&
-                            <span className={`rounded-[1rem] p-1 pl-2 pr-2 text-white scale-75 font-bold ${getStatusClass()}`}>
+                            <span className={`rounded-[1rem] p-1 pl-2 pr-2 text-white scale-75 font-bold ${getStatusClass()}`}
+                                onClick={() => openScoreCounter(row)}
+                            >
                                 {row.status}
                             </span>
                         }
@@ -124,7 +154,7 @@ const MatchesHistoryTable = ({
             accessor: (row: Match) => {
                 // Nếu là "Bàn nước" thì chỉ hiện tên đó
                 if (row.matchCategory === MatchCategory.FUN) return "Bàn nước"
-                if (row.matchCategory === MatchCategory.BETTING) return `Kèo ${row.betAmount? formatVND(row.betAmount):"Tiền"}`
+                if (row.matchCategory === MatchCategory.BETTING) return `Kèo ${row.betAmount ? formatVND(row.betAmount) : "Tiền"}`
                 if (row.tournamentId && row.tournamentName) {
                     return <div>
                         <span className={`text-[0.9rem] text-slate-700 ${matchTypeMap[row.matchType].className}`}>{matchTypeMap[row.matchType].label}</span>
@@ -149,10 +179,27 @@ const MatchesHistoryTable = ({
         {
             header: "Rack Check",
             accessor: (row: Match) => {
-                if (row.tournamentId && row.tournamentName) return ""
+                if (row.hasRackCheck) return <>
+                    <FormToggle
+                        btnLabel=""
+                        Icon={<MdHistory size={24} />}
+                        btnPadding=" .5rem .75rem"
+                        formTitle=""
+                        padding="0"
+                        element={(props) => (
+                            <RackCheckTable
+                                matchId={row.id}
+                                onClose={props.btnCancel} // FormToggle tự truyền hàm này
+                            />
+                        )}
+                    />
+
+                </>
                 return ""
             },
             width: "100px",
+            cellClassName: "",
+            className: "",
         },
     ]
 
@@ -188,6 +235,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
     getMatchesByPage: (workspaceId: string, page: number) => dispatch(matchActions.getMatchesByPage(workspaceId, page)),
+    lockScoreCounterByUuid: (matchUuid: string, workspaceId: string, raceTo: number) => dispatch(matchScoreEventActions.lockScoreCounterByUuid(matchUuid, workspaceId, raceTo)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MatchesHistoryTable) 

@@ -6,12 +6,13 @@ import type { WorkspaceData } from "../../types/workspace";
 interface WorkspaceContextType {
     workspaceKey: string | null;
     setWorkspaceKey: (key: string | null) => void;
-    workspaceId:string | null;
-    setWorkspaceId:(key:string | null) => void;
+    workspaceId: string | null;
+    setWorkspaceId: (key: string | null) => void;
     workspaceList: WorkspaceData[];
     addWorkspace: (workspace: WorkspaceData) => void;
     removeWorkspace: (shareKey: string) => void;
-    hasWorkspace:(shareKey: string) => boolean;
+    hasWorkspace: (shareKey: string) => boolean;
+    updateWorkspaceShowKey: (key: number, showKey: boolean) => void
 }
 
 export const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined);
@@ -44,6 +45,13 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return workspaceList.some(w => w.shareKey.toString() === shareKey);
     };
 
+    const updateWorkspaceShowKey = (key: number, showKey: boolean) => {
+        const newList = workspaceList.map(w => w.shareKey == key ? { ...w, showKey: showKey } : w);
+        setWorkspaceList(newList);
+    };
+
+
+
     const value = React.useMemo(
         () => ({
             workspaceKey,
@@ -54,6 +62,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             addWorkspace,
             removeWorkspace,
             hasWorkspace,
+            updateWorkspaceShowKey
         }),
         [workspaceKey, workspaceList]
     );

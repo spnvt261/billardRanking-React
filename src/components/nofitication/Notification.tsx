@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     AiOutlineCheckCircle,
@@ -9,107 +10,99 @@ import {
 
 export type NotificationType = "success" | "error" | "loading" | "warning";
 
-interface NotificationProps {
+interface NotificationData {
+    id: number;
     message: string;
     type: NotificationType;
-    duration?: number;
-    onClose?: () => void;
+    duration: number;
 }
 
-const Notification: React.FC<NotificationProps> = ({
-    message,
-    type,
-    duration = 2800,
-    onClose,
+let idCounter = 0;
+
+const getIcon = (type: NotificationType) => {
+    switch (type) {
+        case "success": return <AiOutlineCheckCircle className="w-6 h-6 text-green-300" />;
+        case "error": return <AiOutlineCloseCircle className="w-6 h-6 text-red-300" />;
+        case "loading": return <AiOutlineLoading3Quarters className="w-6 h-6 text-blue-300 animate-spin" />;
+        case "warning": return <AiOutlineWarning className="w-6 h-6 text-yellow-300" />;
+    }
+};
+
+const NotificationItem: React.FC<{ data: NotificationData; onRemove?: (id: number) => void }> = ({
+    data,
+    onRemove,
 }) => {
-    const [progress, setProgress] = useState(0);
     const [visible, setVisible] = useState(true);
 
     useEffect(() => {
-        const start = Date.now();
-        const interval = setInterval(() => {
-            const elapsed = Date.now() - start;
-            const value = Math.min((elapsed / duration) * 100, 100);
-            setProgress(value);
-
-            if (elapsed >= duration) {
-                clearInterval(interval);
-                setVisible(false);
-            }
-        }, 50);
-
-        return () => clearInterval(interval);
-    }, [duration]);
-
+        if (data.type !== "loading") {
+            const timer = setTimeout(() => setVisible(false), data.duration);
+            return () => clearTimeout(timer);
+        }
+    }, [data]);
 
     const handleExitComplete = () => {
-        onClose?.();
-    };
-
-    const getIcon = () => {
-        switch (type) {
-            case "success":
-                return <AiOutlineCheckCircle className="w-6 h-6 text-green-300" />;
-            case "error":
-                return <AiOutlineCloseCircle className="w-6 h-6 text-red-300" />;
-            case "loading":
-                return (
-                    <AiOutlineLoading3Quarters className="w-6 h-6 text-blue-300 animate-spin" />
-                );
-            case "warning":
-                return <AiOutlineWarning className="w-6 h-6 text-yellow-300" />;
-            default:
-                return null;
-        }
-    };
-
-    const getProgressColor = () => {
-        switch (type) {
-            case "success":
-                return "bg-green-400";
-            case "error":
-                return "bg-red-400";
-            case "loading":
-                return "bg-blue-400";
-            case "warning":
-                return "bg-yellow-400";
-            default:
-                return "bg-gray-400";
-        }
+        onRemove?.(data.id);
     };
 
     return (
         <AnimatePresence onExitComplete={handleExitComplete}>
             {visible && (
                 <motion.div
-                    key="notification"
-                    initial={{ y: -80, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -80, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="fixed top-5 inset-x-0 px-4 max-w-md mx-auto z-50 flex justify-center"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-gray-800 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-3 min-w-[280px]"
                 >
-                    <div className="w-[300px] sm:w-[400px] relative flex items-center space-x-3 px-4 py-3 rounded-md shadow-md text-gray-100 overflow-hidden bg-gray-600">
-                        {getIcon()}
-                        <span className="flex-1">{message}</span>
-                        <button
-                            onClick={() => setVisible(false)}
-                            className="ml-2 text-gray-300 hover:text-white transition-colors"
-                        >
-                            ✕
-                        </button>
-
-                        <div className="absolute bottom-0 left-[-1rem] h-[3px] w-[110%] bg-white/10">
-                            <div
-                                className={`h-full transition-[width] duration-200 ease-linear ${getProgressColor()}`}
-                                style={{ width: `${progress}%` }}
-                            />
-                        </div>
-                    </div>
+                    {getIcon(data.type)}
+                    <span className="flex-1">{data.message}</span>
+                    <button
+                        onClick={() => setVisible(false)}
+                        className="text-gray-300 hover:text-white"
+                    >
+                        ✕
+                    </button>
                 </motion.div>
             )}
         </AnimatePresence>
     );
 };
 
-export default Notification;
+const NotificationContainer: React.FC = () => {
+    const [notifications, setNotifications] = useState<NotificationData[]>([]);
+
+    const addNotification = useCallback((message: string, type: NotificationType, duration = 3000) => {
+        setNotifications((prev) => {
+            // Nếu có loading, xóa nó trước
+            const filtered = prev.filter((n) => n.type !== "loading");
+            const id = ++idCounter;
+            return [...filtered, { id, message, type, duration }];
+        });
+    }, []);
+
+    const removeNotification = useCallback((id: number) => {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+    }, []);
+
+    // nghe event notify
+    useEffect(() => {
+        const listener = (e: any) => {
+            const { message, type, duration } = e.detail;
+            addNotification(message, type, duration);
+        };
+        window.addEventListener("ADD_NOTIFICATION", listener);
+        return () => window.removeEventListener("ADD_NOTIFICATION", listener);
+    }, [addNotification]);
+
+    return createPortal(
+        <div className="fixed bottom-5 left-5 flex flex-col items-center z-50 space-y-3">
+            {notifications.map((n) => (
+                <NotificationItem key={n.id} data={n} onRemove={removeNotification} />
+            ))}
+        </div>,
+        document.body
+    );
+};
+
+export default NotificationContainer;

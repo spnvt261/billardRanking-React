@@ -1,5 +1,4 @@
 import { connect } from "react-redux";
-import AddSpecialTournamentForm from "../../components/forms/addSpecialTournamentForm/AddSpecialTournamentForm";
 import AddTournamentForm from "../../components/forms/addTournamentForm/AddTournamentForm";
 import FormToggle from "../../components/forms/FormToggle";
 import TournamentList from "../../components/layout/tournaments/tournamentList/TournamentList";
@@ -47,14 +46,14 @@ const TournamentPage: React.FC<Props> = ({
                     element={AddTournamentForm}
                     needPermission
                 />
-                <FormToggle
+                {/* <FormToggle
                     btnLabel="Tạo mâm đền"
                     formTitle="Tạo mâm đền"
                     btnVariant="type-1"
                     element={AddSpecialTournamentForm}
                     className="mb-4"
                     needPermission
-                />
+                /> */}
             </div>
             <h3 className="mb-1 text-xl text-slate-600 font-bold" >TOURNAMENTS</h3>
             {Object.entries(dataTournaments.NormalTournament).map(([quarter, list]) => (

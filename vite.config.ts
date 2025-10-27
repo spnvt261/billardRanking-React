@@ -14,12 +14,14 @@ import react from '@vitejs/plugin-react'
 //     },
 //   },
 // })
+// https://billardranking-sever.onrender.com
+// http://localhost:8080
 export default defineConfig({
     plugins: [react()],
     server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // backend server
+        target: 'https://billardranking-sever.onrender.com', // backend server
         changeOrigin: true,
         secure: false,
       },
