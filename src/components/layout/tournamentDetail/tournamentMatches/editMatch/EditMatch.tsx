@@ -61,7 +61,7 @@ const EditMatch: FC<Props> = ({ match, onClose, updateMatch, roundNumber, showLo
             try {
                 if (workspaceId) await updateMatch(matchUpdated.id.toString(), matchUpdated, workspaceId, roundNumber)
                 notify('Tỉ số đã được cập nhật!', 'success')
-                onClose();
+                // onClose();
             } catch (err) {
                 notify(`Lỗi khi cập nhật tỉ số ${err}`, 'error')
                 console.log(err);

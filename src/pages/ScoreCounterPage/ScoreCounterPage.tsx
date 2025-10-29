@@ -372,7 +372,7 @@ const ScoreCounterPage: React.FC<Props> = ({
             </div>
 
             {/* Players */}
-            <div className="flex flex-1 flex-col md:flex-row gap-2 p-2">
+            <div className="flex flex-1 flex-col [@media(min-width:512px)]:flex-row gap-2 p-2">
                 {/* Player 1 */}
                 <div
                     onClick={() => handleScoreClick(1)}

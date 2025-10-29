@@ -171,37 +171,41 @@ const RackCheckTable: React.FC<RackCheckTableProps> = ({
                     </div>
                 </>
             }
+            {
+                (currentData.length > 0 || (history&& history.length===0)) && <>
+                    {/* Header */}
+                    <div className="flex justify-between items-center border-b px-4 py-2">
+                        <h2 className="text-lg font-bold text-slate-600">History Rack Check</h2>
+                        {
+                            (!history || history?.length === 0) && <button
+                                onClick={onClose}
+                                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+                            >
+                                &times;
+                            </button>
+                        }
+                    </div>
 
-            {/* Header */}
-            <div className="flex justify-between items-center border-b px-4 py-2">
-                <h2 className="text-lg font-bold text-slate-600">History Rack Check</h2>
-                {
-                    (!history || history?.length === 0) && <button
-                        onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                    >
-                        &times;
-                    </button>
-                }
-            </div>
+                    {/* Body */}
+                    <div className="p-4">
+                        <DataTable<MatchScoreEvent>
+                            columns={columnsHistory}
+                            data={currentData}
+                            totalElement={totalElements}
+                            isLoading={isLoading}
+                            getRowClassName={(row) => getRowClassNameHistory(row, team1Id, team2Id)}
+                            getHeaderClass={getHeaderClass}
+                        />
+                        <Pagination
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                            pageSize={10}
+                            totalItems={totalElements}
+                        />
+                    </div>
+                </>
+            }
 
-            {/* Body */}
-            <div className="p-4">
-                <DataTable<MatchScoreEvent>
-                    columns={columnsHistory}
-                    data={currentData}
-                    totalElement={totalElements}
-                    isLoading={isLoading}
-                    getRowClassName={(row) => getRowClassNameHistory(row, team1Id, team2Id)}
-                    getHeaderClass={getHeaderClass}
-                />
-                <Pagination
-                    currentPage={currentPage}
-                    onPageChange={setCurrentPage}
-                    pageSize={10}
-                    totalItems={totalElements}
-                />
-            </div>
             {/* // </div> */}
             {/* // </div> */}
         </>
