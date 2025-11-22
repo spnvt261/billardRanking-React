@@ -21,7 +21,7 @@ export default defineConfig({
     server: {
     proxy: {
       '/api': {
-        target: 'https://billardranking-sever.onrender.com', // backend server
+        target: 'https://billardranking-sever-efmc.onrender.com', // backend server
         changeOrigin: true,
         secure: false,
       },

@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://billardranking-sever.onrender.com/api/$1"
+      "destination": "https://billardranking-sever-efmc.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",
